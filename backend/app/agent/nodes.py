@@ -188,8 +188,6 @@ Respond with ONLY valid JSON:
 
 
 def route_after_hpi_red_flag(state: InterviewState) -> str:
-    if state["red_flag"]:
-        return "emergency"
     if get_next_missing_hpi_field(state) is None:
         return "next_section"
     return "continue"

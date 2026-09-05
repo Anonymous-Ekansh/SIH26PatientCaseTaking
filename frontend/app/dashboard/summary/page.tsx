@@ -104,9 +104,10 @@ export default function SummaryPage() {
   // Aggregate all extracted entities from all documents
   const allEntities = documents.flatMap(doc => doc.extracted_entities || []);
 
-  const diagnoses = allEntities.filter(e => e.entity_type === "Diagnosis");
-  const medications = allEntities.filter(e => e.entity_type === "Medication");
-  const investigations = allEntities.filter(e => e.entity_type === "Investigation");
+  const diagnoses = allEntities.filter(e => e.entity_type === "diagnosis");
+  const medications = allEntities.filter(e => e.entity_type === "medication");
+  const investigations = allEntities.filter(e => e.entity_type === "lab_value");
+  const procedures = allEntities.filter(e => e.entity_type === "procedure");
 
   const hasData = conversation?.chief_complaint || allEntities.length > 0;
 
@@ -248,6 +249,23 @@ export default function SummaryPage() {
                       <span className="font-semibold text-gray-800 text-sm">{m.label}</span>
                       {m.value && <span className="text-xs bg-white border border-teal-200 text-teal-700 px-2 py-1 rounded-md font-medium">{m.value}</span>}
                     </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Procedures */}
+            {procedures.length > 0 && (
+              <div>
+                <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
+                  <Activity size={16} className="text-rose-500" />
+                  Procedures Found
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {procedures.map((p, i) => (
+                    <span key={i} className="bg-rose-50 text-rose-700 border border-rose-100 px-3 py-1.5 rounded-full text-sm font-medium">
+                      {p.label} {p.value ? `(${p.value})` : ""}
+                    </span>
                   ))}
                 </div>
               </div>
