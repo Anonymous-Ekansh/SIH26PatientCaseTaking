@@ -29,7 +29,7 @@ export default function SummaryPage() {
 
         // 1. Fetch internal patient
         const { data: patientData, error: patientError } = await supabase
-          .table("patients")
+          .from("patients")
           .select("id")
           .eq("auth_user_id", user.id)
           .single();
@@ -40,7 +40,7 @@ export default function SummaryPage() {
 
         // 2. Fetch active encounter
         const { data: encounterData, error: encounterError } = await supabase
-          .table("encounters")
+          .from("encounters")
           .select("id")
           .eq("patient_id", patientData.id)
           .eq("status", "in_progress")
@@ -56,7 +56,7 @@ export default function SummaryPage() {
 
         // 3. Fetch conversation state for this encounter
         const { data: convoData } = await supabase
-          .table("conversations")
+          .from("conversations")
           .select("*")
           .eq("encounter_id", encounterId)
           .single();
