@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import documents
+from app.routers import documents, ayush
 
 app = FastAPI(title="Hospital Kiosk Backend")
 
@@ -15,6 +15,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(documents.router, prefix="/api/documents")
+app.include_router(ayush.router, prefix="/api/ayush")
 
 @app.get("/")
 def read_root():
