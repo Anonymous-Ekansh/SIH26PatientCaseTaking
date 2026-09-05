@@ -80,6 +80,8 @@ def start_conversation(req: StartConversationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+import traceback
+
 @router.post("/answer")
 def answer_question(req: AnswerRequest):
     """
@@ -109,7 +111,9 @@ def answer_question(req: AnswerRequest):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        err_msg = traceback.format_exc()
+        print(f"ERROR IN /answer:\n{err_msg}")
+        raise HTTPException(status_code=500, detail=f"{str(e)}\n{err_msg}")
 
 
 @router.get("/state/{encounter_id}")
