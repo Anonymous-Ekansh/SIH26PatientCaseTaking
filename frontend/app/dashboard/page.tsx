@@ -16,6 +16,12 @@ const SECTIONS = [
     href: "/dashboard/book",
   },
   {
+    title: "Conversation",
+    desc: "Answer health questions by voice or touch.",
+    icon: MessageSquare,
+    href: "/dashboard/conversation",
+  },
+  {
     title: "Documents",
     desc: "Upload prescriptions, reports, or summaries.",
     icon: FileText,
@@ -26,7 +32,19 @@ const SECTIONS = [
     desc: "Review your compiled medical history.",
     icon: ClipboardCheck,
     href: "/dashboard/summary",
-  }
+  },
+  {
+    title: "Doctor dashboard",
+    desc: "For your treating physician.",
+    icon: Stethoscope,
+    href: "/dashboard/doctor",
+  },
+  {
+    title: "AYUSH mode",
+    desc: "Traditional medicine history-taking.",
+    icon: Leaf,
+    href: "/dashboard/ayush",
+  },
 ];
 
 export default function DashboardHome() {
