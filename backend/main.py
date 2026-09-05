@@ -1,6 +1,9 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import documents
+
+logging.basicConfig(level=logging.WARNING)
 
 app = FastAPI(title="Hospital Kiosk Backend")
 

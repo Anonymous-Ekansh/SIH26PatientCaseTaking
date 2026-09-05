@@ -1,6 +1,9 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Path
 from enum import Enum
 from typing import List
+import logging
+
+logger = logging.getLogger(__name__)
 
 from app.supabase_client import supabase
 from app.services.ocr import call_sarvam_ocr, OCRError
@@ -109,9 +112,13 @@ async def upload_document(
 
         # --- Call Sarvam OCR ---
         raw_text = await call_sarvam_ocr(file_bytes, filename)
+        logger.warning(f"[PIPELINE] OCR returned text length: {len(raw_text)}")
+        logger.warning(f"[PIPELINE] OCR text preview (first 500 chars): {raw_text[:500]}")
 
         # --- Call Groq LLM extraction ---
         entities = await extract_entities(raw_text)
+        logger.warning(f"[PIPELINE] Extraction returned {len(entities)} entities")
+        logger.warning(f"[PIPELINE] Entities: {entities}")
 
         # --- Insert extracted entities ---
         if entities:
