@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 
 from openai import OpenAI, RateLimitError
 from langgraph.types import interrupt
-from app.config import GROQ_API_KEY
+from app.config import CONVERSATION_GROQ_API_KEY
 
 from .state import (
     InterviewState,
@@ -17,7 +17,7 @@ from .state import (
 
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key=GROQ_API_KEY,
+    api_key=CONVERSATION_GROQ_API_KEY,
 )
 
 MODEL_NAME = "qwen-2.5-32b"  # Groq's qwen model (or you can use llama-3.1-8b-instant for speed)
