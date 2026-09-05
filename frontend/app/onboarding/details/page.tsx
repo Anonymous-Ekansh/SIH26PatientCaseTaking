@@ -27,12 +27,19 @@ export default function OnboardingDetails() {
   const router = useRouter();
   const supabase = createClient();
   
+  const [role, setRole] = useState<"patient" | "doctor">("patient");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   
-  const [errors, setErrors] = useState<{ name?: string; phone?: string; submit?: string }>({});
+  // Doctor specific fields
+  const [system, setSystem] = useState<"allopathy" | "ayurveda">("allopathy");
+  const [specialization, setSpecialization] = useState("");
+  const [qualification, setQualification] = useState("");
+  const [experience, setExperience] = useState("");
+  
+  const [errors, setErrors] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -52,11 +59,17 @@ export default function OnboardingDetails() {
   }, [supabase, router]);
 
   const handleContinue = async () => {
-    const newErrors: { name?: string; phone?: string; submit?: string } = {};
+    const newErrors: any = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!phone.trim()) newErrors.phone = "Phone number is required";
     else if (!/^\d{10}$/.test(phone.trim()))
       newErrors.phone = "Enter a valid 10-digit phone number";
+
+    if (role === "doctor") {
+      if (!specialization.trim()) newErrors.specialization = "Specialization is required";
+      if (!qualification.trim()) newErrors.qualification = "Qualification is required";
+      if (!experience.trim() || isNaN(Number(experience))) newErrors.experience = "Valid experience years required";
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -66,26 +79,51 @@ export default function OnboardingDetails() {
     setErrors({});
     setIsSubmitting(true);
 
-    const { error } = await supabase
-      .from("patients")
-      .upsert(
-        {
-          auth_user_id: userId,
-          name: name.trim(),
-          email: email,
-          phone: phone.trim(),
-        },
-        { onConflict: "auth_user_id" }
-      );
+    if (role === "patient") {
+      const { error } = await supabase
+        .from("patients")
+        .upsert(
+          {
+            auth_user_id: userId,
+            name: name.trim(),
+            email: email,
+            phone: phone.trim(),
+          },
+          { onConflict: "auth_user_id" }
+        );
 
-    setIsSubmitting(false);
+      setIsSubmitting(false);
 
-    if (error) {
-      setErrors({ submit: "Failed to save details. Please try again." });
-      return;
+      if (error) {
+        setErrors({ submit: "Failed to save details. Please try again." });
+        return;
+      }
+      router.push("/dashboard");
+    } else {
+      const { error } = await supabase
+        .from("doctors")
+        .upsert(
+          {
+            auth_user_id: userId,
+            name: name.trim(),
+            email: email,
+            phone: phone.trim(),
+            system: system,
+            specialization: specialization.trim(),
+            qualification: qualification.trim(),
+            experience_years: parseInt(experience, 10),
+          },
+          { onConflict: "auth_user_id" }
+        );
+
+      setIsSubmitting(false);
+
+      if (error) {
+        setErrors({ submit: "Failed to save details. Please try again." });
+        return;
+      }
+      router.push("/doctor/dashboard");
     }
-
-    router.push("/dashboard");
   };
 
   return (
@@ -112,44 +150,49 @@ export default function OnboardingDetails() {
             <h1 className="text-xl font-bold text-[#1A1A1A] mb-1 text-center">
               Your details
             </h1>
-            <p className="text-[#6B7280] text-sm mb-8 text-center">
-              We need a few details to get started
+            <p className="text-[#6B7280] text-sm mb-6 text-center">
+              Are you registering as a patient or doctor?
             </p>
 
-            {name && (
-              <h2 className="text-lg font-semibold text-[#0EA5E9] mb-4 text-center">
-                Welcome, {name}
-              </h2>
-            )}
+            <div className="flex gap-2 p-1 bg-gray-100 rounded-xl mb-6">
+              <button
+                onClick={() => setRole("patient")}
+                className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  role === "patient" ? "bg-white shadow-sm text-sky-600" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Patient
+              </button>
+              <button
+                onClick={() => setRole("doctor")}
+                className={`flex-1 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  role === "doctor" ? "bg-white shadow-sm text-sky-600" : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Doctor
+              </button>
+            </div>
 
             <div className="flex flex-col gap-5 mb-6">
               <div>
-                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
-                  Full name
-                </label>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Full name</label>
                 <input
                   type="text"
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
-                    if (errors.name) setErrors((p) => ({ ...p, name: undefined }));
+                    if (errors.name) setErrors((p: any) => ({ ...p, name: undefined }));
                   }}
                   className={`w-full px-4 py-3.5 rounded-xl border text-base outline-none transition-colors min-h-[56px] ${
-                    errors.name
-                      ? "border-[#DC2626] focus:border-[#DC2626]"
-                      : "border-[#E5E7EB] focus:border-[#0EA5E9]"
+                    errors.name ? "border-[#DC2626]" : "border-[#E5E7EB] focus:border-[#0EA5E9]"
                   }`}
                 />
-                {errors.name && (
-                  <p className="text-[#DC2626] text-xs mt-1.5">{errors.name}</p>
-                )}
+                {errors.name && <p className="text-[#DC2626] text-xs mt-1.5">{errors.name}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">
-                  Phone number
-                </label>
+                <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Phone number</label>
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -157,18 +200,81 @@ export default function OnboardingDetails() {
                   value={phone}
                   onChange={(e) => {
                     setPhone(e.target.value);
-                    if (errors.phone) setErrors((p) => ({ ...p, phone: undefined }));
+                    if (errors.phone) setErrors((p: any) => ({ ...p, phone: undefined }));
                   }}
                   className={`w-full px-4 py-3.5 rounded-xl border text-base outline-none transition-colors min-h-[56px] ${
-                    errors.phone
-                      ? "border-[#DC2626] focus:border-[#DC2626]"
-                      : "border-[#E5E7EB] focus:border-[#0EA5E9]"
+                    errors.phone ? "border-[#DC2626]" : "border-[#E5E7EB] focus:border-[#0EA5E9]"
                   }`}
                 />
-                {errors.phone && (
-                  <p className="text-[#DC2626] text-xs mt-1.5">{errors.phone}</p>
-                )}
+                {errors.phone && <p className="text-[#DC2626] text-xs mt-1.5">{errors.phone}</p>}
               </div>
+
+              {role === "doctor" && (
+                <>
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Medical System</label>
+                    <select
+                      value={system}
+                      onChange={(e) => setSystem(e.target.value as "allopathy" | "ayurveda")}
+                      className="w-full px-4 py-3.5 rounded-xl border border-[#E5E7EB] focus:border-[#0EA5E9] text-base outline-none bg-white min-h-[56px]"
+                    >
+                      <option value="allopathy">Allopathy (Modern Medicine)</option>
+                      <option value="ayurveda">Ayurveda</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Specialization</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. General Physician, Kayachikitsa"
+                      value={specialization}
+                      onChange={(e) => {
+                        setSpecialization(e.target.value);
+                        if (errors.specialization) setErrors((p: any) => ({ ...p, specialization: undefined }));
+                      }}
+                      className={`w-full px-4 py-3.5 rounded-xl border text-base outline-none transition-colors min-h-[56px] ${
+                        errors.specialization ? "border-[#DC2626]" : "border-[#E5E7EB] focus:border-[#0EA5E9]"
+                      }`}
+                    />
+                    {errors.specialization && <p className="text-[#DC2626] text-xs mt-1.5">{errors.specialization}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Qualification</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. MBBS, MD, BAMS"
+                      value={qualification}
+                      onChange={(e) => {
+                        setQualification(e.target.value);
+                        if (errors.qualification) setErrors((p: any) => ({ ...p, qualification: undefined }));
+                      }}
+                      className={`w-full px-4 py-3.5 rounded-xl border text-base outline-none transition-colors min-h-[56px] ${
+                        errors.qualification ? "border-[#DC2626]" : "border-[#E5E7EB] focus:border-[#0EA5E9]"
+                      }`}
+                    />
+                    {errors.qualification && <p className="text-[#DC2626] text-xs mt-1.5">{errors.qualification}</p>}
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#1A1A1A] mb-1.5">Experience (Years)</label>
+                    <input
+                      type="number"
+                      placeholder="e.g. 5"
+                      value={experience}
+                      onChange={(e) => {
+                        setExperience(e.target.value);
+                        if (errors.experience) setErrors((p: any) => ({ ...p, experience: undefined }));
+                      }}
+                      className={`w-full px-4 py-3.5 rounded-xl border text-base outline-none transition-colors min-h-[56px] ${
+                        errors.experience ? "border-[#DC2626]" : "border-[#E5E7EB] focus:border-[#0EA5E9]"
+                      }`}
+                    />
+                    {errors.experience && <p className="text-[#DC2626] text-xs mt-1.5">{errors.experience}</p>}
+                  </div>
+                </>
+              )}
             </div>
 
             {errors.submit && (

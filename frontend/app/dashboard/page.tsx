@@ -5,14 +5,15 @@ import {
   ClipboardCheck,
   Stethoscope,
   Leaf,
+  Calendar,
 } from "lucide-react";
 
 const SECTIONS = [
   {
-    title: "Conversation",
-    desc: "Answer health questions by voice or touch.",
-    icon: MessageSquare,
-    href: "/dashboard/conversation",
+    title: "Book Consultation",
+    desc: "Choose a doctor and slot to begin.",
+    icon: Calendar,
+    href: "/dashboard/book",
   },
   {
     title: "Documents",
@@ -25,19 +26,7 @@ const SECTIONS = [
     desc: "Review your compiled medical history.",
     icon: ClipboardCheck,
     href: "/dashboard/summary",
-  },
-  {
-    title: "Doctor dashboard",
-    desc: "For your treating physician.",
-    icon: Stethoscope,
-    href: "/dashboard/doctor",
-  },
-  {
-    title: "AYUSH mode",
-    desc: "Traditional medicine history-taking.",
-    icon: Leaf,
-    href: "/dashboard/ayush",
-  },
+  }
 ];
 
 export default function DashboardHome() {

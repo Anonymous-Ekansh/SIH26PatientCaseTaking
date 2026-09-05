@@ -10,17 +10,48 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
+    const { error, data: authData } = await supabase.auth.exchangeCodeForSession(code)
+    
+    if (!error && authData?.session?.user) {
+      const user = authData.session.user;
+      
+      // Determine where to route them based on if they are a patient or doctor
+      let finalNext = next;
+      if (next === '/onboarding/details' || next === '/') {
+        // Check patients first
+        const { data: patient } = await supabase
+          .from("patients")
+          .select("id")
+          .eq("auth_user_id", user.id)
+          .single();
+          
+        if (patient) {
+          finalNext = '/dashboard';
+        } else {
+          // Check doctors
+          const { data: doctor } = await supabase
+            .from("doctors")
+            .select("id")
+            .eq("auth_user_id", user.id)
+            .single();
+            
+          if (doctor) {
+            finalNext = '/doctor/dashboard';
+          } else {
+            finalNext = '/onboarding/details';
+          }
+        }
+      }
+
       const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === 'development'
       if (isLocalEnv) {
         // we can be sure that there is no load balancer in between, so no need to watch for X-Forwarded-Host
-        return NextResponse.redirect(`${origin}${next}`)
+        return NextResponse.redirect(`${origin}${finalNext}`)
       } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
+        return NextResponse.redirect(`https://${forwardedHost}${finalNext}`)
       } else {
-        return NextResponse.redirect(`${origin}${next}`)
+        return NextResponse.redirect(`${origin}${finalNext}`)
       }
     }
   }
