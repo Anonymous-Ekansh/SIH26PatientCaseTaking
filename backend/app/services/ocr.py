@@ -3,6 +3,9 @@
 
 import json
 import asyncio
+import io
+import zipfile
+import logging
 import httpx
 from app.config import SARVAM_API_KEY
 
@@ -167,13 +170,19 @@ async def call_sarvam_ocr(file_bytes: bytes, filename: str = "document.pdf") -> 
                     f"Failed to download OCR result: status {result_response.status_code}"
                 )
 
-            # Try to parse as JSON first
+            raw_bytes = result_response.content
+
+            # ── Handle ZIP archive responses ──
+            # Sarvam returns results as a ZIP containing JSON files
+            if raw_bytes[:2] == b"PK":
+                return _extract_text_from_zip(raw_bytes)
+
+            # Try to parse as JSON
             try:
                 result_data = result_response.json()
                 text = _extract_text_from_response(result_data)
                 if text:
                     return text
-                # If we can't extract text, return the raw JSON as text
                 return json.dumps(result_data, indent=2)
             except (json.JSONDecodeError, ValueError):
                 # It's plain text
@@ -181,6 +190,52 @@ async def call_sarvam_ocr(file_bytes: bytes, filename: str = "document.pdf") -> 
 
         # Fallback: return raw response as JSON string
         return json.dumps(dl_data, indent=2)
+
+
+def _extract_text_from_zip(zip_bytes: bytes) -> str:
+    """
+    Extract OCR text from a ZIP archive returned by Sarvam.
+    The ZIP typically contains JSON files with the OCR results.
+    """
+    logger = logging.getLogger(__name__)
+    
+    try:
+        with zipfile.ZipFile(io.BytesIO(zip_bytes)) as zf:
+            all_texts = []
+            
+            for name in zf.namelist():
+                logger.warning(f"[OCR-ZIP] Found file in ZIP: {name}")
+                
+                if name.endswith(".json"):
+                    with zf.open(name) as f:
+                        try:
+                            data = json.loads(f.read().decode("utf-8"))
+                            logger.warning(f"[OCR-ZIP] JSON keys: {list(data.keys()) if isinstance(data, dict) else type(data).__name__}")
+                            
+                            text = _extract_text_from_response(data)
+                            if text:
+                                all_texts.append(text)
+                            else:
+                                # Dump the whole JSON as text so Groq can still try
+                                all_texts.append(json.dumps(data, indent=2, ensure_ascii=False))
+                        except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                            logger.warning(f"[OCR-ZIP] Failed to parse {name}: {e}")
+                            continue
+                
+                elif name.endswith((".txt", ".md")):
+                    with zf.open(name) as f:
+                        all_texts.append(f.read().decode("utf-8", errors="replace"))
+            
+            if all_texts:
+                combined = "\n\n".join(all_texts)
+                logger.warning(f"[OCR-ZIP] Extracted text length: {len(combined)}")
+                logger.warning(f"[OCR-ZIP] Text preview: {combined[:300]}")
+                return combined
+            
+            raise OCRError("ZIP archive contained no readable text or JSON files")
+    
+    except zipfile.BadZipFile as e:
+        raise OCRError(f"Invalid ZIP file from Sarvam: {str(e)}")
 
 
 def _extract_text_from_response(data) -> str | None:
