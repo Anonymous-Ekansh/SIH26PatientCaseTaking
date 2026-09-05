@@ -20,7 +20,7 @@ client = OpenAI(
     api_key=CONVERSATION_GROQ_API_KEY,
 )
 
-MODEL_NAME = "qwen-2.5-32b"  # Groq's qwen model (or you can use llama-3.1-8b-instant for speed)
+MODEL_NAME = "llama-3.1-8b-instant"
 
 # Which history section comes after the one just captured. None = last one,
 # moves on to the final safety check instead of another open section.
