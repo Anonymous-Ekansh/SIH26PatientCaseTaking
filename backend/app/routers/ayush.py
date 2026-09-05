@@ -4,12 +4,9 @@ from typing import Dict, Any
 from app.data.ayush_questions import AYUSH_QUESTIONS, compute_vaya_category
 import os
 from supabase import create_client, Client
+from app.config import SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
 router = APIRouter(tags=["ayush"])
-
-# Initialize Supabase client
-SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
 if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
     supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
@@ -34,26 +31,41 @@ def submit_ayush_assessment(submission: AyushSubmission):
     for q in AYUSH_QUESTIONS:
         if q["id"] not in answers:
             continue
-        if q["section"] == "Prakriti":
-            for option in q.get("options", []):
-                if option["value"] == answers[q["id"]]:
-                    dosha_score[option["dosha"]] += 1
+            
+        ans = answers[q["id"]]
+        ans_list = ans if isinstance(ans, list) else [ans]
+        
+        # Determine if this question informs Prakriti (either as primary section or in also_informs)
+        informs_prakriti = q["section"] == "Prakriti" or ("also_informs" in q and "Prakriti" in q["also_informs"])
+        
+        if informs_prakriti:
+            for val in ans_list:
+                for option in q.get("options", []):
+                    if option["value"] == val and "dosha" in option:
+                        dosha_score[option["dosha"]] += 1
+                        
         if q.get("requires_physical_exam"):
             pending_physical_exam.append(q["id"])
 
     # Determine dominant dosha (or mixed if scores are equal, but simple max for now)
-    dominant = max(dosha_score, key=dosha_score.get)
+    dominant = max(dosha_score, key=dosha_score.get) if any(dosha_score.values()) else "unknown"
 
     bmi = None
     if "height" in answers and "weight" in answers:
         try:
             height_m = float(answers["height"]) / 100
             bmi = round(float(answers["weight"]) / (height_m ** 2), 1)
-        except (ValueError, ZeroDivisionError):
+        except (ValueError, ZeroDivisionError, TypeError):
             pass
 
     # Vaya calculation (default to 30 if age not explicitly provided)
-    vaya = compute_vaya_category(int(answers.get("age", 30)))
+    age = answers.get("age")
+    try:
+        age_int = int(age) if age is not None else 30
+    except (ValueError, TypeError):
+        age_int = 30
+    
+    vaya = compute_vaya_category(age_int)
 
     result = {
         "prakriti_scores": dosha_score,
@@ -94,5 +106,7 @@ def submit_ayush_assessment(submission: AyushSubmission):
         except Exception as e:
             print(f"Error saving AYUSH assessment to Supabase: {e}")
             # We don't fail the request if saving fails, but log it
+    else:
+        print("Supabase client not initialized, cannot save AYUSH assessment.")
 
     return result

@@ -33,6 +33,7 @@ export default function AyushPage() {
   
   // Current input state
   const [currentTextResponse, setCurrentTextResponse] = useState("");
+  const [multiSelectValues, setMultiSelectValues] = useState<string[]>([]);
 
   const supabase = createClient();
   const languageName = language === "hi" ? "Hindi (India)" : "English (English (IN))";
@@ -132,12 +133,20 @@ export default function AyushPage() {
   const handleNext = async (val?: any) => {
     if (!currentQ) return;
     
-    let finalValue = val !== undefined ? val : currentTextResponse;
-    if (finalValue === "" && currentQ.type !== "options") return; // Require answer if typed
+    let finalValue = val;
+    if (val === undefined) {
+      if (currentQ.multi_select) {
+        finalValue = multiSelectValues;
+      } else {
+        finalValue = currentTextResponse;
+        if (finalValue === "" && currentQ.type !== "options") return; // Require answer if typed
+      }
+    }
 
     const newAnswers = { ...answers, [currentQ.id]: finalValue };
     setAnswers(newAnswers);
     setCurrentTextResponse("");
+    setMultiSelectValues([]);
 
     if (currentIndex < questions.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -248,16 +257,56 @@ export default function AyushPage() {
               </h2>
 
               {currentQ.options ? (
-                <div className="flex flex-col gap-3">
-                  {currentQ.options.map((opt: any) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => handleNext(opt.value)}
-                      className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 transition-all font-medium text-gray-700"
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-3">
+                    {currentQ.options.map((opt: any) => {
+                      const isSelected = multiSelectValues.includes(opt.value);
+                      return (
+                        <button
+                          key={opt.value}
+                          onClick={() => {
+                            if (currentQ.multi_select) {
+                              setMultiSelectValues(prev => 
+                                isSelected ? prev.filter(v => v !== opt.value) : [...prev, opt.value]
+                              );
+                            } else {
+                              handleNext(opt.value);
+                            }
+                          }}
+                          className={`w-full text-left p-4 rounded-xl border transition-all font-medium ${
+                            isSelected 
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-800' 
+                              : 'border-gray-200 hover:border-emerald-500 hover:bg-emerald-50 text-gray-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>{opt.label}</span>
+                            {currentQ.multi_select && (
+                              <div className={`w-5 h-5 rounded border flex items-center justify-center ${isSelected ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
+                                {isSelected && <CheckCircle size={14} className="text-white" />}
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {currentQ.multi_select && (
+                    <div className="flex justify-end pt-2">
+                      <button
+                        onClick={() => handleNext()}
+                        disabled={isLoading}
+                        className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-bold text-sm transition-all ${
+                          !isLoading
+                            ? "bg-emerald-500 text-white hover:bg-emerald-600 shadow-sm"
+                            : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        }`}
+                      >
+                        <span>{isLoading ? "Saving..." : "Next"}</span>
+                        <Send size={16} className={!isLoading ? "text-white" : "text-gray-400"} />
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
