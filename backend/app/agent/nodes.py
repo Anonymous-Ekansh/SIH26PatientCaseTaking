@@ -1,11 +1,10 @@
 import json
-import os
 import time
 from typing import Optional, Tuple
 
-from dotenv import load_dotenv
 from openai import OpenAI, RateLimitError
 from langgraph.types import interrupt
+from app.config import GROQ_API_KEY
 
 from .state import (
     InterviewState,
@@ -16,14 +15,12 @@ from .state import (
     get_next_missing_hpi_field,
 )
 
-load_dotenv()
-
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1",
-    api_key=os.environ["GROQ_API_KEY"],
+    api_key=GROQ_API_KEY,
 )
 
-MODEL_NAME = "qwen/qwen3.8-27b"
+MODEL_NAME = "qwen-2.5-32b"  # Groq's qwen model (or you can use llama-3.1-8b-instant for speed)
 
 # Which history section comes after the one just captured. None = last one,
 # moves on to the final safety check instead of another open section.

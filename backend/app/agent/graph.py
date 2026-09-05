@@ -72,7 +72,7 @@ def _extract_next_step(result: dict) -> dict:
     return {"paused": False, "final_state": result}
 
 
-def start_interview(encounter_id: str, user_id: str) -> dict:
+def start_interview(encounter_id: str, user_id: str = "test-user") -> dict:
     config = {"configurable": {"thread_id": encounter_id}}
     result = graph.invoke(initial_state(), config=config)
     step = _extract_next_step(result)
@@ -80,7 +80,7 @@ def start_interview(encounter_id: str, user_id: str) -> dict:
     return step
 
 
-def submit_answer(encounter_id: str, user_id: str, answer: str) -> dict:
+def submit_answer(encounter_id: str, answer: str, user_id: str = "test-user") -> dict:
     config = {"configurable": {"thread_id": encounter_id}}
     result = graph.invoke(Command(resume=answer), config=config)
     step = _extract_next_step(result)
