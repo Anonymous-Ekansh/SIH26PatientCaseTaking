@@ -8,7 +8,8 @@ import {
   Stethoscope, 
   Activity, 
   Pill, 
-  AlertTriangle 
+  AlertTriangle,
+  Leaf
 } from "lucide-react";
 
 export default function SummaryPage() {
@@ -17,6 +18,7 @@ export default function SummaryPage() {
   
   const [conversation, setConversation] = useState<any>(null);
   const [documents, setDocuments] = useState<any[]>([]);
+  const [ayushData, setAyushData] = useState<any>(null);
 
   const supabase = createClient();
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -72,6 +74,16 @@ export default function SummaryPage() {
           setDocuments(docs);
         }
 
+        // 5. Fetch AYUSH data
+        const { data: ayush } = await supabase
+          .from("ayush_assessments")
+          .select("*")
+          .eq("encounter_id", encounterId)
+          .single();
+        if (ayush) {
+          setAyushData(ayush);
+        }
+
       } catch (err: any) {
         console.error(err);
         setError(err.message);
@@ -109,7 +121,7 @@ export default function SummaryPage() {
   const investigations = allEntities.filter(e => e.entity_type === "lab_value");
   const procedures = allEntities.filter(e => e.entity_type === "procedure");
 
-  const hasData = conversation?.chief_complaint || allEntities.length > 0;
+  const hasData = conversation?.chief_complaint || allEntities.length > 0 || ayushData;
 
   if (!hasData) {
     return (
@@ -203,6 +215,54 @@ export default function SummaryPage() {
                 <p className="text-gray-700 text-sm">{conversation.state?.family_history || "None"}</p>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* AYUSH SECTION */}
+      {ayushData && (
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+          <div className="bg-emerald-50/50 border-b border-gray-100 px-6 py-4 flex items-center gap-3">
+            <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
+              <Leaf size={20} />
+            </div>
+            <h2 className="text-lg font-bold text-gray-800">Ayurvedic Assessment (Prakriti)</h2>
+          </div>
+          
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Dominant Dosha</h3>
+                <p className="text-gray-800 font-bold text-2xl capitalize text-emerald-600">
+                  {ayushData.dominant_prakriti}
+                </p>
+                <div className="flex gap-4 mt-2">
+                  <span className="text-sm font-semibold text-gray-600">Vata: {ayushData.prakriti_scores?.vata || 0}</span>
+                  <span className="text-sm font-semibold text-gray-600">Pitta: {ayushData.prakriti_scores?.pitta || 0}</span>
+                  <span className="text-sm font-semibold text-gray-600">Kapha: {ayushData.prakriti_scores?.kapha || 0}</span>
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Vitals & Measurements</h3>
+                <div className="flex gap-6">
+                  <div>
+                    <span className="block text-xs text-gray-500">BMI</span>
+                    <span className="font-semibold text-gray-800">{ayushData.bmi || "N/A"}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs text-gray-500">Age Stage (Vaya)</span>
+                    <span className="font-semibold text-gray-800 capitalize">{ayushData.vaya_category}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {ayushData.pending_physical_exam_fields && ayushData.pending_physical_exam_fields.length > 0 && (
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                <h3 className="text-sm font-bold text-amber-800 mb-1">Patient-reported, pending physical exam</h3>
+                <p className="text-xs text-amber-700">The following parameters require doctor confirmation: <span className="font-medium capitalize">{ayushData.pending_physical_exam_fields.join(", ").replace(/_/g, " ")}</span></p>
+              </div>
+            )}
           </div>
         </div>
       )}

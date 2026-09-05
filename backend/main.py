@@ -1,7 +1,7 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import documents, conversation
+from app.routers import documents, conversation, ayush
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -19,6 +19,7 @@ app.add_middleware(
 # Include routers
 app.include_router(documents.router, prefix="/api/documents")
 app.include_router(conversation.router, prefix="/api/conversation")
+app.include_router(ayush.router, prefix="/api/ayush")
 
 @app.get("/")
 def read_root():
