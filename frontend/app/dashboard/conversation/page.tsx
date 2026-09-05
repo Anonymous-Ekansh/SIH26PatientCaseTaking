@@ -34,6 +34,9 @@ export default function ConversationPage() {
   const [redFlagReasons, setRedFlagReasons] = useState<string[]>([]);
   const [progress, setProgress] = useState(0);
 
+  // ASR State
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+
   const supabase = createClient();
 
   // Derive language display name
@@ -71,6 +74,100 @@ export default function ConversationPage() {
 
     startConversation();
   }, []);
+
+  // --- TTS LOGIC ---
+  const playAudio = async (textToPlay: string) => {
+    try {
+      const res = await fetch(`${getApiUrl()}/api/conversation/tts`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textToPlay }),
+      });
+      
+      if (!res.ok) throw new Error("TTS failed");
+      
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isListening && question && question !== "Loading..." && !question.startsWith("Error")) {
+      playAudio(question);
+    }
+  }, [question, isListening]);
+
+  const handleListenToggle = () => {
+    const newState = !isListening;
+    setIsListening(newState);
+    if (newState && question && question !== "Loading..." && !question.startsWith("Error")) {
+      playAudio(question);
+    }
+  };
+
+  // --- ASR LOGIC ---
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = [];
+      
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: "audio/wav" });
+        await transcribeAudio(audioBlob);
+      };
+      
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsSpeaking(true);
+    } catch (err) {
+      console.error("Failed to start recording:", err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      setIsSpeaking(false);
+    }
+  };
+
+  const transcribeAudio = async (blob: Blob) => {
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("audio", blob, "recording.wav");
+      
+      const res = await fetch(`${getApiUrl()}/api/conversation/asr`, {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!res.ok) throw new Error("STT failed");
+      const data = await res.json();
+      if (data.text) {
+        setResponse((prev) => prev ? prev + " " + data.text : data.text);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSpeakToggle = () => {
+    if (isSpeaking) {
+      stopRecording();
+    } else {
+      startRecording();
+    }
+  };
 
   const handleAgentStep = (step: any) => {
     if (step.paused) {
@@ -201,7 +298,7 @@ export default function ConversationPage() {
                 CURRENT QUESTION
               </span>
               <button
-                onClick={() => setIsListening(!isListening)}
+                onClick={handleListenToggle}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-semibold transition-colors border ${
                   isListening
                     ? "bg-sky-50 text-sky-700 border-sky-200"
@@ -209,7 +306,7 @@ export default function ConversationPage() {
                 }`}
               >
                 <Volume2 size={16} />
-                <span>Listen</span>
+                <span>{isListening ? "Listening..." : "Listen"}</span>
               </button>
             </div>
             <h2 className={`text-xl md:text-2xl font-bold text-gray-800 ${isLoading ? 'animate-pulse text-gray-400' : ''}`}>
@@ -235,16 +332,16 @@ export default function ConversationPage() {
 
             <div className="flex items-center justify-between pt-2 border-t border-gray-100">
               <button
-                onClick={() => setIsSpeaking(!isSpeaking)}
+                onClick={handleSpeakToggle}
                 disabled={isLoading}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-colors border ${
                   isSpeaking
-                    ? "bg-red-50 text-red-600 border-red-200"
+                    ? "bg-red-50 text-red-600 border-red-200 animate-pulse"
                     : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 disabled:opacity-50"
                 }`}
               >
                 <Mic size={18} />
-                <span>Speak</span>
+                <span>{isSpeaking ? "Stop Speaking" : "Speak"}</span>
               </button>
 
               <button

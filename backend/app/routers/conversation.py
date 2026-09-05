@@ -130,3 +130,35 @@ def get_conversation_state(encounter_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+from fastapi import UploadFile, File, Response
+from pydantic import BaseModel
+from app.services.speech import sarvam_tts, sarvam_asr
+
+class TTSRequest(BaseModel):
+    text: str
+
+@router.post("/tts")
+async def generate_tts(req: TTSRequest):
+    """Generate text-to-speech audio."""
+    try:
+        audio_bytes = await sarvam_tts(req.text)
+        return Response(content=audio_bytes, media_type="audio/wav")
+    except Exception as e:
+        import traceback
+        err_msg = traceback.format_exc()
+        print(f"ERROR IN /tts:\n{err_msg}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/asr")
+async def transcribe_asr(audio: UploadFile = File(...)):
+    """Transcribe speech-to-text."""
+    try:
+        audio_bytes = await audio.read()
+        transcript = await sarvam_asr(audio_bytes)
+        return {"text": transcript}
+    except Exception as e:
+        import traceback
+        err_msg = traceback.format_exc()
+        print(f"ERROR IN /asr:\n{err_msg}")
+        raise HTTPException(status_code=500, detail=str(e))
