@@ -68,13 +68,15 @@ export default function AyushPage() {
             .from("encounters")
             .select("id")
             .eq("patient_id", patientData.id)
-            .eq("status", "in_progress")
             .order("created_at", { ascending: false })
             .limit(1)
             .single();
             
           if (encounterData) {
             setEncounterId(encounterData.id);
+          } else {
+            // If no encounter exists, we could create one or handle it.
+            // But let's assume they should have one.
           }
         }
 
@@ -159,12 +161,16 @@ export default function AyushPage() {
   const submitAssessment = async (finalAnswers: any) => {
     setIsLoading(true);
     try {
+      if (!encounterId || !patientId) {
+        throw new Error("No active patient or encounter found. Please start a conversation first.");
+      }
+
       await fetch(`${getApiUrl()}/api/ayush/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          encounter_id: encounterId || "test-encounter",
-          patient_id: patientId || "test-patient",
+          encounter_id: encounterId,
+          patient_id: patientId,
           answers: finalAnswers
         }),
       });
