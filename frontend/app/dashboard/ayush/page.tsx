@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createClient } from "../../../lib/supabase/client";
+import { createClient } from "../../lib/supabase/client";
 import {
   ArrowLeft,
   Shield,
@@ -14,7 +14,7 @@ import {
   Send,
   CheckCircle,
 } from "lucide-react";
-import { useLanguage } from "../../../lib/language-context";
+import { useLanguage } from "../../lib/language-context";
 
 export default function AyushPage() {
   const { language } = useLanguage();
