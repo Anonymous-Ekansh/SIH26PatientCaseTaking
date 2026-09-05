@@ -1,10 +1,15 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/app/lib/supabase/client";
 import {
   MessageSquare,
   FileText,
   ClipboardCheck,
   Leaf,
   Calendar,
+  LogOut
 } from "lucide-react";
 
 const SECTIONS = [
@@ -41,8 +46,26 @@ const SECTIONS = [
 ];
 
 export default function DashboardHome() {
+  const router = useRouter();
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
   return (
     <div className="max-w-[1100px] mx-auto px-5 py-10">
+      <div className="flex justify-end mb-4">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 bg-red-50 px-4 py-2 rounded-lg transition-colors"
+        >
+          <LogOut size={16} />
+          Sign out
+        </button>
+      </div>
+
       <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2 text-center">
         Welcome to MediKiosk
       </h1>
