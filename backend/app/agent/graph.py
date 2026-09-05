@@ -72,11 +72,18 @@ def _extract_next_step(result: dict) -> dict:
     return {"paused": False, "final_state": result}
 
 
+def get_clean_state(result: dict) -> dict:
+    """Remove non-serializable LangGraph internals before saving to DB."""
+    clean = dict(result)
+    clean.pop("__interrupt__", None)
+    return clean
+
+
 def start_interview(encounter_id: str, user_id: str = "test-user") -> dict:
     config = {"configurable": {"thread_id": encounter_id}}
     result = graph.invoke(initial_state(), config=config)
     step = _extract_next_step(result)
-    save_conversation_state(encounter_id, user_id, step.get("final_state", result))
+    save_conversation_state(encounter_id, user_id, get_clean_state(result))
     return step
 
 
@@ -84,5 +91,5 @@ def submit_answer(encounter_id: str, answer: str, user_id: str = "test-user") ->
     config = {"configurable": {"thread_id": encounter_id}}
     result = graph.invoke(Command(resume=answer), config=config)
     step = _extract_next_step(result)
-    save_conversation_state(encounter_id, user_id, step.get("final_state", result))
+    save_conversation_state(encounter_id, user_id, get_clean_state(result))
     return step
