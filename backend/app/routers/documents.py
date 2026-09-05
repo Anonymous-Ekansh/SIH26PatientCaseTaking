@@ -1,5 +1,6 @@
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Path
 from enum import Enum
+from typing import List
 
 from app.supabase_client import supabase
 from app.services.ocr import call_sarvam_ocr, OCRError
@@ -7,34 +8,21 @@ from app.services.extraction import extract_entities, ExtractionError
 
 router = APIRouter(tags=["documents"])
 
-
 class DocType(str, Enum):
     prescription = "prescription"
     lab_report = "lab_report"
     discharge_summary = "discharge_summary"
     other = "other"
 
-
 @router.post("/upload")
 async def upload_document(
     file: UploadFile = File(...),
-    patient_id: str = Form(..., description="Supabase auth_user_id (UUID)"),
-    encounter_id: str = Form(...),
+    auth_user_id: str = Form(..., description="Supabase auth_user_id (UUID)"),
     doc_type: DocType = Form(...),
 ):
     """
     Upload a document and run the full OCR + entity extraction pipeline.
-
-    Steps:
-    1. Upload raw file to Supabase Storage bucket "patient-documents".
-    2. Look up internal patient ID from auth_user_id.
-    3. Insert a row into the "documents" table with ocr_status="processing".
-    4. Call Sarvam OCR to extract raw text.
-    5. Call Groq LLM to extract structured clinical entities.
-    6. Insert extracted entities into the "extracted_entities" table.
-    7. Update document ocr_status to "done" (or "failed" on error).
     """
-
     document_id = None
 
     try:
@@ -42,10 +30,52 @@ async def upload_document(
         file_bytes = await file.read()
         filename = file.filename or "document"
 
-        # --- 1. Upload raw file to Supabase Storage ---
-        storage_path = f"{patient_id}/encounters/{encounter_id}/raw/{filename}"
+        # --- Look up internal patient ID ---
+        patient_result = (
+            supabase.table("patients")
+            .select("id")
+            .eq("auth_user_id", auth_user_id)
+            .maybe_single()
+            .execute()
+        )
 
-        # Determine content type
+        if not patient_result.data:
+            raise HTTPException(
+                status_code=404,
+                detail="Patient must complete onboarding first.",
+            )
+
+        internal_patient_id = patient_result.data["id"]
+
+        # --- Look up or create in_progress encounter ---
+        encounter_result = (
+            supabase.table("encounters")
+            .select("id")
+            .eq("patient_id", internal_patient_id)
+            .eq("status", "in_progress")
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+
+        if encounter_result.data and len(encounter_result.data) > 0:
+            encounter_id = encounter_result.data[0]["id"]
+        else:
+            new_encounter = (
+                supabase.table("encounters")
+                .insert({
+                    "patient_id": internal_patient_id,
+                    "status": "in_progress",
+                    "mode": "allopathic"
+                })
+                .execute()
+            )
+            if not new_encounter.data:
+                raise HTTPException(status_code=500, detail="Failed to create encounter.")
+            encounter_id = new_encounter.data[0]["id"]
+
+        # --- Upload raw file to Supabase Storage ---
+        storage_path = f"{auth_user_id}/encounters/{encounter_id}/raw/{filename}"
         content_type = file.content_type or "application/octet-stream"
 
         upload_result = supabase.storage.from_("patient-documents").upload(
@@ -54,24 +84,7 @@ async def upload_document(
             file_options={"content-type": content_type},
         )
 
-        # --- 2. Look up internal patient ID ---
-        patient_result = (
-            supabase.table("patients")
-            .select("id")
-            .eq("auth_user_id", patient_id)
-            .single()
-            .execute()
-        )
-
-        if not patient_result.data:
-            raise HTTPException(
-                status_code=404,
-                detail=f"No patient found with auth_user_id={patient_id}",
-            )
-
-        internal_patient_id = patient_result.data["id"]
-
-        # --- 3. Insert into documents table ---
+        # --- Insert into documents table ---
         doc_insert = (
             supabase.table("documents")
             .insert(
@@ -94,13 +107,13 @@ async def upload_document(
 
         document_id = doc_insert.data[0]["id"]
 
-        # --- 4. Call Sarvam OCR ---
+        # --- Call Sarvam OCR ---
         raw_text = await call_sarvam_ocr(file_bytes, filename)
 
-        # --- 5. Call Groq LLM extraction ---
+        # --- Call Groq LLM extraction ---
         entities = await extract_entities(raw_text)
 
-        # --- 6. Insert extracted entities ---
+        # --- Insert extracted entities ---
         if entities:
             entity_rows = [
                 {
@@ -114,48 +127,85 @@ async def upload_document(
                 }
                 for entity in entities
             ]
-
             supabase.table("extracted_entities").insert(entity_rows).execute()
 
-        # --- 7. Update document status to "done" ---
+        # --- Update document status to "done" ---
         supabase.table("documents").update({"ocr_status": "done"}).eq(
             "id", document_id
         ).execute()
 
         return {
             "document_id": document_id,
-            "ocr_status": "done",
+            "encounter_id": encounter_id,
+            "storage_path": storage_path,
             "extracted_entities": entities,
         }
 
     except OCRError as e:
-        # OCR failed — mark document as failed if we have a document_id
         if document_id:
-            supabase.table("documents").update({"ocr_status": "failed"}).eq(
-                "id", document_id
-            ).execute()
-        raise HTTPException(status_code=502, detail=f"OCR processing failed: {str(e)}")
+            supabase.table("documents").update({"ocr_status": "failed"}).eq("id", document_id).execute()
+        raise HTTPException(status_code=500, detail=f"OCR processing failed: {str(e)}")
 
     except ExtractionError as e:
-        # Extraction failed — mark document as failed
         if document_id:
-            supabase.table("documents").update({"ocr_status": "failed"}).eq(
-                "id", document_id
-            ).execute()
-        raise HTTPException(
-            status_code=502, detail=f"Entity extraction failed: {str(e)}"
-        )
+            supabase.table("documents").update({"ocr_status": "failed"}).eq("id", document_id).execute()
+        raise HTTPException(status_code=500, detail=f"Entity extraction failed: {str(e)}")
 
     except HTTPException:
-        # Re-raise HTTP exceptions as-is
         raise
 
     except Exception as e:
-        # Catch-all — mark document as failed
         if document_id:
-            supabase.table("documents").update({"ocr_status": "failed"}).eq(
-                "id", document_id
-            ).execute()
-        raise HTTPException(
-            status_code=500, detail=f"Unexpected error during processing: {str(e)}"
+            supabase.table("documents").update({"ocr_status": "failed"}).eq("id", document_id).execute()
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+
+@router.get("/by-patient/{auth_user_id}")
+def get_documents_by_patient(auth_user_id: str = Path(...)):
+    """
+    Get all documents and extracted entities for the patient's current in-progress encounter.
+    """
+    try:
+        # 1. Get internal patient id
+        patient_result = (
+            supabase.table("patients")
+            .select("id")
+            .eq("auth_user_id", auth_user_id)
+            .maybe_single()
+            .execute()
         )
+        if not patient_result.data:
+            raise HTTPException(status_code=404, detail="Patient not found.")
+        
+        internal_patient_id = patient_result.data["id"]
+
+        # 2. Get active encounter
+        encounter_result = (
+            supabase.table("encounters")
+            .select("id")
+            .eq("patient_id", internal_patient_id)
+            .eq("status", "in_progress")
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        if not encounter_result.data or len(encounter_result.data) == 0:
+            return [] # No active encounter, no documents
+
+        encounter_id = encounter_result.data[0]["id"]
+
+        # 3. Get documents with entities
+        docs_result = (
+            supabase.table("documents")
+            .select("*, extracted_entities(*)")
+            .eq("encounter_id", encounter_id)
+            .order("uploaded_at", desc=True)
+            .execute()
+        )
+        
+        return docs_result.data
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

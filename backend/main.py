@@ -4,10 +4,10 @@ from app.routers import documents
 
 app = FastAPI(title="Hospital Kiosk Backend")
 
-# Enable CORS for all origins for now (restrict later)
+# Configure CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://medikiosk-sih26.vercel.app", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
