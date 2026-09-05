@@ -136,17 +136,35 @@ export default function BookConsultation() {
         return;
       }
       
-      // 2. Create encounter
-      const { data: encounter, error: encErr } = await supabase
+      // 2. Check for existing encounter
+      let activeEncounterId = null;
+      let shouldRetakeHistory = false;
+      
+      const { data: existingEncounter } = await supabase
         .from("encounters")
-        .insert({
-          patient_id: patientId,
-          status: "in_progress"
-        })
-        .select()
+        .select("id")
+        .eq("patient_id", patientId)
+        .order("created_at", { ascending: false })
+        .limit(1)
         .single();
         
-      if (encErr) throw encErr;
+      if (existingEncounter) {
+        activeEncounterId = existingEncounter.id;
+      } else {
+        // Create new encounter
+        const { data: newEncounter, error: encErr } = await supabase
+          .from("encounters")
+          .insert({
+            patient_id: patientId,
+            status: "in_progress"
+          })
+          .select()
+          .single();
+          
+        if (encErr) throw encErr;
+        activeEncounterId = newEncounter.id;
+        shouldRetakeHistory = true;
+      }
 
       // 3. Create booking
       const { error: bookErr } = await supabase
@@ -155,17 +173,22 @@ export default function BookConsultation() {
           patient_id: patientId,
           doctor_id: selectedDoctor.id,
           slot_id: selectedSlot.id,
-          encounter_id: encounter.id,
+          encounter_id: activeEncounterId,
           status: "booked"
         });
         
       if (bookErr) throw bookErr;
 
-      // 4. Redirect to history taking
-      if (system === "ayurveda") {
-        router.push("/dashboard/ayush");
+      // 4. Redirect
+      if (shouldRetakeHistory) {
+        if (system === "ayurveda") {
+          router.push("/dashboard/ayush");
+        } else {
+          router.push("/dashboard/conversation");
+        }
       } else {
-        router.push("/dashboard/conversation");
+        alert("Booking confirmed! The doctor will review your existing summary.");
+        router.push("/dashboard/summary");
       }
 
     } catch (err) {

@@ -40,12 +40,11 @@ export default function SummaryPage() {
           throw new Error("Patient profile not found.");
         }
 
-        // 2. Fetch active encounter
+        // 2. Fetch latest active encounter
         const { data: encounterData, error: encounterError } = await supabase
           .from("encounters")
           .select("id")
           .eq("patient_id", patientData.id)
-          .eq("status", "in_progress")
           .order("created_at", { ascending: false })
           .limit(1)
           .single();

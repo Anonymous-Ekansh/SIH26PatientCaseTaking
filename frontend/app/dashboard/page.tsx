@@ -3,7 +3,6 @@ import {
   MessageSquare,
   FileText,
   ClipboardCheck,
-  Stethoscope,
   Leaf,
   Calendar,
 } from "lucide-react";
@@ -32,12 +31,6 @@ const SECTIONS = [
     desc: "Review your compiled medical history.",
     icon: ClipboardCheck,
     href: "/dashboard/summary",
-  },
-  {
-    title: "Doctor dashboard",
-    desc: "For your treating physician.",
-    icon: Stethoscope,
-    href: "/dashboard/doctor",
   },
   {
     title: "AYUSH mode",
