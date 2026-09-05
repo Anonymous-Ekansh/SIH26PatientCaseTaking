@@ -186,12 +186,11 @@ def get_documents_by_patient(auth_user_id: str = Path(...)):
         
         internal_patient_id = patient_result.data["id"]
 
-        # 2. Get active encounter
+        # 2. Get latest encounter (regardless of status)
         encounter_result = (
             supabase.table("encounters")
             .select("id")
             .eq("patient_id", internal_patient_id)
-            .eq("status", "in_progress")
             .order("created_at", desc=True)
             .limit(1)
             .execute()
