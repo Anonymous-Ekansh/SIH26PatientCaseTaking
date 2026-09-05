@@ -20,7 +20,7 @@ client = OpenAI(
     api_key=CONVERSATION_GROQ_API_KEY,
 )
 
-MODEL_NAME = "llama-3.1-8b-instant"
+MODEL_NAME = "qwen/qwen3.8-27b"
 
 # Which history section comes after the one just captured. None = last one,
 # moves on to the final safety check instead of another open section.
