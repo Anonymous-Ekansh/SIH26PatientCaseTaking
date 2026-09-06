@@ -54,18 +54,13 @@ export default function DoctorDashboard() {
         
         if (slotsData) setSlots(slotsData);
 
-        // 3. Fetch Bookings
-        const { data: bookingsData } = await supabase
-          .from("bookings")
-          .select(`
-            *,
-            patient:patient_id (name, phone),
-            slot:slot_id (date, start_time, end_time)
-          `)
-          .eq("doctor_id", doc.id)
-          .order("created_at", { ascending: false });
-          
-        if (bookingsData) setBookings(bookingsData);
+        // 3. Fetch Bookings via backend API (bypasses RLS)
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const bookingsRes = await fetch(`${apiUrl}/api/documents/doctor-bookings/${user.id}`);
+        if (bookingsRes.ok) {
+          const bookingsData = await bookingsRes.json();
+          setBookings(bookingsData);
+        }
 
       } catch (err) {
         console.error(err);
@@ -219,9 +214,9 @@ export default function DoctorDashboard() {
                 {bookings.map(booking => (
                   <div key={booking.id} className="border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white hover:border-gray-300 transition-colors">
                     <div>
-                      <h3 className="font-bold text-lg text-gray-900">{booking.patient?.name}</h3>
+                      <h3 className="font-bold text-lg text-gray-900">{booking.patients?.name || "Patient"}</h3>
                       <p className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                        <Calendar size={14} /> {booking.slot?.date} at {booking.slot?.start_time.substring(0,5)}
+                        <Calendar size={14} /> {booking.doctor_availability_slots?.date} at {booking.doctor_availability_slots?.start_time?.substring(0,5)}
                       </p>
                       <span className="inline-block mt-2 text-xs font-semibold px-2 py-1 rounded-md bg-blue-50 text-blue-700 uppercase">
                         {booking.status}

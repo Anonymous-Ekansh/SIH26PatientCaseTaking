@@ -276,3 +276,40 @@ def get_encounter_summary(encounter_id: str = Path(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/doctor-bookings/{doctor_auth_id}")
+def get_doctor_bookings(doctor_auth_id: str = Path(...)):
+    """
+    Get all bookings for a doctor, including patient info and slot info.
+    Uses service role to bypass RLS.
+    """
+    try:
+        # 1. Get doctor
+        doc_result = (
+            supabase.table("doctors")
+            .select("id")
+            .eq("auth_user_id", doctor_auth_id)
+            .maybe_single()
+            .execute()
+        )
+        if not doc_result.data:
+            raise HTTPException(status_code=404, detail="Doctor not found.")
+
+        doctor_id = doc_result.data["id"]
+
+        # 2. Get bookings with patient and slot info
+        bookings_result = (
+            supabase.table("bookings")
+            .select("*, patients(name, phone), doctor_availability_slots(date, start_time, end_time)")
+            .eq("doctor_id", doctor_id)
+            .order("created_at", desc=True)
+            .execute()
+        )
+
+        return bookings_result.data or []
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
