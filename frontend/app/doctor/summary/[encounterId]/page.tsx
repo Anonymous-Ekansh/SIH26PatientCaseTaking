@@ -14,6 +14,11 @@ export default function DoctorSummaryRedirect({ params }: { params: { encounterI
 
   useEffect(() => {
     async function resolve() {
+      if (!encounterId || encounterId === "undefined") {
+        setError("Invalid encounter ID. Please refresh your Doctor Dashboard and try again.");
+        setLoading(false);
+        return;
+      }
       try {
         // Use the encounter-summary endpoint to find the patient_id
         const res = await fetch(`${getApiUrl()}/api/documents/encounter-summary/${encounterId}`);
