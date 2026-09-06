@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClient } from "@/app/lib/supabase/client";
 import { 
   ClipboardCheck, 
   FileText, 
@@ -22,58 +21,34 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
   const [conversation, setConversation] = useState<any>(null);
   const [documents, setDocuments] = useState<any[]>([]);
   const [ayushData, setAyushData] = useState<any>(null);
+  const [patientName, setPatientName] = useState<string>("");
 
-  const supabase = createClient();
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     async function fetchSummaryData() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) throw new Error("Not authenticated");
-
-        // We don't fetch the active patient encounter. We just use the one passed in `encounterId`.
-        // However, we need to know the patientId to fetch documents. Let's get the encounter details.
-        const { data: encounterData, error: encounterError } = await supabase
-          .from("encounters")
-          .select("*, patient:patient_id (auth_user_id, name)")
-          .eq("id", encounterId)
-          .single();
-
-        if (encounterError || !encounterData) {
-          throw new Error("Encounter not found.");
+        // Use the backend API which uses service role — bypasses RLS
+        const res = await fetch(`${getApiUrl()}/api/documents/encounter-summary/${encounterId}`);
+        
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || "Failed to load encounter summary.");
         }
 
-        const patientAuthId = encounterData.patient?.auth_user_id;
+        const data = await res.json();
 
-        // Fetch conversation state for this encounter
-        const { data: convoData } = await supabase
-          .from("conversations")
-          .select("*")
-          .eq("encounter_id", encounterId)
-          .maybeSingle();
-          
-        if (convoData) {
-          setConversation(convoData);
+        if (data.conversation) {
+          setConversation(data.conversation);
         }
-
-        // Fetch documents and entities via backend API using the patient's auth ID
-        if (patientAuthId) {
-          const res = await fetch(`${getApiUrl()}/api/documents/by-patient/${patientAuthId}`);
-          if (res.ok) {
-            const docs = await res.json();
-            setDocuments(docs);
-          }
+        if (data.documents) {
+          setDocuments(data.documents);
         }
-
-        // Fetch AYUSH data
-        const { data: ayush } = await supabase
-          .from("ayush_assessments")
-          .select("*")
-          .eq("encounter_id", encounterId)
-          .maybeSingle();
-        if (ayush) {
-          setAyushData(ayush);
+        if (data.ayush) {
+          setAyushData(data.ayush);
+        }
+        if (data.encounter?.patients?.name) {
+          setPatientName(data.encounter.patients.name);
         }
 
       } catch (err: any) {
@@ -85,7 +60,7 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
     }
 
     fetchSummaryData();
-  }, []);
+  }, [encounterId]);
 
   if (loading) {
     return (
@@ -118,11 +93,14 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
   if (!hasData) {
     return (
       <div className="max-w-[700px] mx-auto px-5 py-10 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Your Clinical Summary</h1>
+        <Link href="/doctor/dashboard" className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium mb-6">
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Clinical Summary</h1>
         <div className="bg-gray-50 rounded-2xl p-10 border border-gray-200 flex flex-col items-center mt-8">
           <ClipboardCheck size={48} className="text-gray-300 mb-4" />
           <p className="text-gray-500 font-medium max-w-xs">
-            Your summary will appear here once your conversation and documents are processed.
+            The patient has not yet completed their history-taking or document upload.
           </p>
         </div>
       </div>
@@ -135,7 +113,9 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
         <ArrowLeft size={16} /> Back to Dashboard
       </Link>
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Clinical Summary</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
+          Clinical Summary {patientName ? `— ${patientName}` : ""}
+        </h1>
         <p className="text-gray-500 mt-1">A structured overview of the patient's medical history and uploaded records.</p>
       </div>
 

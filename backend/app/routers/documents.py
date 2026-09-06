@@ -215,3 +215,64 @@ def get_documents_by_patient(auth_user_id: str = Path(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/encounter-summary/{encounter_id}")
+def get_encounter_summary(encounter_id: str = Path(...)):
+    """
+    Get full summary data for an encounter: encounter details, conversation, documents+entities, ayush.
+    Uses backend service role — bypasses RLS so doctors can view patient data.
+    """
+    try:
+        # 1. Get encounter with patient info
+        encounter_result = (
+            supabase.table("encounters")
+            .select("*, patients(auth_user_id, name, phone, email)")
+            .eq("id", encounter_id)
+            .maybe_single()
+            .execute()
+        )
+        if not encounter_result.data:
+            raise HTTPException(status_code=404, detail="Encounter not found.")
+
+        encounter = encounter_result.data
+        patient_auth_id = encounter.get("patients", {}).get("auth_user_id")
+
+        # 2. Get conversation
+        convo_result = (
+            supabase.table("conversations")
+            .select("*")
+            .eq("encounter_id", encounter_id)
+            .maybe_single()
+            .execute()
+        )
+
+        # 3. Get documents with entities
+        docs_result = (
+            supabase.table("documents")
+            .select("*, extracted_entities(*)")
+            .eq("encounter_id", encounter_id)
+            .order("uploaded_at", desc=True)
+            .execute()
+        )
+
+        # 4. Get AYUSH assessment
+        ayush_result = (
+            supabase.table("ayush_assessments")
+            .select("*")
+            .eq("encounter_id", encounter_id)
+            .maybe_single()
+            .execute()
+        )
+
+        return {
+            "encounter": encounter,
+            "conversation": convo_result.data,
+            "documents": docs_result.data or [],
+            "ayush": ayush_result.data,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
