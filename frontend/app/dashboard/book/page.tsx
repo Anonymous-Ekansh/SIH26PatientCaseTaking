@@ -119,24 +119,18 @@ export default function BookConsultation() {
   };
 
   const handleBook = async () => {
-    if (!selectedSlot || !patientId || !selectedDoctor) return;
+    if (!selectedSlot || !selectedDoctor) return;
+    
+    if (!patientId) {
+      alert("Patient profile not found. Please complete onboarding first.");
+      router.push("/onboarding/details");
+      return;
+    }
+    
     setIsBooking(true);
     
     try {
-      // 1. Mark slot as booked
-      const { error: slotErr } = await supabase
-        .from("doctor_availability_slots")
-        .update({ status: "booked" })
-        .eq("id", selectedSlot.id)
-        .eq("status", "available"); // Ensure it's still available
-
-      if (slotErr) {
-        alert("This slot was just booked by someone else. Please select another.");
-        setIsBooking(false);
-        return;
-      }
-      
-      // 2. Check for existing encounter
+      // 1. Check for existing encounter or create one
       let activeEncounterId = null;
       let shouldRetakeHistory = false;
       
@@ -151,7 +145,6 @@ export default function BookConsultation() {
       if (existingEncounter) {
         activeEncounterId = existingEncounter.id;
       } else {
-        // Create new encounter
         const { data: newEncounter, error: encErr } = await supabase
           .from("encounters")
           .insert({
@@ -161,12 +154,15 @@ export default function BookConsultation() {
           .select()
           .single();
           
-        if (encErr) throw encErr;
+        if (encErr) {
+          console.error("Encounter creation failed:", encErr);
+          throw encErr;
+        }
         activeEncounterId = newEncounter.id;
         shouldRetakeHistory = true;
       }
 
-      // 3. Create booking
+      // 2. Create booking record
       const { error: bookErr } = await supabase
         .from("bookings")
         .insert({
@@ -177,7 +173,16 @@ export default function BookConsultation() {
           status: "booked"
         });
         
-      if (bookErr) throw bookErr;
+      if (bookErr) {
+        console.error("Booking insert failed:", bookErr);
+        throw bookErr;
+      }
+
+      // 3. Try to mark slot as booked (best-effort; may fail if RLS blocks it)
+      await supabase
+        .from("doctor_availability_slots")
+        .update({ status: "booked" })
+        .eq("id", selectedSlot.id);
 
       // 4. Redirect
       if (shouldRetakeHistory) {
@@ -191,9 +196,9 @@ export default function BookConsultation() {
         router.push("/dashboard/summary");
       }
 
-    } catch (err) {
-      console.error(err);
-      alert("Error booking consultation. Please try again.");
+    } catch (err: any) {
+      console.error("Booking error:", err);
+      alert(`Error booking consultation: ${err?.message || "Please try again."}`);
       setIsBooking(false);
     }
   };
