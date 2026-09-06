@@ -181,7 +181,7 @@ def get_documents_by_patient(auth_user_id: str = Path(...)):
             .maybe_single()
             .execute()
         )
-        if not patient_result.data:
+        if not patient_result or not patient_result.data:
             raise HTTPException(status_code=404, detail="Patient not found.")
         
         internal_patient_id = patient_result.data["id"]
@@ -195,7 +195,7 @@ def get_documents_by_patient(auth_user_id: str = Path(...)):
             .limit(1)
             .execute()
         )
-        if not encounter_result.data or len(encounter_result.data) == 0:
+        if not encounter_result or not encounter_result.data or len(encounter_result.data) == 0:
             return [] # No active encounter, no documents
 
         encounter_id = encounter_result.data[0]["id"]
@@ -232,7 +232,7 @@ def get_encounter_summary(encounter_id: str = Path(...)):
             .maybe_single()
             .execute()
         )
-        if not encounter_result.data:
+        if not encounter_result or not encounter_result.data:
             raise HTTPException(status_code=404, detail="Encounter not found.")
 
         encounter = encounter_result.data
@@ -267,9 +267,9 @@ def get_encounter_summary(encounter_id: str = Path(...)):
 
         return {
             "encounter": encounter,
-            "conversation": convo_result.data,
-            "documents": docs_result.data or [],
-            "ayush": ayush_result.data,
+            "conversation": convo_result.data if convo_result else None,
+            "documents": docs_result.data if docs_result else [],
+            "ayush": ayush_result.data if ayush_result else None,
         }
 
     except HTTPException:
@@ -293,7 +293,7 @@ def get_doctor_bookings(doctor_auth_id: str = Path(...)):
             .maybe_single()
             .execute()
         )
-        if not doc_result.data:
+        if not doc_result or not doc_result.data:
             raise HTTPException(status_code=404, detail="Doctor not found.")
 
         doctor_id = doc_result.data["id"]
@@ -307,7 +307,7 @@ def get_doctor_bookings(doctor_auth_id: str = Path(...)):
             .execute()
         )
 
-        return bookings_result.data or []
+        return bookings_result.data if bookings_result else []
 
     except HTTPException:
         raise
@@ -330,7 +330,7 @@ def get_patient_summary(patient_id: str = Path(...)):
             .maybe_single()
             .execute()
         )
-        if not patient_result.data:
+        if not patient_result or not patient_result.data:
             raise HTTPException(status_code=404, detail="Patient not found.")
 
         patient = patient_result.data
@@ -346,7 +346,7 @@ def get_patient_summary(patient_id: str = Path(...)):
             .execute()
         )
 
-        encounter_id = encounter_result.data["id"] if encounter_result.data else None
+        encounter_id = encounter_result.data["id"] if (encounter_result and encounter_result.data) else None
 
         conversation = None
         documents = []
@@ -361,7 +361,7 @@ def get_patient_summary(patient_id: str = Path(...)):
                 .maybe_single()
                 .execute()
             )
-            conversation = convo_result.data
+            conversation = convo_result.data if convo_result else None
 
             # 4. Get documents with entities
             docs_result = (
@@ -371,7 +371,7 @@ def get_patient_summary(patient_id: str = Path(...)):
                 .order("uploaded_at", desc=True)
                 .execute()
             )
-            documents = docs_result.data or []
+            documents = docs_result.data if docs_result else []
 
             # 5. Get AYUSH assessment
             ayush_result = (
@@ -381,7 +381,7 @@ def get_patient_summary(patient_id: str = Path(...)):
                 .maybe_single()
                 .execute()
             )
-            ayush = ayush_result.data
+            ayush = ayush_result.data if ayush_result else None
 
         return {
             "patient": patient,
