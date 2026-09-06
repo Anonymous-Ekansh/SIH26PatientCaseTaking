@@ -1,5 +1,7 @@
 # MediKiosk
 
+**Live Demo:** [https://medikiosk-sih26.vercel.app/](https://medikiosk-sih26.vercel.app/)
+
 AI-powered patient case-taking software for Indian OPDs, built for Smart India Hackathon 2026 (Problem Statement SIH26047, Ministry of Ayush / AIIA).
 
 ## The Problem
