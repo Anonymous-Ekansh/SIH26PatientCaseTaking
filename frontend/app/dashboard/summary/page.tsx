@@ -19,6 +19,7 @@ export default function SummaryPage() {
   const [conversation, setConversation] = useState<any>(null);
   const [documents, setDocuments] = useState<any[]>([]);
   const [ayushData, setAyushData] = useState<any>(null);
+  const [booking, setBooking] = useState<any>(null);
 
   const supabase = createClient();
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -81,6 +82,16 @@ export default function SummaryPage() {
           .maybeSingle();
         if (ayush) {
           setAyushData(ayush);
+        }
+
+        // 6. Fetch booking info for doctor notes
+        const { data: bookingData } = await supabase
+          .from("bookings")
+          .select("*, doctors(name), doctor_availability_slots(date, start_time)")
+          .eq("encounter_id", encounterId)
+          .maybeSingle();
+        if (bookingData) {
+          setBooking(bookingData);
         }
 
       } catch (err: any) {
@@ -154,6 +165,35 @@ export default function SummaryPage() {
                   <li key={i}>{reason}</li>
                 ))}
               </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DOCTOR NOTES SECTION */}
+      {conversation?.state?.doctor_notes && (
+        <div className="bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+          <div className="bg-amber-50 border-b border-amber-100 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-amber-100 p-2 rounded-lg text-amber-700">
+                <Stethoscope size={20} />
+              </div>
+              <h2 className="text-lg font-bold text-gray-800">Doctor&apos;s Notes</h2>
+            </div>
+            {booking?.doctors?.name && (
+              <div className="text-sm text-gray-500 font-medium text-right">
+                <div>Dr. {booking.doctors.name}</div>
+                {booking.doctor_availability_slots?.date && (
+                  <div className="text-xs text-gray-400 mt-0.5">
+                    {new Date(booking.doctor_availability_slots.date).toLocaleDateString()} at {booking.doctor_availability_slots.start_time}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="p-6">
+            <div className="whitespace-pre-wrap text-gray-700 text-sm/relaxed bg-amber-50/30 p-4 rounded-xl border border-amber-50">
+              {conversation.state.doctor_notes}
             </div>
           </div>
         </div>

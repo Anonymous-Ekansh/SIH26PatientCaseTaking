@@ -96,19 +96,12 @@ export default function DoctorPatientSummary({ params }: { params: Promise<{ pat
               past_history: editedPastHistory,
               drug_allergy_history: editedDrugAllergy,
               family_history: editedFamilyHistory,
+              doctor_notes: doctorNotes,
             }
           })
           .eq("id", conversation.id);
 
         if (error) throw error;
-        
-        // Save doctor notes locally for now since we don't have a doctor_notes table yet
-        if (doctorNotes) {
-          localStorage.setItem(`doctor_notes_${patientId}`, JSON.stringify({
-            notes: doctorNotes,
-            updated_at: new Date().toISOString(),
-          }));
-        }
 
         setSaved(true);
         setIsEditing(false);
@@ -124,14 +117,10 @@ export default function DoctorPatientSummary({ params }: { params: Promise<{ pat
 
   // Load doctor notes if previously saved
   useEffect(() => {
-    const savedNotes = localStorage.getItem(`doctor_notes_${patientId}`);
-    if (savedNotes) {
-      try {
-        const parsed = JSON.parse(savedNotes);
-        setDoctorNotes(parsed.notes || "");
-      } catch {}
+    if (conversation?.state?.doctor_notes) {
+      setDoctorNotes(conversation.state.doctor_notes);
     }
-  }, [patientId]);
+  }, [conversation]);
 
   if (loading) {
     return (
