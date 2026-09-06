@@ -47,7 +47,7 @@ export default function SummaryPage() {
           .eq("patient_id", patientData.id)
           .order("created_at", { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (encounterError || !encounterData) {
           throw new Error("No active encounter found. Please start a conversation first.");
@@ -60,7 +60,7 @@ export default function SummaryPage() {
           .from("conversations")
           .select("*")
           .eq("encounter_id", encounterId)
-          .single();
+          .maybeSingle();
           
         if (convoData) {
           setConversation(convoData);
@@ -78,7 +78,7 @@ export default function SummaryPage() {
           .from("ayush_assessments")
           .select("*")
           .eq("encounter_id", encounterId)
-          .single();
+          .maybeSingle();
         if (ayush) {
           setAyushData(ayush);
         }

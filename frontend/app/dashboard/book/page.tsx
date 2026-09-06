@@ -146,7 +146,7 @@ export default function BookConsultation() {
         .eq("patient_id", patientId)
         .order("created_at", { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
         
       if (existingEncounter) {
         activeEncounterId = existingEncounter.id;

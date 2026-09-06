@@ -51,7 +51,7 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
           .from("conversations")
           .select("*")
           .eq("encounter_id", encounterId)
-          .single();
+          .maybeSingle();
           
         if (convoData) {
           setConversation(convoData);
@@ -71,7 +71,7 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
           .from("ayush_assessments")
           .select("*")
           .eq("encounter_id", encounterId)
-          .single();
+          .maybeSingle();
         if (ayush) {
           setAyushData(ayush);
         }
