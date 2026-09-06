@@ -83,6 +83,116 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* ── Showcase / Features ── */}
+        <section className="py-20 md:py-28 max-w-[1100px] mx-auto px-5">
+          <div className="text-center mb-16">
+            <h2 className="text-2xl md:text-4xl font-bold tracking-tight text-[#1A1A1A] mb-4">
+              {t('showcase_title')}
+            </h2>
+          </div>
+
+          <div className="flex flex-col gap-12 md:gap-24">
+            {/* Feature 1: Conversation */}
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-slate-50 p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 flex flex-col gap-4 max-w-sm mx-auto transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+                  <div className="flex items-center gap-3 border-b border-gray-50 pb-3">
+                    <div className="w-8 h-8 rounded-full bg-sky-100 flex items-center justify-center text-sky-600">
+                      <MessageSquare size={16} />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-gray-400">CURRENT QUESTION</div>
+                      <div className="font-semibold text-gray-800 text-sm">Can you describe the pain?</div>
+                    </div>
+                  </div>
+                  <div className="bg-sky-50 rounded-xl p-3 border border-sky-100 self-end">
+                    <p className="text-sm text-sky-900">It feels like a sharp tightness in my chest.</p>
+                  </div>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="h-2 w-24 bg-gray-100 rounded-full"></div>
+                    <div className="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center border border-red-100">
+                      <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-6">
+                  <MessageSquare size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_conv_title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_conv_desc')}</p>
+              </div>
+            </div>
+
+            {/* Feature 2: Document Digitization */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-emerald-50 p-6 md:p-8 rounded-3xl border border-emerald-200 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 p-5 flex flex-col gap-3 max-w-sm mx-auto transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-gray-500 flex items-center gap-1"><UploadCloud size={14}/> Blood_Report_2026.pdf</span>
+                    <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2 py-1 rounded">Processed</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="border border-gray-100 rounded p-2">
+                      <div className="text-[10px] text-gray-400 uppercase font-bold">Diagnoses Found</div>
+                      <div className="text-sm font-medium text-gray-800">Type 2 Diabetes Mellitus</div>
+                    </div>
+                    <div className="border border-gray-100 rounded p-2">
+                      <div className="text-[10px] text-gray-400 uppercase font-bold">Abnormal Labs</div>
+                      <div className="flex justify-between items-center text-sm font-medium">
+                        <span className="text-red-600">HbA1c</span>
+                        <span className="text-red-600 font-bold">7.8% (High)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-6">
+                  <UploadCloud size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_doc_title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_doc_desc')}</p>
+              </div>
+            </div>
+
+            {/* Feature 3: Clinical Summary */}
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-indigo-50 p-6 md:p-8 rounded-3xl border border-indigo-100 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 max-w-sm mx-auto transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                  <div className="border-b border-gray-100 pb-3 mb-3">
+                    <h4 className="font-bold text-gray-900 text-lg">Case Summary</h4>
+                    <p className="text-xs text-gray-500">Dr. Sharma • Oct 24, 2026</p>
+                  </div>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wide">Chief Complaint</div>
+                      <p className="text-sm font-medium text-gray-800 mt-0.5">Chest Pain & Shortness of Breath</p>
+                    </div>
+                    <div>
+                      <div className="text-[10px] font-bold text-indigo-500 uppercase tracking-wide">HPI</div>
+                      <p className="text-xs text-gray-600 leading-relaxed mt-0.5">Patient reports sharp tightness in the chest radiating to the left arm for the past 2 hours. Exacerbated by exertion.</p>
+                    </div>
+                    <div className="bg-red-50 text-red-700 p-2 rounded border border-red-100 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-red-600"></div>
+                      <span className="text-xs font-bold">Priority Triage Flagged</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6">
+                  <FileText size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_sum_title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_sum_desc')}</p>
+              </div>
+            </div>
+
+          </div>
+        </section>
       </main>
 
       {/* ── Footer ── */}

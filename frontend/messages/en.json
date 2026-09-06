@@ -31,6 +31,13 @@
     "step4_desc": "AI builds a structured history.",
     "step5_title": "Consult",
     "step5_desc": "Your doctor sees everything instantly.",
+    "showcase_title": "See MediKiosk in action",
+    "showcase_conv_title": "Interactive Voice Intake",
+    "showcase_conv_desc": "Patients can speak naturally in their native language while the AI builds their clinical history.",
+    "showcase_doc_title": "Instant Document Digitization",
+    "showcase_doc_desc": "Upload scattered prescriptions and lab reports. Our OCR pipeline extracts diagnoses and medications instantly.",
+    "showcase_sum_title": "Structured Clinical Summary",
+    "showcase_sum_desc": "Doctors receive a standardized, pre-filled case sheet before the patient even walks in.",
     "footer": "Built for Smart India Hackathon, Problem Statement SIH26047, Ministry of Ayush"
   },
   "Dashboard": {
