@@ -13,10 +13,66 @@ if SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY:
 else:
     supabase = None
 
+class StartAyushRequest(BaseModel):
+    auth_user_id: str
+
 class AyushSubmission(BaseModel):
     encounter_id: str
     patient_id: str
     answers: Dict[str, Any]
+
+@router.post("/start")
+def start_ayush(req: StartAyushRequest):
+    try:
+        if not supabase:
+            raise HTTPException(status_code=500, detail="Supabase not configured")
+            
+        patient_result = (
+            supabase.table("patients")
+            .select("id, date_of_birth")
+            .eq("auth_user_id", req.auth_user_id)
+            .maybe_single()
+            .execute()
+        )
+        if not patient_result.data:
+            raise HTTPException(status_code=404, detail="Patient not found.")
+            
+        internal_patient_id = patient_result.data["id"]
+        dob = patient_result.data.get("date_of_birth")
+        
+        encounter_result = (
+            supabase.table("encounters")
+            .select("id")
+            .eq("patient_id", internal_patient_id)
+            .eq("status", "in_progress")
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+
+        if encounter_result.data and len(encounter_result.data) > 0:
+            encounter_id = encounter_result.data[0]["id"]
+        else:
+            new_encounter = (
+                supabase.table("encounters")
+                .insert({
+                    "patient_id": internal_patient_id,
+                    "status": "in_progress",
+                    "mode": "ayush"
+                })
+                .execute()
+            )
+            encounter_id = new_encounter.data[0]["id"]
+
+        return {
+            "encounter_id": encounter_id,
+            "patient_id": internal_patient_id,
+            "date_of_birth": dob
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/questions")
 def get_ayush_questions():

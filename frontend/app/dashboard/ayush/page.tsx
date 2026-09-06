@@ -48,50 +48,24 @@ export default function AyushPage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Fetch patient
-        const { data: patientData } = await supabase
-          .from("patients")
-          .select("id, date_of_birth")
-          .eq("auth_user_id", user.id)
-          .single();
-          
-        if (patientData) {
-          setPatientId(patientData.id);
-          
-          // Compute age if possible
-          if (patientData.date_of_birth) {
-            const birthYear = new Date(patientData.date_of_birth).getFullYear();
+        // Initialize through backend to bypass RLS issues securely
+        const startRes = await fetch(`${getApiUrl()}/api/ayush/start`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ auth_user_id: user.id }),
+        });
+        
+        if (startRes.ok) {
+          const data = await startRes.json();
+          setPatientId(data.patient_id);
+          setEncounterId(data.encounter_id);
+          if (data.date_of_birth) {
+            const birthYear = new Date(data.date_of_birth).getFullYear();
             const currentYear = new Date().getFullYear();
             setAnswers(prev => ({ ...prev, age: currentYear - birthYear }));
           }
-
-          // Fetch active encounter
-          const { data: encounterData } = await supabase
-            .from("encounters")
-            .select("id")
-            .eq("patient_id", patientData.id)
-            .order("created_at", { ascending: false })
-            .limit(1)
-            .maybeSingle();
-            
-          if (encounterData) {
-            setEncounterId(encounterData.id);
-          } else {
-            // Create a new encounter if one doesn't exist
-            const { data: newEncounter, error: encErr } = await supabase
-              .from("encounters")
-              .insert({
-                patient_id: patientData.id,
-                status: "in_progress"
-              })
-              .select("id")
-              .single();
-            if (newEncounter) {
-              setEncounterId(newEncounter.id);
-            } else if (encErr) {
-              console.error("Failed to create encounter:", encErr);
-            }
-          }
+        } else {
+          console.error("Failed to initialize ayush encounter");
         }
 
         // Fetch questions
