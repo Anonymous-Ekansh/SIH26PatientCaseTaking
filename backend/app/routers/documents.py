@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, UploadFile, Form, HTTPException, Path
+from pydantic import BaseModel
 from enum import Enum
 from typing import List
 import logging

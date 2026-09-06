@@ -9,6 +9,7 @@ class InterviewState(TypedDict):
     questions_asked: int
     last_question: Optional[str]
     last_question_field: Optional[str]
+    language: str
 
     # chief complaint + classification
     chief_complaint: Optional[str]
@@ -94,7 +95,7 @@ RED_FLAG_RULES = [
 ]
 
 
-def initial_state() -> InterviewState:
+def initial_state(language: str = "en") -> InterviewState:
     return {
         "section_order": SECTION_ORDER,
         "current_section": "chief_complaint",
@@ -102,6 +103,7 @@ def initial_state() -> InterviewState:
         "questions_asked": 0,
         "last_question": None,
         "last_question_field": None,
+        "language": language,
         "chief_complaint": None,
         "complaint_category": None,
         "hpi_fields_needed": [],

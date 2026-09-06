@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../lib/supabase/client";
+import { useTranslations } from "next-intl";
 import {
   ArrowLeft,
   Shield,
@@ -19,6 +20,7 @@ import { useLanguage } from "../../lib/language-context";
 export default function AyushPage() {
   const { language } = useLanguage();
   const router = useRouter();
+  const t = useTranslations("Ayush");
   
   const [questions, setQuestions] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -93,7 +95,7 @@ export default function AyushPage() {
         }
 
         // Fetch questions
-        const res = await fetch(`${getApiUrl()}/api/ayush/questions`);
+        const res = await fetch(`${getApiUrl()}/api/ayush/questions?language=${language}`);
         if (res.ok) {
           const data = await res.json();
           setQuestions(data.questions || []);
@@ -107,14 +109,14 @@ export default function AyushPage() {
     }
 
     initAyush();
-  }, []);
+  }, [language]);
 
   const playAudio = async (textToPlay: string) => {
     try {
       const res = await fetch(`${getApiUrl()}/api/conversation/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: textToPlay }),
+        body: JSON.stringify({ text: textToPlay, language: language }),
       });
       
       if (!res.ok) throw new Error("TTS failed");
@@ -174,7 +176,7 @@ export default function AyushPage() {
     setIsLoading(true);
     try {
       if (!encounterId || !patientId) {
-        alert("No active patient or encounter found. Please start a conversation first.");
+        alert(t('alert_no_encounter'));
         return;
       }
 
@@ -189,7 +191,7 @@ export default function AyushPage() {
       });
       
       if (!res.ok) {
-        throw new Error("Failed to submit assessment to server.");
+        throw new Error(t('error_submit'));
       }
 
       setIsFinished(true);
@@ -199,7 +201,7 @@ export default function AyushPage() {
       }, 2000);
     } catch (error: any) {
       console.error(error);
-      alert(error.message || "Failed to submit assessment.");
+      alert(error.message || t('error_submit'));
       setCurrentIndex(currentIndex); // Keep on last question to retry
     } finally {
       setIsLoading(false);
@@ -224,13 +226,13 @@ export default function AyushPage() {
           className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft size={20} />
-          <span>Back</span>
+          <span>{t('back')}</span>
         </Link>
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs font-bold border border-emerald-100">
             <Shield size={14} />
-            <span>AYUSH Assessment</span>
+            <span>{t('title')}</span>
           </div>
           <button className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-full text-xs font-semibold border border-gray-200 hover:bg-gray-100 transition-colors">
             <Languages size={14} />
@@ -250,14 +252,14 @@ export default function AyushPage() {
       {isFinished ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20">
           <CheckCircle size={64} className="text-emerald-500" />
-          <h2 className="text-2xl font-bold text-gray-800">Assessment Complete</h2>
-          <p className="text-gray-500">Redirecting to your clinical summary...</p>
+          <h2 className="text-2xl font-bold text-gray-800">{t('complete_title')}</h2>
+          <p className="text-gray-500">{t('complete_desc')}</p>
         </div>
       ) : (
         <>
           <div className="flex items-start gap-3 p-3.5 bg-amber-50 text-amber-800 rounded-xl border border-amber-100 text-sm font-medium">
             <Info size={20} className="shrink-0 text-amber-600 mt-0.5" />
-            <p>Dashavidha Pariksha - Please answer the following questions honestly for an accurate constitution (Prakriti) assessment.</p>
+            <p>{t('info_text')}</p>
           </div>
 
           {currentQ && (
@@ -275,7 +277,7 @@ export default function AyushPage() {
                   }`}
                 >
                   <Volume2 size={16} />
-                  <span>{isListening ? "Listening..." : "Listen"}</span>
+                  <span>{isListening ? t('listening') : t('listen')}</span>
                 </button>
               </div>
               <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6">
@@ -328,7 +330,7 @@ export default function AyushPage() {
                             : "bg-gray-100 text-gray-400 cursor-not-allowed"
                         }`}
                       >
-                        <span>{isLoading ? "Saving..." : "Next"}</span>
+                        <span>{isLoading ? t('saving') : t('next')}</span>
                         <Send size={16} className={!isLoading ? "text-white" : "text-gray-400"} />
                       </button>
                     </div>
@@ -341,7 +343,7 @@ export default function AyushPage() {
                       type="number"
                       value={currentTextResponse}
                       onChange={(e) => setCurrentTextResponse(e.target.value)}
-                      placeholder="Enter value..."
+                      placeholder={t('enter_value')}
                       className="w-full p-4 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-lg"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") handleNext();
@@ -351,7 +353,7 @@ export default function AyushPage() {
                     <textarea
                       value={currentTextResponse}
                       onChange={(e) => setCurrentTextResponse(e.target.value)}
-                      placeholder="Type your response..."
+                      placeholder={t('type_response')}
                       className="w-full min-h-[120px] p-4 resize-none rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none text-base"
                     />
                   )}
@@ -366,7 +368,7 @@ export default function AyushPage() {
                           : "bg-gray-100 text-gray-400 cursor-not-allowed"
                       }`}
                     >
-                      <span>{isLoading ? "Saving..." : "Next"}</span>
+                      <span>{isLoading ? t('saving') : t('next')}</span>
                       <Send size={16} className={currentTextResponse.trim() && !isLoading ? "text-white" : "text-gray-400"} />
                     </button>
                   </div>

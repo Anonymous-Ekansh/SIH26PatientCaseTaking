@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "../../lib/supabase/client";
+import { useTranslations } from "next-intl";
 import { 
   ClipboardCheck, 
   FileText, 
@@ -22,6 +23,7 @@ export default function SummaryPage() {
   const [booking, setBooking] = useState<any>(null);
 
   const supabase = createClient();
+  const t = useTranslations("Summary");
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
@@ -136,11 +138,11 @@ export default function SummaryPage() {
   if (!hasData) {
     return (
       <div className="max-w-[700px] mx-auto px-5 py-10 text-center">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Your Clinical Summary</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('not_found_title')}</h1>
         <div className="bg-gray-50 rounded-2xl p-10 border border-gray-200 flex flex-col items-center mt-8">
           <ClipboardCheck size={48} className="text-gray-300 mb-4" />
           <p className="text-gray-500 font-medium max-w-xs">
-            Your summary will appear here once your conversation and documents are processed.
+            {t('not_found_desc')}
           </p>
         </div>
       </div>
@@ -150,8 +152,8 @@ export default function SummaryPage() {
   return (
     <div className="max-w-[800px] mx-auto px-4 py-8 font-sans">
       <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">Clinical Summary</h1>
-        <p className="text-gray-500 mt-1">A structured overview of your medical history and uploaded records.</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">{t('title')}</h1>
+        <p className="text-gray-500 mt-1">{t('subtitle')}</p>
       </div>
 
       {conversation?.red_flag && (
@@ -159,7 +161,7 @@ export default function SummaryPage() {
           <div className="flex items-start gap-3">
             <AlertTriangle className="text-red-500 shrink-0 mt-0.5" size={20} />
             <div>
-              <h3 className="text-red-800 font-bold mb-1">Priority Triage Flagged</h3>
+              <h3 className="text-red-800 font-bold mb-1">{t('priority_title')}</h3>
               <ul className="text-sm text-red-700 list-disc pl-4 space-y-1">
                 {conversation.red_flag_reasons?.map((reason: string, i: number) => (
                   <li key={i}>{reason}</li>
@@ -178,7 +180,7 @@ export default function SummaryPage() {
               <div className="bg-amber-100 p-2 rounded-lg text-amber-700">
                 <Stethoscope size={20} />
               </div>
-              <h2 className="text-lg font-bold text-gray-800">Doctor&apos;s Notes</h2>
+              <h2 className="text-lg font-bold text-gray-800">{t('doc_notes')}</h2>
             </div>
             {booking?.doctors?.name && (
               <div className="text-sm text-gray-500 font-medium text-right">
@@ -206,25 +208,25 @@ export default function SummaryPage() {
             <div className="bg-sky-100 p-2 rounded-lg text-sky-600">
               <Stethoscope size={20} />
             </div>
-            <h2 className="text-lg font-bold text-gray-800">Presenting History</h2>
+            <h2 className="text-lg font-bold text-gray-800">{t('history_title')}</h2>
           </div>
           
           <div className="p-6 space-y-6">
             <div>
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Chief Complaint</h3>
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('chief_complaint')}</h3>
               <p className="text-gray-800 font-medium text-lg">
-                {conversation.chief_complaint || "Not recorded"}
+                {conversation.chief_complaint || t('not_recorded')}
               </p>
               {conversation.complaint_category && (
                 <span className="inline-block mt-2 text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
-                  Category: {conversation.complaint_category}
+                  {t('category')}: {conversation.complaint_category}
                 </span>
               )}
             </div>
 
             {conversation.state?.hpi && Object.keys(conversation.state.hpi).length > 0 && (
               <div className="border-t border-gray-100 pt-5">
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">History of Present Illness (HPI)</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">{t('hpi')}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {Object.entries(conversation.state.hpi).map(([field, value]) => (
                     value ? (
@@ -242,16 +244,16 @@ export default function SummaryPage() {
 
             <div className="border-t border-gray-100 pt-5 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Past History</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.past_history || "None"}</p>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('past_history')}</h3>
+                <p className="text-gray-700 text-sm">{conversation.state?.past_history || t('none')}</p>
               </div>
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Drug/Allergy</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.drug_allergy_history || "None"}</p>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('drug_allergy')}</h3>
+                <p className="text-gray-700 text-sm">{conversation.state?.drug_allergy_history || t('none')}</p>
               </div>
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Family History</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.family_history || "None"}</p>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('family_history')}</h3>
+                <p className="text-gray-700 text-sm">{conversation.state?.family_history || t('none')}</p>
               </div>
             </div>
           </div>
@@ -266,14 +268,14 @@ export default function SummaryPage() {
               <div className="bg-emerald-100 p-2 rounded-lg text-emerald-700">
                 <Leaf size={20} />
               </div>
-              <h2 className="text-lg font-bold text-gray-800">Ayurvedic Profile</h2>
+              <h2 className="text-lg font-bold text-gray-800">{t('ayush_title')}</h2>
             </div>
           </div>
           
           <div className="p-6">
             {ayushData.raw_answers?.llm_summary && (
               <div className="mb-6 bg-emerald-50/50 border border-emerald-100 rounded-xl p-5">
-                <h3 className="text-sm font-bold text-emerald-800 mb-2 uppercase tracking-wide">Clinical Summary</h3>
+                <h3 className="text-sm font-bold text-emerald-800 mb-2 uppercase tracking-wide">{t('clinical_summary')}</h3>
                 <p className="text-gray-700 text-sm/relaxed whitespace-pre-wrap">
                   {ayushData.raw_answers.llm_summary}
                 </p>
@@ -282,7 +284,7 @@ export default function SummaryPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Dominant Dosha</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('dosha')}</h3>
                 <p className="text-gray-800 font-bold text-2xl capitalize text-emerald-600">
                   {ayushData.dominant_prakriti}
                 </p>
@@ -293,14 +295,14 @@ export default function SummaryPage() {
                 </div>
               </div>
               <div>
-                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Vitals & Measurements</h3>
+                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">{t('vitals')}</h3>
                 <div className="flex gap-6">
                   <div>
-                    <span className="block text-xs text-gray-500">BMI</span>
+                    <span className="block text-xs text-gray-500">{t('bmi')}</span>
                     <span className="font-semibold text-gray-800">{ayushData.bmi || "N/A"}</span>
                   </div>
                   <div>
-                    <span className="block text-xs text-gray-500">Age Stage (Vaya)</span>
+                    <span className="block text-xs text-gray-500">{t('age_stage')}</span>
                     <span className="font-semibold text-gray-800 capitalize">{ayushData.vaya_category}</span>
                   </div>
                 </div>
@@ -308,9 +310,9 @@ export default function SummaryPage() {
             </div>
 
             {ayushData.pending_physical_exam_fields && ayushData.pending_physical_exam_fields.length > 0 && (
-              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
-                <h3 className="text-sm font-bold text-amber-800 mb-1">Patient-reported, pending physical exam</h3>
-                <p className="text-xs text-amber-700">The following parameters require doctor confirmation: <span className="font-medium capitalize">{ayushData.pending_physical_exam_fields.join(", ").replace(/_/g, " ")}</span></p>
+              <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl mt-6">
+                <h3 className="text-sm font-bold text-amber-800 mb-1">{t('pending_exam')}</h3>
+                <p className="text-xs text-amber-700">{t('pending_exam_desc')}<span className="font-medium capitalize">{ayushData.pending_physical_exam_fields.join(", ").replace(/_/g, " ")}</span></p>
               </div>
             )}
           </div>
@@ -324,7 +326,7 @@ export default function SummaryPage() {
             <div className="bg-purple-100 p-2 rounded-lg text-purple-600">
               <FileText size={20} />
             </div>
-            <h2 className="text-lg font-bold text-gray-800">Document Extractions</h2>
+            <h2 className="text-lg font-bold text-gray-800">{t('docs_title')}</h2>
           </div>
 
           <div className="p-6 space-y-8">
@@ -334,7 +336,7 @@ export default function SummaryPage() {
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
                   <Activity size={16} className="text-indigo-500" />
-                  Diagnoses Found
+                  {t('diagnoses')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {diagnoses.map((d, i) => (
@@ -351,7 +353,7 @@ export default function SummaryPage() {
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
                   <Pill size={16} className="text-teal-500" />
-                  Medications Found
+                  {t('medications')}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {medications.map((m, i) => (
@@ -369,7 +371,7 @@ export default function SummaryPage() {
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
                   <Activity size={16} className="text-rose-500" />
-                  Procedures Found
+                  {t('procedures')}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {procedures.map((p, i) => (
@@ -386,15 +388,15 @@ export default function SummaryPage() {
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
                   <FileText size={16} className="text-amber-500" />
-                  Lab Results
+                  {t('lab_results')}
                 </h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
                     <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
                       <tr>
-                        <th className="px-4 py-3 rounded-tl-lg">Test Name</th>
-                        <th className="px-4 py-3">Value</th>
-                        <th className="px-4 py-3">Reference Range</th>
+                        <th className="px-4 py-3 rounded-tl-lg">{t('test_name')}</th>
+                        <th className="px-4 py-3">{t('value')}</th>
+                        <th className="px-4 py-3">{t('ref_range')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -402,7 +404,7 @@ export default function SummaryPage() {
                         <tr key={i} className={inv.is_abnormal ? "bg-red-50/50" : ""}>
                           <td className="px-4 py-3 font-medium text-gray-800">
                             {inv.label}
-                            {inv.is_abnormal && <span className="ml-2 inline-flex text-[10px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded uppercase">Abnormal</span>}
+                            {inv.is_abnormal && <span className="ml-2 inline-flex text-[10px] font-bold bg-red-100 text-red-600 px-1.5 py-0.5 rounded uppercase">{t('abnormal')}</span>}
                           </td>
                           <td className={`px-4 py-3 font-semibold ${inv.is_abnormal ? 'text-red-600' : 'text-gray-700'}`}>
                             {inv.value} {inv.unit}

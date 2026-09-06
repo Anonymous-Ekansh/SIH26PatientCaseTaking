@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { createClient } from "../../lib/supabase/client";
+import { useTranslations } from "next-intl";
 import {
   ArrowLeft,
   Shield,
@@ -20,6 +21,7 @@ import { useLanguage } from "../../lib/language-context";
 
 export default function ConversationPage() {
   const { language } = useLanguage();
+  const t = useTranslations("Conversation");
   const [mode] = useState("Allopathic - General");
   const [response, setResponse] = useState("");
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -27,7 +29,7 @@ export default function ConversationPage() {
 
   // Agent state
   const [encounterId, setEncounterId] = useState<string | null>(null);
-  const [question, setQuestion] = useState<string>("Loading...");
+  const [question, setQuestion] = useState<string>(t('loading'));
   const [isLoading, setIsLoading] = useState(true);
   const [isFinished, setIsFinished] = useState(false);
   const [redFlag, setRedFlag] = useState(false);
@@ -66,7 +68,7 @@ export default function ConversationPage() {
         handleAgentStep(data.step);
       } catch (error) {
         console.error(error);
-        setQuestion("Error starting conversation. Please try again.");
+        setQuestion(t('error_start'));
       } finally {
         setIsLoading(false);
       }
@@ -81,7 +83,7 @@ export default function ConversationPage() {
       const res = await fetch(`${getApiUrl()}/api/conversation/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: textToPlay }),
+        body: JSON.stringify({ text: textToPlay, language: language }),
       });
       
       if (!res.ok) throw new Error("TTS failed");
@@ -96,7 +98,7 @@ export default function ConversationPage() {
   };
 
   useEffect(() => {
-    if (isListening && question && question !== "Loading..." && !question.startsWith("Error")) {
+    if (isListening && question && question !== t('loading') && !question.startsWith("Error") && !question.startsWith(t('error_start').substring(0, 5))) {
       playAudio(question);
     }
   }, [question, isListening]);
@@ -104,7 +106,7 @@ export default function ConversationPage() {
   const handleListenToggle = () => {
     const newState = !isListening;
     setIsListening(newState);
-    if (newState && question && question !== "Loading..." && !question.startsWith("Error")) {
+    if (newState && question && question !== t('loading') && !question.startsWith("Error") && !question.startsWith(t('error_start').substring(0, 5))) {
       playAudio(question);
     }
   };
@@ -143,6 +145,7 @@ export default function ConversationPage() {
     try {
       const formData = new FormData();
       formData.append("audio", blob, "recording.wav");
+      formData.append("language", language);
       
       const res = await fetch(`${getApiUrl()}/api/conversation/asr`, {
         method: "POST",
@@ -171,11 +174,10 @@ export default function ConversationPage() {
 
   const handleAgentStep = (step: any) => {
     if (step.paused) {
+      setQuestion(step.question || "Can you tell me more about that?");
       if (step.type === "chief_complaint_request") {
-        setQuestion("What brings you in today? Please describe your main symptoms.");
         setProgress(10);
       } else {
-        setQuestion(step.question || "Can you tell me more about that?");
         setProgress((prev) => Math.min(prev + 10, 90));
       }
     } else {
@@ -207,7 +209,8 @@ export default function ConversationPage() {
         body: JSON.stringify({
           auth_user_id: user.id,
           encounter_id: encounterId,
-          answer: answer
+          answer: answer,
+          language: language
         }),
       });
 
@@ -217,7 +220,7 @@ export default function ConversationPage() {
       handleAgentStep(step);
     } catch (error) {
       console.error(error);
-      setQuestion("Error sending response. Please try again.");
+      setQuestion(t('error_send'));
     } finally {
       setIsLoading(false);
     }
@@ -232,7 +235,7 @@ export default function ConversationPage() {
           className="flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors"
         >
           <ArrowLeft size={20} />
-          <span>Back</span>
+          <span>{t('back')}</span>
         </Link>
 
         <div className="flex items-center gap-3">
@@ -261,8 +264,8 @@ export default function ConversationPage() {
         <div className="flex items-start gap-3 p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 shadow-sm">
           <AlertTriangle size={24} className="shrink-0 text-red-600 mt-0.5" />
           <div>
-            <h3 className="font-bold text-red-900 mb-1">Priority Triage Required</h3>
-            <p className="text-sm mb-2">Our AI assistant has flagged potential emergency symptoms that require immediate clinical review.</p>
+            <h3 className="font-bold text-red-900 mb-1">{t('priority_triage')}</h3>
+            <p className="text-sm mb-2">{t('priority_desc')}</p>
             <ul className="list-disc pl-5 text-sm font-medium">
               {redFlagReasons.map((reason, i) => (
                 <li key={i}>{reason}</li>
@@ -277,8 +280,8 @@ export default function ConversationPage() {
         <div className="flex items-start gap-3 p-4 bg-green-50 text-green-800 rounded-xl border border-green-200 shadow-sm">
           <CheckCircle size={24} className="shrink-0 text-green-600 mt-0.5" />
           <div>
-            <h3 className="font-bold text-green-900 mb-1">Interview Complete</h3>
-            <p className="text-sm">Thank you. Your history has been successfully recorded. You may now proceed to document upload.</p>
+            <h3 className="font-bold text-green-900 mb-1">{t('interview_complete')}</h3>
+            <p className="text-sm">{t('interview_desc')}</p>
           </div>
         </div>
       )}
@@ -288,14 +291,14 @@ export default function ConversationPage() {
           {/* Info banner */}
           <div className="flex items-start gap-3 p-3.5 bg-amber-50 text-amber-800 rounded-xl border border-amber-100 text-sm font-medium">
             <Info size={20} className="shrink-0 text-amber-600 mt-0.5" />
-            <p>AI-generated draft, requires healthcare professional review</p>
+            <p>{t('ai_draft_info')}</p>
           </div>
 
           {/* Question card */}
           <div className="bg-white rounded-2xl p-5 md:p-6 border border-gray-200 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-                CURRENT QUESTION
+                {t('current_question')}
               </span>
               <button
                 onClick={handleListenToggle}
@@ -306,7 +309,7 @@ export default function ConversationPage() {
                 }`}
               >
                 <Volume2 size={16} />
-                <span>{isListening ? "Listening..." : "Listen"}</span>
+                <span>{isListening ? t('listening') : t('listen')}</span>
               </button>
             </div>
             <h2 className={`text-xl md:text-2xl font-bold text-gray-800 ${isLoading ? 'animate-pulse text-gray-400' : ''}`}>
@@ -320,7 +323,7 @@ export default function ConversationPage() {
               value={response}
               onChange={(e) => setResponse(e.target.value)}
               disabled={isLoading}
-              placeholder={isLoading ? "Waiting for AI..." : "Type your response or tap the microphone to speak..."}
+              placeholder={isLoading ? t('waiting_ai') : t('type_response')}
               className="w-full min-h-[120px] resize-none outline-none text-base text-gray-800 placeholder-gray-400 bg-transparent disabled:opacity-50"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
@@ -341,7 +344,7 @@ export default function ConversationPage() {
                 }`}
               >
                 <Mic size={18} />
-                <span>{isSpeaking ? "Stop Speaking" : "Speak"}</span>
+                <span>{isSpeaking ? t('stop_speaking') : t('speak')}</span>
               </button>
 
               <button
@@ -353,7 +356,7 @@ export default function ConversationPage() {
                     : "bg-gray-100 text-gray-400 cursor-not-allowed"
                 }`}
               >
-                <span>{isLoading ? "Sending..." : "Send Answer"}</span>
+                <span>{isLoading ? t('sending') : t('send_answer')}</span>
                 <Send size={16} className={response.trim() && !isLoading ? "text-white" : "text-gray-400"} />
               </button>
             </div>
@@ -364,13 +367,13 @@ export default function ConversationPage() {
       {/* Footer row */}
       <footer className="mt-auto pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-100 pb-4">
         <p className="text-sm font-medium text-gray-500">
-          You can proceed to document digitization once finished.
+          {t('proceed_info')}
         </p>
         <Link
           href="/dashboard/documents"
           className="flex items-center gap-2 text-sm font-bold text-sky-600 hover:text-sky-700 transition-colors"
         >
-          <span>Proceed to document upload</span>
+          <span>{t('proceed_link')}</span>
           <ArrowRight size={18} />
         </Link>
       </footer>

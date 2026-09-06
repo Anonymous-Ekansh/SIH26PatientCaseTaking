@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans } from "next/font/google";
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
 import "./globals.css";
 import { LanguageProvider } from "./lib/language-context";
 
@@ -15,15 +17,20 @@ export const metadata: Metadata = {
     "MediKiosk listens, scans, and prepares a complete patient history for your doctor, in the language you speak, before your consultation even starts.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className={`${notoSans.variable} h-full antialiased`}>
+    <html lang={locale} className={`${notoSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <LanguageProvider>{children}</LanguageProvider>
+        <NextIntlClientProvider messages={messages}>
+          <LanguageProvider initialLocale={locale as "en" | "hi"}>{children}</LanguageProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

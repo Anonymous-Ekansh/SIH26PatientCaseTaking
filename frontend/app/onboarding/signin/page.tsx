@@ -34,10 +34,12 @@ function GoogleIcon() {
 }
 
 import { createClient } from "@/app/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 export default function OnboardingSignIn() {
   const router = useRouter();
   const supabase = createClient();
+  const t = useTranslations("Signin");
 
   const handleGoogleClick = async () => {
     await supabase.auth.signInWithOAuth({
@@ -65,15 +67,15 @@ export default function OnboardingSignIn() {
             onClick={() => router.push("/onboarding")}
             className="flex items-center gap-1 text-[#6B7280] text-sm mb-6 hover:text-[#1A1A1A] transition-colors"
           >
-            <ArrowLeft size={16} /> Back
+            <ArrowLeft size={16} /> {t('back')}
           </button>
 
           <div className="bg-white rounded-2xl border border-[#E5E7EB] p-6 md:p-8">
             <h1 className="text-xl font-bold text-[#1A1A1A] mb-1 text-center">
-              Sign in to continue
+              {t('title')}
             </h1>
             <p className="text-[#6B7280] text-sm mb-8 text-center">
-              Use your Google account
+              {t('subtitle')}
             </p>
 
             <button
@@ -81,14 +83,14 @@ export default function OnboardingSignIn() {
               className="w-full flex items-center justify-center gap-3 py-4 rounded-xl border border-[#E5E7EB] bg-white hover:bg-[#F5F5F5] transition-colors font-medium text-[#1A1A1A] active:scale-[0.97] min-h-[56px]"
             >
               <GoogleIcon />
-              <span>Continue with Google</span>
+              <span>{t('continue_google')}</span>
             </button>
 
             <div className="mt-6 text-center">
               <span className="text-[#6B7280] text-xs inline-flex items-center gap-1.5">
-                Have an ABHA ID? Use ABHA login instead
+                {t('abha_text')}
                 <span className="text-[10px] bg-[#F5F5F5] text-[#6B7280] px-1.5 py-0.5 rounded-full font-medium border border-[#E5E7EB]">
-                  coming soon
+                  {t('coming_soon')}
                 </span>
               </span>
             </div>

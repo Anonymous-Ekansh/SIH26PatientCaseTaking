@@ -5,10 +5,17 @@ import { useLanguage } from "@/app/lib/language-context";
 export default function LanguageToggle() {
   const { language, setLanguage } = useLanguage();
 
+  const handleSetLanguage = (lang: "en" | "hi") => {
+    setLanguage(lang);
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
+
   return (
     <div className="flex items-center bg-[#F5F5F5] rounded-full p-1 border border-[#E5E7EB]">
       <button
-        onClick={() => setLanguage("en")}
+        onClick={() => handleSetLanguage("en")}
         className={`px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
           language === "en"
             ? "bg-[#0EA5E9] text-white"
@@ -18,7 +25,7 @@ export default function LanguageToggle() {
         EN
       </button>
       <button
-        onClick={() => setLanguage("hi")}
+        onClick={() => handleSetLanguage("hi")}
         className={`px-3.5 py-1.5 rounded-full text-sm font-semibold transition-colors ${
           language === "hi"
             ? "bg-[#0EA5E9] text-white"

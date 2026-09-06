@@ -1,22 +1,26 @@
-from fastapi import APIRouter, HTTPException, Body
+import traceback
+from fastapi import APIRouter, HTTPException, Body, UploadFile, File, Response, Form
 from pydantic import BaseModel
 from typing import Optional
 
 from app.supabase_client import supabase
 from app.agent.graph import start_interview, submit_answer
 from app.agent.persistence import load_conversation_state
+from app.services.speech import sarvam_tts, sarvam_asr
 
 router = APIRouter(tags=["conversation"])
 
 
 class StartConversationRequest(BaseModel):
     auth_user_id: str
+    language: str = "en"
 
 
 class AnswerRequest(BaseModel):
     auth_user_id: str
     encounter_id: str
     answer: str
+    language: str = "en"
 
 
 @router.post("/start")
@@ -67,7 +71,7 @@ def start_conversation(req: StartConversationRequest):
             encounter_id = new_encounter.data[0]["id"]
 
         # 3. Start the interview
-        step = start_interview(encounter_id=encounter_id, user_id=req.auth_user_id)
+        step = start_interview(encounter_id=encounter_id, user_id=req.auth_user_id, language=req.language)
         
         return {
             "encounter_id": encounter_id,
@@ -79,8 +83,6 @@ def start_conversation(req: StartConversationRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-import traceback
 
 @router.post("/answer")
 def answer_question(req: AnswerRequest):
@@ -103,7 +105,8 @@ def answer_question(req: AnswerRequest):
         step = submit_answer(
             encounter_id=req.encounter_id,
             answer=req.answer,
-            user_id=req.auth_user_id
+            user_id=req.auth_user_id,
+            language=req.language
         )
         
         return step
@@ -131,34 +134,32 @@ def get_conversation_state(encounter_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-from fastapi import UploadFile, File, Response
-from pydantic import BaseModel
-from app.services.speech import sarvam_tts, sarvam_asr
 
 class TTSRequest(BaseModel):
     text: str
+    language: str = "hi"
+
 
 @router.post("/tts")
 async def generate_tts(req: TTSRequest):
     """Generate text-to-speech audio."""
     try:
-        audio_bytes = await sarvam_tts(req.text)
+        audio_bytes = await sarvam_tts(req.text, req.language)
         return Response(content=audio_bytes, media_type="audio/wav")
     except Exception as e:
-        import traceback
         err_msg = traceback.format_exc()
         print(f"ERROR IN /tts:\n{err_msg}")
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/asr")
-async def transcribe_asr(audio: UploadFile = File(...)):
+async def transcribe_asr(audio: UploadFile = File(...), language: str = Form("hi")):
     """Transcribe speech-to-text."""
     try:
         audio_bytes = await audio.read()
-        transcript = await sarvam_asr(audio_bytes)
+        transcript = await sarvam_asr(audio_bytes, language)
         return {"text": transcript}
     except Exception as e:
-        import traceback
         err_msg = traceback.format_exc()
         print(f"ERROR IN /asr:\n{err_msg}")
         raise HTTPException(status_code=500, detail=str(e))

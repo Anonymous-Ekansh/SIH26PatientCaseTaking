@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
+import { useTranslations } from "next-intl";
 import {
   MessageSquare,
   FileText,
@@ -15,46 +16,47 @@ import {
   Settings,
 } from "lucide-react";
 
-const SECTIONS = [
-  {
-    title: "Book Consultation",
-    desc: "Choose a doctor and slot to begin.",
-    icon: Calendar,
-    href: "/dashboard/book",
-  },
-  {
-    title: "Conversation",
-    desc: "Answer health questions by voice or touch.",
-    icon: MessageSquare,
-    href: "/dashboard/conversation",
-  },
-  {
-    title: "Documents",
-    desc: "Upload prescriptions, reports, or summaries.",
-    icon: FileText,
-    href: "/dashboard/documents",
-  },
-  {
-    title: "Summary",
-    desc: "Review your compiled medical history.",
-    icon: ClipboardCheck,
-    href: "/dashboard/summary",
-  },
-  {
-    title: "AYUSH mode",
-    desc: "Traditional medicine history-taking.",
-    icon: Leaf,
-    href: "/dashboard/ayush",
-  },
-];
-
 export default function DashboardHome() {
   const router = useRouter();
   const supabase = createClient();
+  const t = useTranslations("Dashboard");
   const [profileOpen, setProfileOpen] = useState(false);
   const [patient, setPatient] = useState<any>(null);
   const [userEmail, setUserEmail] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const SECTIONS = [
+    {
+      title: t('book_title'),
+      desc: t('book_desc'),
+      icon: Calendar,
+      href: "/dashboard/book",
+    },
+    {
+      title: t('conv_title'),
+      desc: t('conv_desc'),
+      icon: MessageSquare,
+      href: "/dashboard/conversation",
+    },
+    {
+      title: t('doc_title'),
+      desc: t('doc_desc'),
+      icon: FileText,
+      href: "/dashboard/documents",
+    },
+    {
+      title: t('sum_title'),
+      desc: t('sum_desc'),
+      icon: ClipboardCheck,
+      href: "/dashboard/summary",
+    },
+    {
+      title: t('ayush_title'),
+      desc: t('ayush_desc'),
+      icon: Leaf,
+      href: "/dashboard/ayush",
+    },
+  ];
 
   useEffect(() => {
     async function loadProfile() {
@@ -102,7 +104,7 @@ export default function DashboardHome() {
       {/* Header with Profile */}
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-[#1A1A1A]">
-          Welcome{patient?.name ? `, ${patient.name}` : ""}
+          {t('welcome')}{patient?.name ? `, ${patient.name}` : ""}
         </h1>
 
         {/* Profile Icon */}
@@ -127,13 +129,13 @@ export default function DashboardHome() {
                 onClick={() => { setProfileOpen(false); router.push("/dashboard/profile"); }}
                 className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
               >
-                <Settings size={16} /> Edit Profile
+                <Settings size={16} /> {t('edit_profile')}
               </button>
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors border-t border-gray-100"
               >
-                <LogOut size={16} /> Sign out
+                <LogOut size={16} /> {t('sign_out')}
               </button>
             </div>
           )}
@@ -141,7 +143,7 @@ export default function DashboardHome() {
       </div>
 
       <p className="text-[#6B7280] text-center mb-10">
-        Choose a section to get started
+        {t('choose_section')}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">

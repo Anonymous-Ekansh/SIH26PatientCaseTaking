@@ -8,13 +8,15 @@ class SpeechError(Exception):
     pass
 
 
-async def sarvam_tts(text: str) -> bytes:
+async def sarvam_tts(text: str, language: str = "hi") -> bytes:
     """
     Convert text to speech using Sarvam's bulbul:v3 model.
     Returns the raw WAV audio bytes.
     """
     if not CONVERSATION_SARVAM_API_KEY:
         raise SpeechError("CONVERSATION_SARVAM_API_KEY is not configured")
+
+    target_lang = "hi-IN" if language == "hi" else "en-IN"
 
     url = "https://api.sarvam.ai/text-to-speech"
     headers = {
@@ -23,7 +25,7 @@ async def sarvam_tts(text: str) -> bytes:
     }
     payload = {
         "inputs": [text],
-        "target_language_code": "hi-IN",
+        "target_language_code": target_lang,
         "speaker": "ritu",
         "pitch": 0,
         "pace": 1.0,
@@ -51,14 +53,14 @@ async def sarvam_tts(text: str) -> bytes:
         raise SpeechError(f"Failed to generate speech: {str(e)}")
 
 
-async def sarvam_asr(audio_bytes: bytes) -> str:
+async def sarvam_asr(audio_bytes: bytes, language: str = "hi") -> str:
     """
-    Convert speech to English text using Sarvam's saaras:v3 model (Translate endpoint).
+    Convert speech to text using Sarvam's saaras:v3 model.
     """
     if not CONVERSATION_SARVAM_API_KEY:
         raise SpeechError("CONVERSATION_SARVAM_API_KEY is not configured")
 
-    url = "https://api.sarvam.ai/speech-to-text-translate"
+    url = "https://api.sarvam.ai/speech-to-text"
     headers = {
         "API-Subscription-Key": CONVERSATION_SARVAM_API_KEY
     }
@@ -67,8 +69,9 @@ async def sarvam_asr(audio_bytes: bytes) -> str:
     files = {
         "file": ("recording.wav", audio_bytes, "audio/wav")
     }
+    target_lang = "hi-IN" if language == "hi" else "en-IN"
     data = {
-        "prompt": "",
+        "language_code": target_lang,
         "model": "saaras:v3"
     }
 

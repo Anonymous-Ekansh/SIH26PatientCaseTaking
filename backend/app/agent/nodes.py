@@ -124,6 +124,7 @@ Complaint category: {state['complaint_category']}
 Information gathered so far: {known}
 
 Ask ONE specific question to find out: {field_description}
+The question and options must be in {state.get('language', 'en')} language.
 Respond with ONLY valid JSON, no other text:
 {{"question": "...", "options": ["...", "...", "..."]}}
 """
@@ -202,7 +203,21 @@ def ask_open_section(state: InterviewState) -> dict:
     section = state["current_section"]
     if section == "hpi":
         section = "past_history"  # first history section after HPI finishes
+    
+    # We should translate the static prompts if language is hi
+    # But for now we can just let the frontend play the TTS of this, or ask LLM to translate.
+    # Since we don't have a static translation for this in python, let's just ask the LLM to translate it if language is hi.
+    # Actually, to save time, I will just hardcode the Hindi translation.
+    
     question = HISTORY_SECTION_PROMPTS[section]
+    if state.get("language") == "hi":
+        if section == "past_history":
+            question = "क्या आपको कोई पिछली चिकित्सा स्थिति, सर्जरी या अस्पताल में भर्ती होने की जानकारी है जो हमें पता होनी चाहिए?"
+        elif section == "drug_allergy_history":
+            question = "क्या आप वर्तमान में कोई दवा ले रहे हैं, और क्या आपको कोई ज्ञात दवा या अन्य एलर्जी है?"
+        elif section == "family_history":
+            question = "क्या आपके तत्काल परिवार में किसी को बड़ी बीमारियों (जैसे हृदय रोग, मधुमेह, कैंसर) का इतिहास है?"
+
     return {
         "last_question": question,
         "last_question_field": section,

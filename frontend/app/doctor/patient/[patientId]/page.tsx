@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import { 
   ClipboardCheck, 
   FileText, 
@@ -20,8 +21,10 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default function DoctorPatientSummary({ params }: { params: Promise<{ patientId: string }> }) {
-  const { patientId } = use(params);
+export default function DoctorPatientSummary() {
+  const params = useParams();
+  const patientId = params.patientId as string;
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -43,6 +46,7 @@ export default function DoctorPatientSummary({ params }: { params: Promise<{ pat
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
+    if (!patientId) return;
     async function fetchSummaryData() {
       try {
         const res = await fetch(`${getApiUrl()}/api/documents/patient-summary/${patientId}`);

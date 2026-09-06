@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { Camera, FileText, FolderOpen, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { createClient } from "../../lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 type ExtractedEntity = {
   entity_type: string;
@@ -26,6 +27,7 @@ export default function DocumentsPage() {
   const [documents, setDocuments] = useState<DocumentState[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
+  const t = useTranslations("Documents");
   
   // Use the env var, fallback to localhost for development
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -109,7 +111,7 @@ export default function DocumentsPage() {
       setDocuments(prev => prev.map(d => d.id === localId ? { 
         ...d, 
         status: "failed",
-        error: error.message || "Couldn't process this document, try again"
+        error: error.message || t('error_msg')
       } : d));
     }
   };
@@ -146,9 +148,9 @@ export default function DocumentsPage() {
 
   return (
     <div className="max-w-[700px] mx-auto px-5 py-10 text-center">
-      <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Your documents</h1>
+      <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">{t('title')}</h1>
       <p className="text-[#6B7280] mb-8">
-        Prescriptions, lab reports, or discharge summaries
+        {t('subtitle')}
       </p>
 
       {/* Drop zone */}
@@ -160,9 +162,9 @@ export default function DocumentsPage() {
           <Camera size={32} />
         </div>
         <p className="text-lg font-bold text-[#1A1A1A] mb-1">
-          Tap to upload a file
+          {t('tap_upload')}
         </p>
-        <p className="text-sm text-[#6B7280]">Supports images and PDF documents</p>
+        <p className="text-sm text-[#6B7280]">{t('support_text')}</p>
         <input
           type="file"
           multiple
@@ -182,7 +184,7 @@ export default function DocumentsPage() {
       ) : documents.length === 0 ? (
         <div className="bg-[#F5F5F5] rounded-2xl p-10 border border-[#E5E7EB] flex flex-col items-center justify-center">
           <FolderOpen size={48} className="text-[#E5E7EB] mb-4" />
-          <p className="text-[#6B7280] font-medium">No documents uploaded yet</p>
+          <p className="text-[#6B7280] font-medium">{t('no_docs')}</p>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -214,18 +216,18 @@ export default function DocumentsPage() {
                   {(doc.status === "uploading" || doc.status === "processing") && (
                     <Loader2 size={12} className="animate-spin" />
                   )}
-                  {doc.status === "uploading" ? "Uploading..." :
-                   doc.status === "processing" ? "Processing..." :
-                   doc.status === "done" ? "Done" : "Failed"}
+                  {doc.status === "uploading" ? t('uploading') :
+                   doc.status === "processing" ? t('processing') :
+                   doc.status === "done" ? t('done') : t('failed')}
                 </span>
               </div>
 
               {/* Error State */}
               {doc.status === "failed" && (
                 <div className="mt-2 text-sm text-red-600 bg-red-50 p-3 rounded-lg flex items-center justify-between border border-red-100">
-                  <span>{doc.error || "Couldn't process this document"}</span>
+                  <span>{doc.error || t('error_msg')}</span>
                   <button onClick={retryUpload} className="text-xs font-bold uppercase tracking-wider underline hover:text-red-800 transition-colors">
-                    Retry
+                    {t('retry')}
                   </button>
                 </div>
               )}
@@ -249,7 +251,7 @@ export default function DocumentsPage() {
                         </span>
                         {ent.ref_range && (
                           <span className="text-[10px] text-[#6B7280] font-medium">
-                            Ref: {ent.ref_range}
+                            {t('ref')} {ent.ref_range}
                           </span>
                         )}
                       </div>

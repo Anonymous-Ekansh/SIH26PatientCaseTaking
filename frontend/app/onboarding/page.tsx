@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/lib/language-context";
+import { useTranslations } from "next-intl";
 
 /* ── Progress Dots ── */
 function ProgressDots({ current }: { current: number }) {
@@ -24,10 +25,14 @@ function ProgressDots({ current }: { current: number }) {
 export default function OnboardingLanguage() {
   const router = useRouter();
   const { language, setLanguage } = useLanguage();
+  const t = useTranslations("Onboarding");
 
   const pick = (lang: "en" | "hi") => {
     setLanguage(lang);
-    setTimeout(() => router.push("/onboarding/signin"), 300);
+    setTimeout(() => {
+      // Small reload to force locale cookie to take effect on the server
+      window.location.href = "/onboarding/signin";
+    }, 300);
   };
 
   return (
@@ -43,9 +48,9 @@ export default function OnboardingLanguage() {
 
       <div className="flex-1 flex flex-col items-center justify-center px-5 pb-10">
         <div className="w-full max-w-sm text-center">
-          <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">Choose your language</h1>
+          <h1 className="text-2xl font-bold text-[#1A1A1A] mb-2">{t('title')}</h1>
           <p className="text-[#6B7280] text-sm mb-8">
-            Select how you would like to interact with MediKiosk
+            {t('subtitle')}
           </p>
           <div className="flex flex-col gap-4">
             <button
@@ -56,8 +61,8 @@ export default function OnboardingLanguage() {
                   : "border-[#E5E7EB] bg-white hover:border-sky-200"
               }`}
             >
-              <span className="text-2xl font-bold block text-[#1A1A1A]">English</span>
-              <span className="text-[#6B7280] text-sm">अंग्रेज़ी</span>
+              <span className="text-2xl font-bold block text-[#1A1A1A]">{t('english')}</span>
+              <span className="text-[#6B7280] text-sm">{t('english_sub')}</span>
             </button>
             <button
               onClick={() => pick("hi")}
@@ -67,8 +72,8 @@ export default function OnboardingLanguage() {
                   : "border-[#E5E7EB] bg-white hover:border-sky-200"
               }`}
             >
-              <span className="text-2xl font-bold block text-[#1A1A1A]">हिंदी</span>
-              <span className="text-[#6B7280] text-sm">Hindi</span>
+              <span className="text-2xl font-bold block text-[#1A1A1A]">{t('hindi')}</span>
+              <span className="text-[#6B7280] text-sm">{t('hindi_sub')}</span>
             </button>
           </div>
         </div>

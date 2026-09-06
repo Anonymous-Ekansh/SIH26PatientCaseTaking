@@ -79,16 +79,18 @@ def get_clean_state(result: dict) -> dict:
     return clean
 
 
-def start_interview(encounter_id: str, user_id: str = "test-user") -> dict:
+def start_interview(encounter_id: str, user_id: str = "test-user", language: str = "en") -> dict:
     config = {"configurable": {"thread_id": encounter_id}}
-    result = graph.invoke(initial_state(), config=config)
+    result = graph.invoke(initial_state(language=language), config=config)
     step = _extract_next_step(result)
     save_conversation_state(encounter_id, user_id, get_clean_state(result))
     return step
 
 
-def submit_answer(encounter_id: str, answer: str, user_id: str = "test-user") -> dict:
+def submit_answer(encounter_id: str, answer: str, user_id: str = "test-user", language: str = "en") -> dict:
     config = {"configurable": {"thread_id": encounter_id}}
+    # The language is already in the state, but if we needed to update it we could.
+    # For now, it just resumes the graph.
     result = graph.invoke(Command(resume=answer), config=config)
     step = _extract_next_step(result)
     save_conversation_state(encounter_id, user_id, get_clean_state(result))
