@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { 
   ClipboardCheck, 
   FileText, 
@@ -20,8 +20,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export default function DoctorPatientSummary({ params }: { params: { patientId: string } }) {
-  const { patientId } = params;
+export default function DoctorPatientSummary({ params }: { params: Promise<{ patientId: string }> }) {
+  const { patientId } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   

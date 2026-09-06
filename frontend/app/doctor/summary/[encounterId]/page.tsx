@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { ArrowLeft, ClipboardCheck } from "lucide-react";
 import Link from "next/link";
 
-export default function DoctorSummaryRedirect({ params }: { params: { encounterId: string } }) {
-  const { encounterId } = params;
+export default function DoctorSummaryRedirect({ params }: { params: Promise<{ encounterId: string }> }) {
+  const { encounterId } = use(params);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [patientId, setPatientId] = useState<string | null>(null);
