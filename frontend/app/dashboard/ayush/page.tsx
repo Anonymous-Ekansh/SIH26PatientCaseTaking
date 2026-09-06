@@ -70,13 +70,25 @@ export default function AyushPage() {
             .eq("patient_id", patientData.id)
             .order("created_at", { ascending: false })
             .limit(1)
-            .single();
+            .maybeSingle();
             
           if (encounterData) {
             setEncounterId(encounterData.id);
           } else {
-            // If no encounter exists, we could create one or handle it.
-            // But let's assume they should have one.
+            // Create a new encounter if one doesn't exist
+            const { data: newEncounter, error: encErr } = await supabase
+              .from("encounters")
+              .insert({
+                patient_id: patientData.id,
+                status: "in_progress"
+              })
+              .select("id")
+              .single();
+            if (newEncounter) {
+              setEncounterId(newEncounter.id);
+            } else if (encErr) {
+              console.error("Failed to create encounter:", encErr);
+            }
           }
         }
 
@@ -162,10 +174,11 @@ export default function AyushPage() {
     setIsLoading(true);
     try {
       if (!encounterId || !patientId) {
-        throw new Error("No active patient or encounter found. Please start a conversation first.");
+        alert("No active patient or encounter found. Please start a conversation first.");
+        return;
       }
 
-      await fetch(`${getApiUrl()}/api/ayush/submit`, {
+      const res = await fetch(`${getApiUrl()}/api/ayush/submit`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -174,13 +187,20 @@ export default function AyushPage() {
           answers: finalAnswers
         }),
       });
+      
+      if (!res.ok) {
+        throw new Error("Failed to submit assessment to server.");
+      }
+
       setIsFinished(true);
       // Wait a moment then redirect to summary
       setTimeout(() => {
         router.push("/dashboard/summary");
       }, 2000);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      alert(error.message || "Failed to submit assessment.");
+      setCurrentIndex(currentIndex); // Keep on last question to retry
     } finally {
       setIsLoading(false);
     }

@@ -258,17 +258,28 @@ export default function SummaryPage() {
         </div>
       )}
 
-      {/* AYUSH SECTION */}
+      {/* AYUSH ASSESSMENT SECTION */}
       {ayushData && (
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8">
-          <div className="bg-emerald-50/50 border-b border-gray-100 px-6 py-4 flex items-center gap-3">
-            <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
-              <Leaf size={20} />
+        <div className="bg-white border border-emerald-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+          <div className="bg-emerald-50 border-b border-emerald-100 px-6 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-emerald-100 p-2 rounded-lg text-emerald-700">
+                <Leaf size={20} />
+              </div>
+              <h2 className="text-lg font-bold text-gray-800">Ayurvedic Profile</h2>
             </div>
-            <h2 className="text-lg font-bold text-gray-800">Ayurvedic Assessment (Prakriti)</h2>
           </div>
           
-          <div className="p-6 space-y-6">
+          <div className="p-6">
+            {ayushData.raw_answers?.llm_summary && (
+              <div className="mb-6 bg-emerald-50/50 border border-emerald-100 rounded-xl p-5">
+                <h3 className="text-sm font-bold text-emerald-800 mb-2 uppercase tracking-wide">Clinical Summary</h3>
+                <p className="text-gray-700 text-sm/relaxed whitespace-pre-wrap">
+                  {ayushData.raw_answers.llm_summary}
+                </p>
+              </div>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Dominant Dosha</h3>

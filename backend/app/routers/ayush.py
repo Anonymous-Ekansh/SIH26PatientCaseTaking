@@ -22,6 +22,44 @@ class AyushSubmission(BaseModel):
 def get_ayush_questions():
     return {"questions": AYUSH_QUESTIONS}
 
+import json
+from openai import OpenAI
+
+def generate_ayush_summary(answers: dict, prakriti: dict, dominant: str, vaya: str, bmi: float) -> str:
+    """Generates a professional clinical summary of the Ayush assessment using Groq LLM."""
+    try:
+        api_key = os.getenv("GROQ_API_KEY")
+        if not api_key:
+            return "LLM Summarization unavailable: No GROQ_API_KEY configured."
+            
+        client = OpenAI(
+            base_url="https://api.groq.com/openai/v1",
+            api_key=api_key,
+        )
+        
+        prompt = f"""
+        You are an expert Ayurvedic doctor. Please write a concise, professional clinical summary (1-2 paragraphs) of the following patient assessment:
+        
+        - Vaya (Age Category): {vaya}
+        - BMI: {bmi if bmi else 'Not provided'}
+        - Dosha Scores: {json.dumps(prakriti)}
+        - Dominant Prakriti: {dominant.upper()}
+        - Raw Answers: {json.dumps(answers)}
+        
+        Focus on their constitution, imbalances based on their answers, and briefly mention general lifestyle/dietary advice for this prakriti. Do NOT use markdown bolding/formatting excessively, keep it readable as a plain text clinical note.
+        """
+        
+        response = client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "system", "content": "You are a helpful Ayurvedic AI."}, {"role": "user", "content": prompt}],
+            max_tokens=500,
+            temperature=0.3
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"LLM Summarization failed: {e}")
+        return f"Assessment captured. (LLM Summary failed: {e})"
+
 @router.post("/submit")
 def submit_ayush_assessment(submission: AyushSubmission):
     answers = submission.answers
@@ -66,6 +104,12 @@ def submit_ayush_assessment(submission: AyushSubmission):
         age_int = 30
     
     vaya = compute_vaya_category(age_int)
+    
+    # Generate LLM Summary
+    llm_summary = generate_ayush_summary(answers, dosha_score, dominant, vaya, bmi)
+    
+    # Add llm_summary inside raw_answers so we don't need a DB migration
+    answers["llm_summary"] = llm_summary
 
     result = {
         "prakriti_scores": dosha_score,

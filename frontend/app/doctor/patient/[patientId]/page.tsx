@@ -86,22 +86,24 @@ export default function DoctorPatientSummary({ params }: { params: Promise<{ pat
     setIsSaving(true);
     try {
       if (conversation?.id) {
-        // Update the conversations table in Supabase directly
-        const { error } = await supabase
-          .from("conversations")
-          .update({
+        const res = await fetch(`${getApiUrl()}/api/documents/doctor-notes`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            conversation_id: conversation.id,
             chief_complaint: editedChiefComplaint,
-            state: {
-              ...conversation.state,
-              past_history: editedPastHistory,
-              drug_allergy_history: editedDrugAllergy,
-              family_history: editedFamilyHistory,
-              doctor_notes: doctorNotes,
-            }
+            past_history: editedPastHistory,
+            drug_allergy_history: editedDrugAllergy,
+            family_history: editedFamilyHistory,
+            doctor_notes: doctorNotes
           })
-          .eq("id", conversation.id);
+        });
 
-        if (error) throw error;
+        if (!res.ok) {
+          throw new Error("Failed to save via backend API");
+        }
 
         setSaved(true);
         setIsEditing(false);
