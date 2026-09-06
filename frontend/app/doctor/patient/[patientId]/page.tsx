@@ -14,6 +14,11 @@ import {
   Edit3,
 } from "lucide-react";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function DoctorPatientSummary({ params }: { params: { patientId: string } }) {
   const { patientId } = params;
@@ -79,19 +84,42 @@ export default function DoctorPatientSummary({ params }: { params: { patientId: 
 
   const handleSaveEdits = async () => {
     setIsSaving(true);
-    // For now, save to localStorage as doctor notes; a full implementation would POST to backend
-    localStorage.setItem(`doctor_notes_${patientId}`, JSON.stringify({
-      chief_complaint: editedChiefComplaint,
-      past_history: editedPastHistory,
-      drug_allergy: editedDrugAllergy,
-      family_history: editedFamilyHistory,
-      notes: doctorNotes,
-      updated_at: new Date().toISOString(),
-    }));
-    setIsSaving(false);
-    setSaved(true);
-    setIsEditing(false);
-    setTimeout(() => setSaved(false), 2000);
+    try {
+      if (conversation?.id) {
+        // Update the conversations table in Supabase directly
+        const { error } = await supabase
+          .from("conversations")
+          .update({
+            chief_complaint: editedChiefComplaint,
+            state: {
+              ...conversation.state,
+              past_history: editedPastHistory,
+              drug_allergy_history: editedDrugAllergy,
+              family_history: editedFamilyHistory,
+            }
+          })
+          .eq("id", conversation.id);
+
+        if (error) throw error;
+        
+        // Save doctor notes locally for now since we don't have a doctor_notes table yet
+        if (doctorNotes) {
+          localStorage.setItem(`doctor_notes_${patientId}`, JSON.stringify({
+            notes: doctorNotes,
+            updated_at: new Date().toISOString(),
+          }));
+        }
+
+        setSaved(true);
+        setIsEditing(false);
+        setTimeout(() => setSaved(false), 2000);
+      }
+    } catch (err) {
+      console.error("Failed to save edits to Supabase:", err);
+      alert("Failed to save. Ensure RLS policies are applied in Supabase.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Load doctor notes if previously saved
