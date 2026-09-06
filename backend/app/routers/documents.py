@@ -313,3 +313,85 @@ def get_doctor_bookings(doctor_auth_id: str = Path(...)):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/patient-summary/{patient_id}")
+def get_patient_summary(patient_id: str = Path(...)):
+    """
+    Get the full summary for a patient's latest encounter.
+    Uses service role to bypass RLS — designed for doctor view.
+    """
+    try:
+        # 1. Get patient info
+        patient_result = (
+            supabase.table("patients")
+            .select("*")
+            .eq("id", patient_id)
+            .maybe_single()
+            .execute()
+        )
+        if not patient_result.data:
+            raise HTTPException(status_code=404, detail="Patient not found.")
+
+        patient = patient_result.data
+
+        # 2. Get latest encounter
+        encounter_result = (
+            supabase.table("encounters")
+            .select("id")
+            .eq("patient_id", patient_id)
+            .order("created_at", desc=True)
+            .limit(1)
+            .maybe_single()
+            .execute()
+        )
+
+        encounter_id = encounter_result.data["id"] if encounter_result.data else None
+
+        conversation = None
+        documents = []
+        ayush = None
+
+        if encounter_id:
+            # 3. Get conversation
+            convo_result = (
+                supabase.table("conversations")
+                .select("*")
+                .eq("encounter_id", encounter_id)
+                .maybe_single()
+                .execute()
+            )
+            conversation = convo_result.data
+
+            # 4. Get documents with entities
+            docs_result = (
+                supabase.table("documents")
+                .select("*, extracted_entities(*)")
+                .eq("encounter_id", encounter_id)
+                .order("uploaded_at", desc=True)
+                .execute()
+            )
+            documents = docs_result.data or []
+
+            # 5. Get AYUSH assessment
+            ayush_result = (
+                supabase.table("ayush_assessments")
+                .select("*")
+                .eq("encounter_id", encounter_id)
+                .maybe_single()
+                .execute()
+            )
+            ayush = ayush_result.data
+
+        return {
+            "patient": patient,
+            "encounter_id": encounter_id,
+            "conversation": conversation,
+            "documents": documents,
+            "ayush": ayush,
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

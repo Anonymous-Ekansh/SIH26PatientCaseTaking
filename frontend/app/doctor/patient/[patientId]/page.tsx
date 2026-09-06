@@ -8,38 +8,53 @@ import {
   Activity, 
   Pill, 
   AlertTriangle,
-  Leaf
+  Leaf,
+  ArrowLeft,
+  Save,
+  Edit3,
 } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function DoctorSummaryPage({ params }: { params: { encounterId: string } }) {
-  const { encounterId } = params;
+export default function DoctorPatientSummary({ params }: { params: { patientId: string } }) {
+  const { patientId } = params;
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   const [conversation, setConversation] = useState<any>(null);
   const [documents, setDocuments] = useState<any[]>([]);
   const [ayushData, setAyushData] = useState<any>(null);
-  const [patientName, setPatientName] = useState<string>("");
+  const [patientName, setPatientName] = useState("");
+
+  // Editable fields
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedChiefComplaint, setEditedChiefComplaint] = useState("");
+  const [editedPastHistory, setEditedPastHistory] = useState("");
+  const [editedDrugAllergy, setEditedDrugAllergy] = useState("");
+  const [editedFamilyHistory, setEditedFamilyHistory] = useState("");
+  const [doctorNotes, setDoctorNotes] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   useEffect(() => {
     async function fetchSummaryData() {
       try {
-        // Use the backend API which uses service role — bypasses RLS
-        const res = await fetch(`${getApiUrl()}/api/documents/encounter-summary/${encounterId}`);
+        const res = await fetch(`${getApiUrl()}/api/documents/patient-summary/${patientId}`);
         
         if (!res.ok) {
           const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || "Failed to load encounter summary.");
+          throw new Error(errData.detail || "Failed to load patient summary.");
         }
 
         const data = await res.json();
 
         if (data.conversation) {
           setConversation(data.conversation);
+          setEditedChiefComplaint(data.conversation.chief_complaint || "");
+          setEditedPastHistory(data.conversation.state?.past_history || "");
+          setEditedDrugAllergy(data.conversation.state?.drug_allergy_history || "");
+          setEditedFamilyHistory(data.conversation.state?.family_history || "");
         }
         if (data.documents) {
           setDocuments(data.documents);
@@ -47,8 +62,8 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
         if (data.ayush) {
           setAyushData(data.ayush);
         }
-        if (data.encounter?.patients?.name) {
-          setPatientName(data.encounter.patients.name);
+        if (data.patient?.name) {
+          setPatientName(data.patient.name);
         }
 
       } catch (err: any) {
@@ -60,7 +75,35 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
     }
 
     fetchSummaryData();
-  }, [encounterId]);
+  }, [patientId]);
+
+  const handleSaveEdits = async () => {
+    setIsSaving(true);
+    // For now, save to localStorage as doctor notes; a full implementation would POST to backend
+    localStorage.setItem(`doctor_notes_${patientId}`, JSON.stringify({
+      chief_complaint: editedChiefComplaint,
+      past_history: editedPastHistory,
+      drug_allergy: editedDrugAllergy,
+      family_history: editedFamilyHistory,
+      notes: doctorNotes,
+      updated_at: new Date().toISOString(),
+    }));
+    setIsSaving(false);
+    setSaved(true);
+    setIsEditing(false);
+    setTimeout(() => setSaved(false), 2000);
+  };
+
+  // Load doctor notes if previously saved
+  useEffect(() => {
+    const savedNotes = localStorage.getItem(`doctor_notes_${patientId}`);
+    if (savedNotes) {
+      try {
+        const parsed = JSON.parse(savedNotes);
+        setDoctorNotes(parsed.notes || "");
+      } catch {}
+    }
+  }, [patientId]);
 
   if (loading) {
     return (
@@ -73,6 +116,9 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
   if (error) {
     return (
       <div className="max-w-[700px] mx-auto px-5 py-10 text-center">
+        <Link href="/doctor/dashboard" className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium mb-6">
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
         <div className="bg-red-50 text-red-600 p-4 rounded-xl inline-block border border-red-100">
           {error}
         </div>
@@ -80,9 +126,7 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
     );
   }
 
-  // Aggregate all extracted entities from all documents
   const allEntities = documents.flatMap(doc => doc.extracted_entities || []);
-
   const diagnoses = allEntities.filter(e => e.entity_type === "diagnosis");
   const medications = allEntities.filter(e => e.entity_type === "medication");
   const investigations = allEntities.filter(e => e.entity_type === "lab_value");
@@ -109,14 +153,37 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
 
   return (
     <div className="max-w-[800px] mx-auto px-4 py-8 font-sans">
-      <Link href="/doctor/dashboard" className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium mb-6">
-        <ArrowLeft size={16} /> Back to Dashboard
-      </Link>
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/doctor/dashboard" className="inline-flex items-center gap-2 text-sm text-sky-600 hover:text-sky-700 font-medium">
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
+        <div className="flex gap-2">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm font-medium hover:bg-amber-100 transition-colors"
+            >
+              <Edit3 size={16} /> Edit Summary
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveEdits}
+              disabled={isSaving}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                saved ? "bg-emerald-100 text-emerald-700" : "bg-sky-50 text-sky-700 hover:bg-sky-100"
+              }`}
+            >
+              <Save size={16} /> {saved ? "Saved!" : isSaving ? "Saving..." : "Save Changes"}
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight">
-          Clinical Summary {patientName ? `— ${patientName}` : ""}
+          Clinical Summary — {patientName || "Patient"}
         </h1>
-        <p className="text-gray-500 mt-1">A structured overview of the patient's medical history and uploaded records.</p>
+        <p className="text-gray-500 mt-1">Physician-editable overview of the patient&apos;s medical history.</p>
       </div>
 
       {conversation?.red_flag && (
@@ -135,6 +202,24 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
         </div>
       )}
 
+      {/* DOCTOR NOTES */}
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl shadow-sm overflow-hidden mb-8">
+        <div className="px-6 py-4 border-b border-amber-200 flex items-center gap-3">
+          <div className="bg-amber-100 p-2 rounded-lg text-amber-600">
+            <Edit3 size={20} />
+          </div>
+          <h2 className="text-lg font-bold text-gray-800">Doctor&apos;s Notes</h2>
+        </div>
+        <div className="p-6">
+          <textarea
+            value={doctorNotes}
+            onChange={(e) => setDoctorNotes(e.target.value)}
+            placeholder="Add your clinical notes, observations, and recommendations here..."
+            className="w-full min-h-[100px] p-3 rounded-lg border border-amber-200 bg-white text-sm outline-none focus:border-amber-400 resize-y"
+          />
+        </div>
+      </div>
+
       {/* CONVERSATION HISTORY SECTION */}
       {conversation && (
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8">
@@ -148,13 +233,16 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
           <div className="p-6 space-y-6">
             <div>
               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Chief Complaint</h3>
-              <p className="text-gray-800 font-medium text-lg">
-                {conversation.chief_complaint || "Not recorded"}
-              </p>
-              {conversation.complaint_category && (
-                <span className="inline-block mt-2 text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
-                  Category: {conversation.complaint_category}
-                </span>
+              {isEditing ? (
+                <textarea
+                  value={editedChiefComplaint}
+                  onChange={(e) => setEditedChiefComplaint(e.target.value)}
+                  className="w-full p-3 rounded-lg border border-gray-200 text-sm outline-none focus:border-sky-400 resize-y"
+                />
+              ) : (
+                <p className="text-gray-800 font-medium text-lg">
+                  {editedChiefComplaint || conversation.chief_complaint || "Not recorded"}
+                </p>
               )}
             </div>
 
@@ -179,15 +267,27 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
             <div className="border-t border-gray-100 pt-5 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Past History</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.past_history || "None"}</p>
+                {isEditing ? (
+                  <textarea value={editedPastHistory} onChange={(e) => setEditedPastHistory(e.target.value)} className="w-full p-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-sky-400 resize-y" />
+                ) : (
+                  <p className="text-gray-700 text-sm">{editedPastHistory || conversation.state?.past_history || "None"}</p>
+                )}
               </div>
               <div>
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Drug/Allergy</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.drug_allergy_history || "None"}</p>
+                {isEditing ? (
+                  <textarea value={editedDrugAllergy} onChange={(e) => setEditedDrugAllergy(e.target.value)} className="w-full p-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-sky-400 resize-y" />
+                ) : (
+                  <p className="text-gray-700 text-sm">{editedDrugAllergy || conversation.state?.drug_allergy_history || "None"}</p>
+                )}
               </div>
               <div>
                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Family History</h3>
-                <p className="text-gray-700 text-sm">{conversation.state?.family_history || "None"}</p>
+                {isEditing ? (
+                  <textarea value={editedFamilyHistory} onChange={(e) => setEditedFamilyHistory(e.target.value)} className="w-full p-2 rounded-lg border border-gray-200 text-sm outline-none focus:border-sky-400 resize-y" />
+                ) : (
+                  <p className="text-gray-700 text-sm">{editedFamilyHistory || conversation.state?.family_history || "None"}</p>
+                )}
               </div>
             </div>
           </div>
@@ -242,7 +342,7 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
         </div>
       )}
 
-      {/* DOCUMENT EXTRACTIONS SECTION */}
+      {/* DOCUMENT EXTRACTIONS */}
       {allEntities.length > 0 && (
         <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-purple-50/50 border-b border-gray-100 px-6 py-4 flex items-center gap-3">
@@ -253,13 +353,10 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
           </div>
 
           <div className="p-6 space-y-8">
-            
-            {/* Diagnoses */}
             {diagnoses.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
-                  <Activity size={16} className="text-indigo-500" />
-                  Diagnoses Found
+                  <Activity size={16} className="text-indigo-500" /> Diagnoses Found
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {diagnoses.map((d, i) => (
@@ -271,12 +368,10 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
               </div>
             )}
 
-            {/* Medications */}
             {medications.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
-                  <Pill size={16} className="text-teal-500" />
-                  Medications Found
+                  <Pill size={16} className="text-teal-500" /> Medications Found
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {medications.map((m, i) => (
@@ -289,12 +384,10 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
               </div>
             )}
 
-            {/* Procedures */}
             {procedures.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
-                  <Activity size={16} className="text-rose-500" />
-                  Procedures Found
+                  <Activity size={16} className="text-rose-500" /> Procedures Found
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {procedures.map((p, i) => (
@@ -306,12 +399,10 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
               </div>
             )}
 
-            {/* Investigations */}
             {investigations.length > 0 && (
               <div>
                 <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2 mb-3">
-                  <FileText size={16} className="text-amber-500" />
-                  Lab Results
+                  <FileText size={16} className="text-amber-500" /> Lab Results
                 </h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm text-left">
@@ -340,11 +431,9 @@ export default function DoctorSummaryPage({ params }: { params: { encounterId: s
                 </div>
               </div>
             )}
-
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -224,16 +224,11 @@ export default function DoctorDashboard() {
                     </div>
                     
                     <button 
-                      onClick={() => router.push(`/doctor/summary/${booking.encounter_id}`)}
-                      disabled={!booking.encounter_id}
-                      className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                        booking.encounter_id 
-                          ? "bg-indigo-50 text-indigo-700 hover:bg-indigo-100" 
-                          : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                      }`}
+                      onClick={() => router.push(`/doctor/patient/${booking.patient_id}`)}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-colors bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
                     >
                       <FileText size={16} />
-                      {booking.encounter_id ? "View Case Summary" : "Not Started Yet"}
+                      View Case Summary
                     </button>
                   </div>
                 ))}
