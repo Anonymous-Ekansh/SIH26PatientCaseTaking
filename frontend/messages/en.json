@@ -69,7 +69,8 @@
     "proceed_link": "Proceed to document upload",
     "loading": "Loading...",
     "error_start": "Error starting conversation. Please try again.",
-    "error_send": "Error sending response. Please try again."
+    "error_send": "Error sending response. Please try again.",
+    "default_question": "What brings you in today?"
   },
   "Documents": {
     "title": "Your documents",

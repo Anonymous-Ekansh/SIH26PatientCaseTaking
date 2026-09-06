@@ -57,7 +57,7 @@ export default function ConversationPage() {
         const res = await fetch(`${getApiUrl()}/api/conversation/start`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ auth_user_id: user.id }),
+          body: JSON.stringify({ auth_user_id: user.id, language: language }),
         });
 
         if (!res.ok) throw new Error("Failed to start conversation");
@@ -174,7 +174,7 @@ export default function ConversationPage() {
 
   const handleAgentStep = (step: any) => {
     if (step.paused) {
-      setQuestion(step.question || "Can you tell me more about that?");
+      setQuestion(step.question || t('default_question'));
       if (step.type === "chief_complaint_request") {
         setProgress(10);
       } else {
