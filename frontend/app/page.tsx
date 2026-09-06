@@ -7,6 +7,8 @@ import {
   FileText,
   CheckCircle2,
   ArrowRight,
+  Leaf,
+  Calendar,
 } from "lucide-react";
 import LanguageToggle from "./components/LanguageToggle";
 
@@ -188,6 +190,85 @@ export default function Home() {
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_sum_title')}</h3>
                 <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_sum_desc')}</p>
+              </div>
+            </div>
+
+            {/* Feature 4: AYUSH Assessment */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-orange-50 p-6 md:p-8 rounded-3xl border border-orange-200 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-orange-100 p-5 flex flex-col gap-4 max-w-sm mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                  <div className="flex justify-between items-center border-b border-orange-50 pb-2">
+                    <span className="font-bold text-gray-800">Dosha Analysis</span>
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full font-bold">Vata Dominant</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                        <span>Vata</span> <span>60%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-500 w-[60%]"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                        <span>Pitta</span> <span>30%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-400 w-[30%]"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                        <span>Kapha</span> <span>10%</span>
+                      </div>
+                      <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-orange-300 w-[10%]"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center mb-6">
+                  <Leaf size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_ayush_title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_ayush_desc')}</p>
+              </div>
+            </div>
+
+            {/* Feature 5: Seamless Booking */}
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-teal-50 p-6 md:p-8 rounded-3xl border border-teal-200 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-teal-100 p-5 max-w-sm mx-auto transform -rotate-2 hover:rotate-0 transition-transform duration-300">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 font-bold">
+                      DR
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-gray-900">Dr. Rakesh Kumar</h4>
+                      <p className="text-xs text-gray-500">Cardiology</p>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-100 mb-3">
+                    <div className="text-xs text-gray-500 font-bold mb-1 uppercase">Appointment</div>
+                    <div className="text-sm font-semibold text-gray-800 flex items-center justify-between">
+                      <span>Today, 10:30 AM</span>
+                      <CheckCircle2 size={16} className="text-teal-500" />
+                    </div>
+                  </div>
+                  <button className="w-full bg-teal-600 text-white text-sm font-bold py-2 rounded-lg opacity-90 cursor-default">
+                    Linked to EHR
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mb-6">
+                  <Calendar size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t('showcase_book_title')}</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">{t('showcase_book_desc')}</p>
               </div>
             </div>
 

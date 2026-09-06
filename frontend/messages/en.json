@@ -38,6 +38,10 @@
     "showcase_doc_desc": "Upload scattered prescriptions and lab reports. Our OCR pipeline extracts diagnoses and medications instantly.",
     "showcase_sum_title": "Structured Clinical Summary",
     "showcase_sum_desc": "Doctors receive a standardized, pre-filled case sheet before the patient even walks in.",
+    "showcase_ayush_title": "Specialized AYUSH Assessment",
+    "showcase_ayush_desc": "For Ayurvedic OPDs, capture in-depth Dashavidha Pariksha parameters and automatically calculate Dosha imbalances.",
+    "showcase_book_title": "Seamless Patient Booking",
+    "showcase_book_desc": "Patients easily book time slots with their preferred doctors. Their entire medical summary is linked instantly to the appointment.",
     "footer": "Built for Smart India Hackathon, Problem Statement SIH26047, Ministry of Ayush"
   },
   "Dashboard": {
