@@ -27,12 +27,6 @@ export default function DashboardHome() {
 
   const SECTIONS = [
     {
-      title: t('book_title'),
-      desc: t('book_desc'),
-      icon: Calendar,
-      href: "/dashboard/book",
-    },
-    {
       title: t('conv_title'),
       desc: t('conv_desc'),
       icon: MessageSquare,
@@ -55,6 +49,12 @@ export default function DashboardHome() {
       desc: t('ayush_desc'),
       icon: Leaf,
       href: "/dashboard/ayush",
+    },
+    {
+      title: t('book_title'),
+      desc: t('book_desc'),
+      icon: Calendar,
+      href: "/dashboard/book",
     },
   ];
 
