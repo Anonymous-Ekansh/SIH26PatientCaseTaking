@@ -12,9 +12,9 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MediKiosk | AI-Powered Patient Case-Taking",
+  title: "TrialSaathi | Clinical Trial Management",
   description:
-    "MediKiosk listens, scans, and prepares a complete patient history for your doctor, in the language you speak, before your consultation even starts.",
+    "TrialSaathi: Voice-first, audit-ready clinical trial data capture for Ayurveda research.",
 };
 
 export default async function RootLayout({

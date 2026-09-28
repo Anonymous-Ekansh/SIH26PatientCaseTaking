@@ -16,6 +16,11 @@
     "coming_soon": "coming soon"
   },
   "Landing": {
+    "trialsaathi_headline": "Voice-first, audit-ready clinical trial data capture for Ayurveda research",
+    "btn_staff_signin": "Trial dashboard (staff sign-in)",
+    "btn_kiosk": "Participant kiosk",
+    "btn_intake": "Patient intake (MediKiosk)",
+    "footer_text": "Built for Smart India Hackathon 2026, Problem Statement SIH26046, Ministry of Ayush. GCP-aligned prototype, not a certified system.",
     "hero_title": "Your medical history, ready before you walk in.",
     "hero_subtitle": "MediKiosk listens, scans, and prepares a complete patient history for your doctor, in the language you speak, before your consultation even starts.",
     "get_started": "Get started",

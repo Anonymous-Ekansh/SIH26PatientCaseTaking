@@ -29,14 +29,43 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E5E7EB]">
         <div className="max-w-[1100px] mx-auto px-5 h-16 flex items-center justify-between">
           <span className="font-bold text-xl tracking-tight">
-            Medi<span className="text-[#0EA5E9]">Kiosk</span>
+            Trial<span className="text-[#0EA5E9]">Saathi</span> <span className="text-xs text-gray-500 font-normal ml-2 hidden sm:inline">includes MediKiosk intake</span>
           </span>
           <LanguageToggle />
         </div>
       </header>
 
       <main>
-        {/* ── Hero ── */}
+        {/* ── TrialSaathi Hero ── */}
+        <section className="bg-sky-50 py-16 md:py-24 border-b border-[#E5E7EB]">
+          <div className="max-w-[1100px] mx-auto px-5 text-center flex flex-col items-center">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight max-w-4xl mb-8 text-[#1A1A1A]">
+              {t('trialsaathi_headline')}
+            </h1>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/trial"
+                className="inline-flex items-center justify-center px-7 py-3.5 bg-[#0EA5E9] text-white font-semibold rounded-full hover:bg-sky-600 transition-colors active:scale-[0.97] w-full sm:w-auto"
+              >
+                {t('btn_staff_signin')}
+              </Link>
+              <Link
+                href="/trial/kiosk"
+                className="inline-flex items-center justify-center px-7 py-3.5 bg-white text-[#0EA5E9] border-2 border-[#0EA5E9] font-semibold rounded-full hover:bg-sky-50 transition-colors active:scale-[0.97] w-full sm:w-auto"
+              >
+                {t('btn_kiosk')}
+              </Link>
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center justify-center px-7 py-3.5 bg-slate-800 text-white font-semibold rounded-full hover:bg-slate-700 transition-colors active:scale-[0.97] w-full sm:w-auto"
+              >
+                {t('btn_intake')}
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Existing Hero ── */}
         <section className="max-w-[1100px] mx-auto px-5 pt-20 pb-16 md:pt-28 md:pb-24 text-center flex flex-col items-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight max-w-3xl mb-5 text-[#1A1A1A]">
             {t('hero_title')}
@@ -280,10 +309,10 @@ export default function Home() {
       <footer className="border-t border-[#E5E7EB] py-8">
         <div className="max-w-[1100px] mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-3">
           <span className="font-bold text-lg tracking-tight">
-            Medi<span className="text-[#0EA5E9]">Kiosk</span>
+            Trial<span className="text-[#0EA5E9]">Saathi</span>
           </span>
-          <p className="text-xs text-[#6B7280] text-center md:text-right">
-            {t('footer')}
+          <p className="text-xs text-[#6B7280] text-center md:text-right max-w-lg">
+            {t('footer_text')}
           </p>
         </div>
       </footer>
