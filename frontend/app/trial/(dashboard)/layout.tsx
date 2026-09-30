@@ -4,7 +4,7 @@ import {
   FolderKanban, BellRing, Users, ShieldAlert, CheckCircle, 
   FileCheck, FileClock, Download, Stamp 
 } from "lucide-react";
-import { TrialRoleProvider, useRole } from "../../lib/trial/useRole";
+import { TrialRoleProvider, useRole } from "@/app/lib/trial/useRole";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 

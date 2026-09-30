@@ -1,6 +1,6 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { createClient } from "../supabase/client";
+import { createClient } from "@/app/lib/supabase/client";
 
 type RoleContextType = {
   role: string | null;

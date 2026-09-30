@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createClient } from "../../../lib/supabase/client";
+import { createClient } from "@/app/lib/supabase/client";
 
 export default function TrialLogin() {
   const [email, setEmail] = useState("");
