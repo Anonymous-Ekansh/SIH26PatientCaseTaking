@@ -23,12 +23,27 @@ const navItems = [
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { role, loading } = useRole();
   const router = useRouter();
+  const [openAlerts, setOpenAlerts] = useState(0);
 
   useEffect(() => {
     if (!loading && !role) {
        router.push('/trial/login');
     }
   }, [loading, role, router]);
+
+  useEffect(() => {
+    if (role) {
+      const fetchAlerts = async () => {
+        const { createClient } = await import('@/app/lib/supabase/client');
+        const supabase = createClient();
+        const { count } = await supabase.from('ct_alerts').select('*', { count: 'exact', head: true }).eq('status', 'open');
+        if (count !== null) setOpenAlerts(count);
+      };
+      fetchAlerts();
+      const intv = setInterval(fetchAlerts, 15000);
+      return () => clearInterval(intv);
+    }
+  }, [role]);
 
   if (loading) return <div className="p-8">Loading dashboard...</div>;
   if (!role) return null;
@@ -65,8 +80,16 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </aside>
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center px-8 shadow-sm z-10">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10">
           <h2 className="text-lg font-semibold text-slate-800">Dashboard</h2>
+          <Link href="/trial/alerts" className="relative p-2 text-slate-500 hover:text-slate-800 transition-colors">
+            <BellRing size={20} />
+            {openAlerts > 0 && (
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full">
+                {openAlerts > 99 ? '99+' : openAlerts}
+              </span>
+            )}
+          </Link>
         </header>
         <div className="flex-1 overflow-auto p-8">
           {children}
