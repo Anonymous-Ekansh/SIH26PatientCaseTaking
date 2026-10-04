@@ -49,6 +49,16 @@ export default function KioskMenu() {
           <h2 className="text-3xl font-black text-slate-900 mb-2">Screening</h2>
           <p className="text-lg text-slate-500">Answer medical questions for eligibility.</p>
         </button>
+
+        <button 
+          onClick={() => router.push("/trial/kiosk/visit")} 
+          disabled={user.status === 'withdrawn'}
+          className="bg-white p-8 rounded-3xl border-2 border-slate-200 shadow-sm hover:border-blue-500 hover:shadow-md transition-all text-left group disabled:opacity-50 disabled:pointer-events-none"
+        >
+          <Stethoscope size={48} className="text-blue-500 mb-6 group-hover:scale-110 transition-transform" />
+          <h2 className="text-3xl font-black text-slate-900 mb-2">Visit Tasks</h2>
+          <p className="text-lg text-slate-500">Complete your next scheduled visit questionnaire.</p>
+        </button>
         
         <button 
           onClick={() => router.push("/trial/kiosk/consent")} 

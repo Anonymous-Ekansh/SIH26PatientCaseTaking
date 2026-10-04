@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, Filter, Download, Activity, Clock, ShieldAlert, BarChart3 } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
+import { createClient } from "@/app/lib/supabase/client";
 
 export default function TrialPortfolio() {
   const [studies, setStudies] = useState<any[]>([]);

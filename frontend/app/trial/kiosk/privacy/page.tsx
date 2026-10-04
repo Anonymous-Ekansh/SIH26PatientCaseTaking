@@ -2,7 +2,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Shield, Lock, EyeOff, Server } from "lucide-react";
-import { useLanguage } from "../../../../lib/language-context";
+import { useLanguage } from "@/app/lib/language-context";
 
 export default function PrivacyKiosk() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { ShieldAlert, CheckCircle2, Clock, Filter, AlertTriangle, Activity } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
+import { createClient } from "@/app/lib/supabase/client";
 
 export default function AlertsCentre() {
   const [alerts, setAlerts] = useState<any[]>([]);

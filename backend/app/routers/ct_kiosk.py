@@ -140,13 +140,52 @@ def submit_screening(req: FormSubmit, pid: str = Depends(get_kiosk_user)):
         visit_id = v_ins.data[0]["id"]
     else:
         visit_id = v_res.data[0]["id"]
-        supabase.table("ct_visits").update({"status": "done", "actual_on": "now()"}).eq("id", visit_id).execute()
+        # Do not mark done yet, coordinator will verify
 
     supabase.table("ct_form_responses").insert({
         "visit_id": visit_id,
         "form_template_id": req.form_template_id,
         "answers": req.answers,
-        "source": req.source,
-        "entered_by": "Kiosk Patient"
+        "source": req.source
+    }).execute()
+    return {"status": "success"}
+
+@router.get("/next_visit")
+def get_next_visit(pid: str = Depends(get_kiosk_user)):
+    p = supabase.table("ct_participants").select("study_id, withdrawn_at").eq("id", pid).single().execute().data
+    if p and p.get("withdrawn_at"):
+        raise HTTPException(status_code=403, detail="Participant is withdrawn")
+        
+    v_res = supabase.table("ct_visits").select("*").eq("participant_id", pid).eq("status", "scheduled").order("scheduled_on").limit(1).execute()
+    if not v_res.data:
+        raise HTTPException(status_code=404, detail="No scheduled visit found")
+    visit = v_res.data[0]
+    
+    # get templates
+    templates = supabase.table("ct_form_templates").select("*").eq("study_id", p["study_id"]).in_("kind", ["visit", "side_effects"]).execute().data
+    return {"visit": visit, "templates": templates}
+
+class VisitFormSubmit(BaseModel):
+    visit_id: str
+    form_template_id: str
+    answers: dict
+    source: str
+
+@router.post("/visit_response")
+def submit_visit_response(req: VisitFormSubmit, pid: str = Depends(get_kiosk_user)):
+    p = supabase.table("ct_participants").select("withdrawn_at").eq("id", pid).single().execute().data
+    if p and p.get("withdrawn_at"):
+        raise HTTPException(status_code=403, detail="Participant is withdrawn")
+        
+    # verify visit belongs to participant
+    v = supabase.table("ct_visits").select("id").eq("id", req.visit_id).eq("participant_id", pid).single().execute().data
+    if not v:
+        raise HTTPException(status_code=403, detail="Invalid visit")
+
+    supabase.table("ct_form_responses").insert({
+        "visit_id": req.visit_id,
+        "form_template_id": req.form_template_id,
+        "answers": req.answers,
+        "source": req.source
     }).execute()
     return {"status": "success"}

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mic, ArrowLeft, CheckCircle2, Play, Square, FileText } from "lucide-react";
-import { useLanguage } from "../../../../lib/language-context";
+import { useLanguage } from "@/app/lib/language-context";
 
 export default function ConsentKiosk() {
   const router = useRouter();

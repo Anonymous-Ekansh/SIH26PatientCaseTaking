@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import LanguageToggle from "../../../components/trial/LanguageToggle";
+import LanguageToggle from "@/app/components/trial/LanguageToggle";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 

@@ -4,13 +4,15 @@ import { createClient } from "@/app/lib/supabase/client";
 
 type RoleContextType = {
   role: string | null;
+  userId: string | null;
   loading: boolean;
 };
 
-const RoleContext = createContext<RoleContextType>({ role: null, loading: true });
+const RoleContext = createContext<RoleContextType>({ role: null, userId: null, loading: true });
 
 export function TrialRoleProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
@@ -24,13 +26,14 @@ export function TrialRoleProvider({ children }: { children: React.ReactNode }) {
       const { data } = await supabase.from('ct_profiles').select('role').eq('user_id', user.id).single();
       if (data) {
         setRole(data.role);
+        setUserId(user.id);
       }
       setLoading(false);
     }
     fetchRole();
   }, []);
 
-  return <RoleContext.Provider value={{ role, loading }}>{children}</RoleContext.Provider>;
+  return <RoleContext.Provider value={{ role, userId, loading }}>{children}</RoleContext.Provider>;
 }
 
 export function useRole() {

@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { RoleGate } from "../../../lib/trial/useRole";
+import { RoleGate } from "@/app/lib/trial/useRole";
 import { Settings, Save, AlertCircle } from "lucide-react";
-import { createClient } from "../../../lib/supabase/client";
+import { createClient } from "@/app/lib/supabase/client";
 
 export default function AlertRules() {
   const [rules, setRules] = useState<any[]>([]);

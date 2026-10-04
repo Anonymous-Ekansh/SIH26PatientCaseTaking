@@ -1,15 +1,17 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Mic, ArrowLeft, Send, CheckCircle2, Play, Square, X } from "lucide-react";
+import { Mic, ArrowLeft, CheckCircle2, Play, Square, X } from "lucide-react";
 import { useLanguage } from "@/app/lib/language-context";
 
-export default function ScreeningKiosk() {
+export default function VisitKiosk() {
   const router = useRouter();
   const { language } = useLanguage();
-  const [template, setTemplate] = useState<any>(null);
+  const [visit, setVisit] = useState<any>(null);
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [answersByTemplate, setAnswersByTemplate] = useState<Record<string, Record<string, any>>>({});
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   
@@ -25,22 +27,36 @@ export default function ScreeningKiosk() {
       router.push("/trial/kiosk");
       return;
     }
-    fetch("http://localhost:8000/api/ct/kiosk/screening", {
+    fetch("http://localhost:8000/api/ct/kiosk/next_visit", {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
       if (!res.ok) {
-        if(res.status === 403) throw new Error("Withdrawn");
-        throw new Error("No screening form");
+        if(res.status === 404) throw new Error("No scheduled visit found for today.");
+        throw new Error("Failed to load visit");
       }
       return res.json();
     })
     .then(data => {
-      setTemplate(data);
+      setVisit(data.visit);
+      setTemplates(data.templates);
+      
+      const allQ: any[] = [];
+      const tempAns: any = {};
+      data.templates.forEach((t: any) => {
+        tempAns[t.id] = {};
+        if (t.questions) {
+          t.questions.forEach((q: any) => {
+            allQ.push({ ...q, template_id: t.id, kind: t.kind });
+          });
+        }
+      });
+      setQuestions(allQ);
+      setAnswersByTemplate(tempAns);
       setLoading(false);
-      // Auto play first question
-      if(data.questions && data.questions.length > 0) {
-        playAudio(getQuestionText(data.questions[0]));
+
+      if (allQ.length > 0) {
+        playAudio(getQuestionText(allQ[0]));
       }
     })
     .catch(e => {
@@ -117,30 +133,58 @@ export default function ScreeningKiosk() {
   };
 
   const saveAnswerAndNext = async (value: any, source: 'voice' | 'touch') => {
-    const q = template.questions[currentIdx];
-    setAnswers(prev => ({ ...prev, [q.id]: value }));
+    const q = questions[currentIdx];
+    
+    // Update local state
+    const newAnswersByTemplate = { ...answersByTemplate };
+    newAnswersByTemplate[q.template_id] = { ...newAnswersByTemplate[q.template_id], [q.id]: value };
+    setAnswersByTemplate(newAnswersByTemplate);
+
+    // If it's a side effect question, trigger the flag check
+    if (q.kind === 'side_effects' && typeof value === 'string' && value.length > 2) {
+      try {
+        fetch("http://localhost:8000/api/ct/adverse/check_flag", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            participant_id: visit.participant_id,
+            visit_id: visit.id,
+            question_text: getQuestionText(q),
+            answer_text: value
+          })
+        }); // Fire and forget
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
     setShowReview(false);
     setDraftTranscript("");
 
-    if (currentIdx < template.questions.length - 1) {
+    if (currentIdx < questions.length - 1) {
       setCurrentIdx(currentIdx + 1);
-      playAudio(getQuestionText(template.questions[currentIdx + 1]));
+      playAudio(getQuestionText(questions[currentIdx + 1]));
     } else {
-      // Submit
+      // Finished all questions, submit each template
       try {
         const token = localStorage.getItem("kiosk_token");
-        await fetch("http://localhost:8000/api/ct/kiosk/screening", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` 
-          },
-          body: JSON.stringify({
-            form_template_id: template.id,
-            answers: { ...answers, [q.id]: value },
-            source
-          })
-        });
+        for (const template of templates) {
+          if (Object.keys(newAnswersByTemplate[template.id]).length > 0) {
+            await fetch("http://localhost:8000/api/ct/kiosk/visit_response", {
+              method: "POST",
+              headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}` 
+              },
+              body: JSON.stringify({
+                visit_id: visit.id,
+                form_template_id: template.id,
+                answers: newAnswersByTemplate[template.id],
+                source
+              })
+            });
+          }
+        }
         setIsFinished(true);
       } catch (e) {
         console.error(e);
@@ -155,7 +199,7 @@ export default function ScreeningKiosk() {
       <div className="min-h-screen bg-sky-50 flex flex-col items-center justify-center p-8 text-center">
         <CheckCircle2 size={120} className="text-emerald-500 mb-8" />
         <h1 className="text-5xl font-black text-slate-900 mb-6">Thank You!</h1>
-        <p className="text-2xl text-slate-600 mb-12">Your responses have been recorded. Your coordinator will confirm your eligibility.</p>
+        <p className="text-2xl text-slate-600 mb-12">Your responses have been recorded. Your coordinator will confirm your visit.</p>
         <button 
           onClick={() => router.push("/trial/kiosk/menu")}
           className="px-12 py-6 bg-slate-900 text-white text-2xl font-bold rounded-2xl hover:bg-slate-800"
@@ -166,7 +210,7 @@ export default function ScreeningKiosk() {
     );
   }
 
-  const q = template.questions[currentIdx];
+  const q = questions[currentIdx];
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col p-6 items-center">
@@ -175,13 +219,13 @@ export default function ScreeningKiosk() {
           <ArrowLeft size={32} />
         </button>
         <div className="flex-1 text-center font-bold text-slate-400 text-xl tracking-widest uppercase">
-          Question {currentIdx + 1} of {template.questions.length}
+          Visit Questionnaire - Question {currentIdx + 1} of {questions.length}
         </div>
         <div className="w-16"></div>
       </div>
 
       <div className="w-full max-w-4xl bg-white rounded-3xl p-12 shadow-sm border border-slate-200 text-center relative overflow-hidden">
-        <div className="absolute top-0 left-0 h-2 bg-sky-500 transition-all" style={{ width: `${((currentIdx) / template.questions.length) * 100}%` }}></div>
+        <div className="absolute top-0 left-0 h-2 bg-sky-500 transition-all" style={{ width: `${((currentIdx) / questions.length) * 100}%` }}></div>
         
         <div className="mb-12">
           <button onClick={() => playAudio(getQuestionText(q))} className="mx-auto mb-8 w-20 h-20 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center hover:bg-sky-100 transition-colors">

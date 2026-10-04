@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { 
   FolderKanban, BellRing, Users, ShieldAlert, CheckCircle, 
-  FileCheck, FileClock, Download, Stamp 
+  FileCheck, FileClock, Download, Stamp, ListChecks 
 } from "lucide-react";
 import { TrialRoleProvider, useRole } from "@/app/lib/trial/useRole";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { name: "Portfolio", href: "/trial", icon: FolderKanban, allow: ["pi", "coordinator", "monitor", "leadership", "admin"] },
@@ -18,6 +18,7 @@ const navItems = [
   { name: "Audit", href: "/trial/audit", icon: FileClock, allow: ["admin", "regulator_ro"] },
   { name: "Exports", href: "/trial/exports", icon: Download, allow: ["pi", "coordinator", "admin", "leadership"] },
   { name: "Conformance", href: "/trial/conformance", icon: Stamp, allow: ["monitor", "regulator_ro", "admin"] },
+  { name: "Verify Queue", href: "/trial/verify", icon: ListChecks, allow: ["pi", "coordinator", "monitor"] },
 ];
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
