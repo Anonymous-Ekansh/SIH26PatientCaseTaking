@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { 
   FolderKanban, BellRing, Users, ShieldAlert, CheckCircle, 
-  FileCheck, FileClock, Download, Stamp, ListChecks 
+  FileCheck, FileClock, Download, Stamp, ListChecks, FlaskConical 
 } from "lucide-react";
 import { TrialRoleProvider, useRole } from "@/app/lib/trial/useRole";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,7 @@ const navItems = [
   { name: "Exports", href: "/trial/exports", icon: Download, allow: ["pi", "coordinator", "admin", "leadership"] },
   { name: "Conformance", href: "/trial/conformance", icon: Stamp, allow: ["monitor", "regulator_ro", "admin"] },
   { name: "Verify Queue", href: "/trial/verify", icon: ListChecks, allow: ["pi", "coordinator", "monitor"] },
+  { name: "Lab OCR", href: "/trial/labs", icon: FlaskConical, allow: ["pi", "coordinator", "monitor", "admin"] },
 ];
 
 function DashboardContent({ children }: { children: React.ReactNode }) {

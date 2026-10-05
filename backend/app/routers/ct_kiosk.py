@@ -162,7 +162,7 @@ def get_next_visit(pid: str = Depends(get_kiosk_user)):
     visit = v_res.data[0]
     
     # get templates
-    templates = supabase.table("ct_form_templates").select("*").eq("study_id", p["study_id"]).in_("kind", ["visit", "side_effects"]).execute().data
+    templates = supabase.table("ct_form_templates").select("*").eq("study_id", p["study_id"]).in_("kind", ["visit", "side_effects", "dashavidha", "prakriti"]).execute().data
     return {"visit": visit, "templates": templates}
 
 class VisitFormSubmit(BaseModel):
@@ -181,6 +181,22 @@ def submit_visit_response(req: VisitFormSubmit, pid: str = Depends(get_kiosk_use
     v = supabase.table("ct_visits").select("id").eq("id", req.visit_id).eq("participant_id", pid).single().execute().data
     if not v:
         raise HTTPException(status_code=403, detail="Invalid visit")
+
+    # If this is the Prakriti form, calculate scores
+    t = supabase.table("ct_form_templates").select("kind").eq("id", req.form_template_id).single().execute().data
+    if t and t["kind"] == "prakriti":
+        from app.data.ayush_questions import AYUSH_QUESTIONS
+        dosha_score = {"vata": 0, "pitta": 0, "kapha": 0}
+        for q in AYUSH_QUESTIONS:
+            if q["id"] in req.answers:
+                ans_val = req.answers[q["id"]]
+                ans_list = ans_val if isinstance(ans_val, list) else [ans_val]
+                for val in ans_list:
+                    # value matches label since Kiosk options are strings
+                    for option in q.get("options", []):
+                        if option["label"] == val and "dosha" in option:
+                            dosha_score[option["dosha"]] += 1
+        req.answers["prakriti_scores"] = dosha_score
 
     supabase.table("ct_form_responses").insert({
         "visit_id": req.visit_id,

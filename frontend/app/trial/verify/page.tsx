@@ -181,6 +181,40 @@ export default function VerifyQueue() {
                     </div>
                   </div>
 
+                  {res.answers?.prakriti_scores && (
+                    <div className="p-6 border-t border-slate-100 bg-slate-50/50">
+                      <div className="mb-4">
+                        <span className="font-bold text-gray-800">Dosha Analysis</span>
+                      </div>
+                      <div className="space-y-3 max-w-sm">
+                        <div>
+                          <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                            <span>Vata</span> <span>{res.answers.prakriti_scores.vata || 0}</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-full bg-orange-500" style={{ width: `${(res.answers.prakriti_scores.vata || 0) * 10}%` }}></div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                            <span>Pitta</span> <span>{res.answers.prakriti_scores.pitta || 0}</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-full bg-orange-400" style={{ width: `${(res.answers.prakriti_scores.pitta || 0) * 10}%` }}></div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between text-xs mb-1 font-bold text-gray-500">
+                            <span>Kapha</span> <span>{res.answers.prakriti_scores.kapha || 0}</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-full bg-yellow-400" style={{ width: `${(res.answers.prakriti_scores.kapha || 0) * 10}%` }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center justify-between">
                     {editMode === res.id ? (
                       <div className="flex-1 flex gap-4 items-center">
