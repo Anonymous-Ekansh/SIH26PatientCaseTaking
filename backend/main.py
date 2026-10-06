@@ -1,7 +1,7 @@
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import documents, conversation, ayush, ct_alerts, ct_kiosk, ct_adverse, ct_labs
+from app.routers import documents, conversation, ayush, ct_alerts, ct_kiosk, ct_adverse, ct_labs, ct_quality
 
 logging.basicConfig(level=logging.WARNING)
 
@@ -24,6 +24,7 @@ app.include_router(ct_alerts.router, prefix="/api/ct/alerts")
 app.include_router(ct_kiosk.router, prefix="/api/ct/kiosk")
 app.include_router(ct_adverse.router, prefix="/api/ct/adverse")
 app.include_router(ct_labs.router, prefix="/api/ct/labs")
+app.include_router(ct_quality.router, prefix="/api/ct/quality")
 
 @app.get("/")
 def read_root():
