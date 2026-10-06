@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { RoleGate, useRole } from "@/app/lib/trial/useRole";
-import { ShieldAlert, AlertTriangle, CheckCircle, Search, Clock, FileText, X, Shield, Send } from "lucide-react";
+import { ShieldAlert, AlertTriangle, CheckCircle, Search, Clock, FileText, X, Shield, Send, Lock } from "lucide-react";
 import { createClient } from "@/app/lib/supabase/client";
+import SignOffModal from "@/app/components/trial/SignOffModal";
 
 const SERIOUSNESS_CRITERIA = [
   "death", "life_threatening", "hospitalisation", "disability", "congenital_anomaly", "medically_important"
@@ -40,6 +41,10 @@ export default function SafetyDesk() {
   
   // EC state
   const [ecNote, setEcNote] = useState("");
+  
+  // E-Sig state
+  const [sigOpen, setSigOpen] = useState(false);
+  const [sigConfig, setSigConfig] = useState<any>(null);
 
   const supabase = createClient();
 
@@ -78,7 +83,7 @@ export default function SafetyDesk() {
     }
   }, [searchTerm]);
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (meaning: string) => {
     if (!userId || !selectedAe) return;
     if (!causality || !causalityNote.trim()) {
       alert("Causality and Causality Note are required.");
@@ -120,12 +125,37 @@ export default function SafetyDesk() {
           await supabase.from('ct_ae_clocks').insert(clocksToInsert);
         }
       }
+      
+      // We can create the esig entry since we're in the success block of the modal
+      await supabase.from('ct_esignatures').insert({
+        user_id: userId,
+        record_table: 'ct_adverse_events',
+        record_id: selectedAe.id,
+        meaning: meaning || 'reviewed',
+        signed_at: new Date().toISOString(),
+        record_hash: 'hash_' + Date.now() // prototype mock
+      });
+      
       setSelectedAe(null);
       fetchAll();
     } catch (e) {
       console.error(e);
       alert("Failed to confirm AE");
     }
+  };
+  
+  const promptConfirmAe = () => {
+    if (!causality || !outcome || !actionTaken) {
+      alert("Please complete required medical assessment fields.");
+      return;
+    }
+    setSigConfig({
+      title: "Confirm AE Medical Assessment",
+      table: "ct_adverse_events",
+      recordId: selectedAe.id,
+      onSign: handleConfirm
+    });
+    setSigOpen(true);
   };
 
   const handleReject = async () => {
@@ -196,24 +226,36 @@ export default function SafetyDesk() {
     }
   };
 
-  const submitEcNote = async (reportId: string) => {
-    if (!userId || !ecNote.trim()) return;
+  const handleEcNoteSign = async (meaning: string) => {
+    if (!userId || !ecNote.trim() || !sigConfig) return;
     try {
-      await supabase.from('ct_esig_logs').insert({
+      await supabase.from('ct_esignatures').insert({
         user_id: userId,
-        role: role,
-        entity_type: 'sae_report',
-        entity_id: reportId,
-        action: 'ec_opinion',
-        reason: ecNote,
+        record_table: 'ct_regulatory_reports',
+        record_id: sigConfig.recordId,
+        meaning: meaning || 'reviewed',
         signed_at: new Date().toISOString(),
-        token_hash: 'direct-auth' // mock esig mechanism for demo
+        record_hash: 'mock_hash_' + Date.now()
       });
       setEcNote("");
       alert("Note added and e-signed!");
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const promptEcNote = (reportId: string) => {
+    if (!ecNote.trim()) {
+      alert("Please enter an EC opinion.");
+      return;
+    }
+    setSigConfig({
+      title: "Sign EC Opinion",
+      table: "ct_regulatory_reports",
+      recordId: reportId,
+      onSign: handleEcNoteSign
+    });
+    setSigOpen(true);
   };
 
   const openAe = (ae: any) => {
@@ -400,7 +442,7 @@ export default function SafetyDesk() {
                       </div>
                       
                       <div className="pt-4 flex gap-2">
-                        <button onClick={handleConfirm} className="flex-1 bg-emerald-600 text-white font-bold py-2 rounded shadow hover:bg-emerald-700">Confirm Event</button>
+                        <button onClick={promptConfirmAe} className="flex-1 bg-emerald-600 text-white font-bold py-2 rounded shadow hover:bg-emerald-700">Confirm Event</button>
                       </div>
                       
                       <div className="pt-2 border-t border-slate-200">
@@ -523,7 +565,7 @@ export default function SafetyDesk() {
                                     <div className="mt-3 pt-3 border-t border-black/10">
                                       <h4 className="text-xs font-bold mb-2 text-indigo-900">EC Opinion</h4>
                                       <textarea placeholder="Write opinion note..." className="w-full p-2 text-sm border rounded mb-2 bg-white" value={ecNote} onChange={e=>setEcNote(e.target.value)}></textarea>
-                                      <button onClick={() => submitEcNote(existingReport.id)} className="w-full bg-indigo-100 text-indigo-700 font-bold py-1.5 rounded text-sm hover:bg-indigo-200">
+                                      <button onClick={() => promptEcNote(existingReport.id)} className="w-full bg-indigo-100 text-indigo-700 font-bold py-1.5 rounded text-sm hover:bg-indigo-200">
                                         E-Sign Opinion
                                       </button>
                                     </div>
@@ -541,6 +583,17 @@ export default function SafetyDesk() {
               </div>
             </div>
           </div>
+        )}
+
+        {sigOpen && (
+          <SignOffModal 
+            isOpen={sigOpen}
+            onClose={() => setSigOpen(false)}
+            onSign={sigConfig.onSign}
+            title={sigConfig.title}
+            table={sigConfig.table}
+            recordId={sigConfig.recordId}
+          />
         )}
       </div>
     </RoleGate>
