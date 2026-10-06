@@ -43,7 +43,7 @@ export default function TrialLogin() {
       return;
     }
 
-    router.push("/trial");
+    router.push("/trial/home");
   };
 
   return (
