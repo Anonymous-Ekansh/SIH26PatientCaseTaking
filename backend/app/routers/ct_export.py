@@ -30,16 +30,23 @@ def get_study_data(study_id: str):
     consents_res = supabase.table("ct_consents").select("id, participant_id, given_at, ct_consent_versions(version)").execute()
     consents = [c for c in (consents_res.data or []) if c["participant_id"] in [p["id"] for p in participants]]
     
-    # Fetch Visits & forms/labs
+    # Fetch visits
     visits_res = supabase.table("ct_visits").select("id, participant_id, actual_on, ct_visit_templates(name)").execute()
     visits = [v for v in (visits_res.data or []) if v["participant_id"] in [p["id"] for p in participants]]
     visit_ids = [v["id"] for v in visits]
+
+    # Fetch forms and labs
+    forms_res = supabase.table("ct_form_responses").select("id, participant_id, visit_id, answers_jsonb, status").eq("status", "verified").execute()
+    forms = [f for f in (forms_res.data or []) if f["participant_id"] in [p["id"] for p in participants]]
+
+    labs_res = supabase.table("ct_lab_documents").select("id, participant_id, visit_id, extracted, status").eq("status", "confirmed").execute()
+    labs = [l for l in (labs_res.data or []) if l["participant_id"] in [p["id"] for p in participants]]
     
-    return study, sites, participants, aes, consents, visits
+    return study, sites, participants, aes, consents, visits, forms, labs
 
 @router.get("/fhir/{study_id}")
 async def export_fhir(study_id: str):
-    study, sites, participants, aes, consents, visits = get_study_data(study_id)
+    study, sites, participants, aes, consents, visits, forms, labs = get_study_data(study_id)
     
     entries = []
     
@@ -102,6 +109,36 @@ async def export_fhir(study_id: str):
             }
         })
     
+    # 6. Observation (Forms)
+    for f in forms:
+        if isinstance(f.get("answers_jsonb"), dict):
+            for k, v in f["answers_jsonb"].items():
+                entries.append({
+                    "resource": {
+                        "resourceType": "Observation",
+                        "id": f"{f['id']}-{k}",
+                        "status": "final",
+                        "subject": {"reference": f"ResearchSubject/{f['participant_id']}"},
+                        "code": {"text": k},
+                        "valueString": str(v)
+                    }
+                })
+
+    # 7. Observation (Labs)
+    for l in labs:
+        if isinstance(l.get("extracted"), dict):
+            for test_name, test_val in l["extracted"].items():
+                entries.append({
+                    "resource": {
+                        "resourceType": "Observation",
+                        "id": f"{l['id']}-{test_name}",
+                        "status": "final",
+                        "subject": {"reference": f"ResearchSubject/{l['participant_id']}"},
+                        "code": {"text": test_name},
+                        "valueString": str(test_val)
+                    }
+                })
+    
     bundle = {
         "resourceType": "Bundle",
         "type": "collection",
@@ -113,7 +150,7 @@ async def export_fhir(study_id: str):
 
 @router.get("/sdtm/{study_id}")
 async def export_sdtm(study_id: str):
-    study, sites, participants, aes, consents, visits = get_study_data(study_id)
+    study, sites, participants, aes, consents, visits, forms, labs = get_study_data(study_id)
     
     zip_buffer = io.BytesIO()
     with zipfile.ZipFile(zip_buffer, "a", zipfile.ZIP_DEFLATED, False) as zip_file:
@@ -149,6 +186,17 @@ async def export_sdtm(study_id: str):
             writer.writerow([study.get("short_code"), "SV", usubjid, vname, v.get("actual_on")])
         zip_file.writestr("SV.csv", sv_buffer.getvalue())
         
+        # LB (Laboratory Test Results)
+        lb_buffer = io.StringIO()
+        writer = csv.writer(lb_buffer)
+        writer.writerow(["STUDYID", "DOMAIN", "USUBJID", "LBTEST", "LBORRES"])
+        for l in labs:
+            usubjid = p_map.get(l["participant_id"], "")
+            if isinstance(l.get("extracted"), dict):
+                for test_name, test_val in l["extracted"].items():
+                    writer.writerow([study.get("short_code"), "LB", usubjid, test_name, str(test_val)])
+        zip_file.writestr("LB.csv", lb_buffer.getvalue())
+        
     zip_buffer.seek(0)
     return StreamingResponse(
         iter([zip_buffer.getvalue()]), 
@@ -158,7 +206,7 @@ async def export_sdtm(study_id: str):
 
 @router.get("/dsmb/{study_id}")
 async def export_dsmb(study_id: str):
-    study, sites, participants, aes, consents, visits = get_study_data(study_id)
+    study, sites, participants, aes, consents, visits, forms, labs = get_study_data(study_id)
     
     csv_buffer = io.StringIO()
     writer = csv.writer(csv_buffer)

@@ -94,3 +94,5 @@ coverage/
 .cache/
 tmp/
 temp/
+validator_cli.jar
+sample_fhir.json
