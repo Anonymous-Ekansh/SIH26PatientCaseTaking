@@ -49,12 +49,7 @@ export default function Home() {
               >
                 {t('btn_staff_signin')}
               </Link>
-              <Link
-                href="/trial/kiosk"
-                className="inline-flex items-center justify-center px-7 py-3.5 bg-white text-[#0EA5E9] border-2 border-[#0EA5E9] font-semibold rounded-full hover:bg-sky-50 transition-colors active:scale-[0.97] w-full sm:w-auto"
-              >
-                {t('btn_kiosk')}
-              </Link>
+
               <Link
                 href="/onboarding"
                 className="inline-flex items-center justify-center px-7 py-3.5 bg-slate-800 text-white font-semibold rounded-full hover:bg-slate-700 transition-colors active:scale-[0.97] w-full sm:w-auto"

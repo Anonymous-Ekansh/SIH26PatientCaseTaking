@@ -17,87 +17,94 @@ export default function RoleHome() {
     const fetchData = async () => {
       const dbData: any = {};
       try {
-        if (role === 'pi') {
-          const { count: studies } = await supabase.from('ct_studies').select('*', { count: 'exact', head: true });
-          const { data: enrol } = await supabase.from('ct_v_enrolment').select('*');
-          const { count: saes } = await supabase.from('ct_v_sae_timeliness').select('*', { count: 'exact', head: true }).in('status', ['open', 'overdue', 'late']);
-          const { count: queries } = await supabase.from('ct_queries').select('*', { count: 'exact', head: true }).eq('status', 'open');
-          const { count: unverified } = await supabase.from('ct_form_responses').select('*', { count: 'exact', head: true }).is('verified_by', null);
-          
-          dbData.studies = studies || 0;
-          dbData.enrolled = enrol?.reduce((a,b)=>a+(b.enrolled_count||0),0) || 0;
-          dbData.target = enrol?.reduce((a,b)=>a+(b.target_enrolment||0),0) || 0;
-          dbData.openSaes = saes || 0;
-          dbData.openQueries = queries || 0;
-          dbData.unverifiedForms = unverified || 0;
-        }
-        else if (role === 'coordinator') {
-          const today = new Date().toISOString().split('T')[0];
-          const { count: visitsToday } = await supabase.from('ct_visits').select('*', { count: 'exact', head: true }).eq('scheduled_on', today);
-          const { count: unverified } = await supabase.from('ct_form_responses').select('*', { count: 'exact', head: true }).is('verified_by', null);
-          const { count: queries } = await supabase.from('ct_queries').select('*', { count: 'exact', head: true }).eq('status', 'open');
-          
-          dbData.visitsToday = visitsToday || 0;
-          dbData.verifyQueue = unverified || 0;
-          dbData.openQueries = queries || 0;
-          dbData.consentTasks = 2; // Demo mock
-        }
-        else if (role === 'monitor') {
-          const { data: aging } = await supabase.from('ct_v_query_aging').select('*');
-          const { count: deviations } = await supabase.from('ct_deviations').select('*', { count: 'exact', head: true });
-          const { count: monVisits } = await supabase.from('ct_monitoring_visits').select('*', { count: 'exact', head: true }).eq('status', 'planned');
-          
-          dbData.maxQueryAge = aging?.length ? Math.max(...aging.map(a => a.max_age_days || 0)) : 0;
-          dbData.deviations = deviations || 0;
-          dbData.visitsDue = monVisits || 0;
-        }
-        else if (role === 'ethics_committee') {
-          const { count: expiring } = await supabase.from('ct_v_ethics_expiry').select('*', { count: 'exact', head: true }).eq('expiring_under_30_days', true);
-          const { count: saeClocks } = await supabase.from('ct_ae_clocks').select('*', { count: 'exact', head: true }).eq('recipient', 'ethics_committee').is('satisfied_at', null);
-          
-          dbData.expiringApprovals = expiring || 0;
-          dbData.saeClocks = saeClocks || 0;
-        }
-        else if (role === 'pharmacovigilance') {
-          const { count: candidates } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true }).eq('status', 'candidate');
-          const { data: aes } = await supabase.from('ct_adverse_events').select('id, ct_ae_coding(id)');
-          const uncoded = aes?.filter(a => !a.ct_ae_coding || a.ct_ae_coding.length === 0).length || 0;
-          const { count: clocksDue } = await supabase.from('ct_ae_clocks').select('*', { count: 'exact', head: true }).is('satisfied_at', null);
-          
-          dbData.candidates = candidates || 0;
-          dbData.uncoded = uncoded;
-          dbData.clocksDue = clocksDue || 0;
-        }
-        else if (role === 'leadership') {
-          const { data: enrol } = await supabase.from('ct_v_enrolment').select('*');
-          const { data: adhere } = await supabase.from('ct_v_visit_adherence').select('*');
-          const { count: saes } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true }).eq('serious', true);
-          const { count: totalAes } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true });
-          
-          dbData.enrolled = enrol?.reduce((a,b)=>a+(b.enrolled_count||0),0) || 0;
-          dbData.adhereAvg = adhere?.length ? (adhere.reduce((a,b)=>a+((b.done||0)/(b.scheduled||1)),0)/adhere.length * 100).toFixed(1) : 0;
-          dbData.saes = saes || 0;
-          dbData.totalAes = totalAes || 0;
-        }
-        else if (role === 'regulator_ro') {
-          const { data: studies } = await supabase.from('ct_studies').select('short_code, ctri_number, status');
-          const { data: saeClocks } = await supabase.from('ct_v_sae_timeliness').select('*');
-          
-          dbData.registry = studies || [];
-          dbData.onTimeSaes = saeClocks?.filter(s => s.status === 'on_time').length || 0;
-          dbData.overdueSaes = saeClocks?.filter(s => s.status === 'overdue').length || 0;
-        }
-        else if (role === 'admin') {
-          const { count: users } = await supabase.from('ct_profiles').select('*', { count: 'exact', head: true });
-          const { count: rulePacks } = await supabase.from('ct_rule_packs').select('*', { count: 'exact', head: true });
-          const { count: alertRules } = await supabase.from('ct_alert_rules').select('*', { count: 'exact', head: true });
-          
-          dbData.users = users || 0;
-          dbData.rulePacks = rulePacks || 0;
-          dbData.alertRules = alertRules || 0;
-        }
+        // Add a 3-second timeout to prevent infinite hanging
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 3000));
+        
+        const fetchPromise = (async () => {
+          if (role === 'pi') {
+            const { count: studies } = await supabase.from('ct_studies').select('*', { count: 'exact', head: true });
+            const { data: enrol } = await supabase.from('ct_v_enrolment').select('*');
+            const { count: saes } = await supabase.from('ct_v_sae_timeliness').select('*', { count: 'exact', head: true }).in('status', ['open', 'overdue', 'late']);
+            const { count: queries } = await supabase.from('ct_queries').select('*', { count: 'exact', head: true }).eq('status', 'open');
+            const { count: unverified } = await supabase.from('ct_form_responses').select('*', { count: 'exact', head: true }).is('verified_by', null);
+            
+            dbData.studies = studies || 0;
+            dbData.enrolled = enrol?.reduce((a,b)=>a+(b.enrolled_count||0),0) || 0;
+            dbData.target = enrol?.reduce((a,b)=>a+(b.target_enrolment||0),0) || 0;
+            dbData.openSaes = saes || 0;
+            dbData.openQueries = queries || 0;
+            dbData.unverifiedForms = unverified || 0;
+          }
+          else if (role === 'coordinator') {
+            const today = new Date().toISOString().split('T')[0];
+            const { count: visitsToday } = await supabase.from('ct_visits').select('*', { count: 'exact', head: true }).eq('scheduled_on', today);
+            const { count: unverified } = await supabase.from('ct_form_responses').select('*', { count: 'exact', head: true }).is('verified_by', null);
+            const { count: queries } = await supabase.from('ct_queries').select('*', { count: 'exact', head: true }).eq('status', 'open');
+            
+            dbData.visitsToday = visitsToday || 0;
+            dbData.verifyQueue = unverified || 0;
+            dbData.openQueries = queries || 0;
+            dbData.consentTasks = 2;
+          }
+          else if (role === 'monitor') {
+            const { data: aging } = await supabase.from('ct_v_query_aging').select('*');
+            const { count: deviations } = await supabase.from('ct_deviations').select('*', { count: 'exact', head: true });
+            const { count: monVisits } = await supabase.from('ct_monitoring_visits').select('*', { count: 'exact', head: true }).eq('status', 'planned');
+            
+            dbData.maxQueryAge = aging?.length ? Math.max(...aging.map(a => a.max_age_days || 0)) : 0;
+            dbData.deviations = deviations || 0;
+            dbData.visitsDue = monVisits || 0;
+          }
+          else if (role === 'ethics_committee') {
+            const { count: expiring } = await supabase.from('ct_v_ethics_expiry').select('*', { count: 'exact', head: true }).eq('expiring_under_30_days', true);
+            const { count: saeClocks } = await supabase.from('ct_ae_clocks').select('*', { count: 'exact', head: true }).eq('recipient', 'ethics_committee').is('satisfied_at', null);
+            
+            dbData.expiringApprovals = expiring || 0;
+            dbData.saeClocks = saeClocks || 0;
+          }
+          else if (role === 'pharmacovigilance') {
+            const { count: candidates } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true }).eq('status', 'candidate');
+            const { data: aes } = await supabase.from('ct_adverse_events').select('id, ct_ae_coding(id)');
+            const uncoded = aes?.filter(a => !a.ct_ae_coding || a.ct_ae_coding.length === 0).length || 0;
+            const { count: clocksDue } = await supabase.from('ct_ae_clocks').select('*', { count: 'exact', head: true }).is('satisfied_at', null);
+            
+            dbData.candidates = candidates || 0;
+            dbData.uncoded = uncoded;
+            dbData.clocksDue = clocksDue || 0;
+          }
+          else if (role === 'leadership') {
+            const { data: enrol } = await supabase.from('ct_v_enrolment').select('*');
+            const { data: adhere } = await supabase.from('ct_v_visit_adherence').select('*');
+            const { count: saes } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true }).eq('serious', true);
+            const { count: totalAes } = await supabase.from('ct_adverse_events').select('*', { count: 'exact', head: true });
+            
+            dbData.enrolled = enrol?.reduce((a,b)=>a+(b.enrolled_count||0),0) || 0;
+            dbData.adhereAvg = adhere?.length ? (adhere.reduce((a,b)=>a+((b.done||0)/(b.scheduled||1)),0)/adhere.length * 100).toFixed(1) : 0;
+            dbData.saes = saes || 0;
+            dbData.totalAes = totalAes || 0;
+          }
+          else if (role === 'regulator_ro') {
+            const { data: studies } = await supabase.from('ct_studies').select('short_code, ctri_number, status');
+            const { data: saeClocks } = await supabase.from('ct_v_sae_timeliness').select('*');
+            
+            dbData.registry = studies || [];
+            dbData.onTimeSaes = saeClocks?.filter(s => s.status === 'on_time').length || 0;
+            dbData.overdueSaes = saeClocks?.filter(s => s.status === 'overdue').length || 0;
+          }
+          else if (role === 'admin') {
+            const { count: users } = await supabase.from('ct_profiles').select('*', { count: 'exact', head: true });
+            const { count: rulePacks } = await supabase.from('ct_rule_packs').select('*', { count: 'exact', head: true });
+            const { count: alertRules } = await supabase.from('ct_alert_rules').select('*', { count: 'exact', head: true });
+            
+            dbData.users = users || 0;
+            dbData.rulePacks = rulePacks || 0;
+            dbData.alertRules = alertRules || 0;
+          }
+        })();
+        
+        await Promise.race([fetchPromise, timeoutPromise]);
       } catch (e) {
-        console.error(e);
+        console.error("Dashboard fetch error or timeout:", e);
       }
       setData(dbData);
       setLoading(false);
