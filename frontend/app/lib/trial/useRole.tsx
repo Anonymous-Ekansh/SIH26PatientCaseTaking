@@ -16,17 +16,30 @@ export function TrialRoleProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    const supabase = createClient();
     async function fetchRole() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
+      // Demo mode bypass: check if demo role is stored in localStorage
+      const demoRole = typeof window !== 'undefined' ? localStorage.getItem('demo_role') : null;
+      if (demoRole) {
+        setRole(demoRole);
+        setUserId('demo-user-123');
         setLoading(false);
         return;
       }
-      const { data } = await supabase.from('ct_profiles').select('role').eq('user_id', user.id).single();
-      if (data) {
-        setRole(data.role);
-        setUserId(user.id);
+
+      const supabase = createClient();
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setLoading(false);
+          return;
+        }
+        const { data } = await supabase.from('ct_profiles').select('role').eq('user_id', user.id).single();
+        if (data) {
+          setRole(data.role);
+          setUserId(user.id);
+        }
+      } catch (error) {
+        console.error("Auth error:", error);
       }
       setLoading(false);
     }

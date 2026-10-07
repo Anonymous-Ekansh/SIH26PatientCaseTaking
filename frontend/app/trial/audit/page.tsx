@@ -72,7 +72,7 @@ export default function AuditDesk() {
             <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
               <FileClock size={32} className="text-emerald-600" /> Audit Trail
             </h1>
-            <p className="text-slate-500 text-sm mt-1">Immutable record of all system events and cryptographic chain verification.</p>
+            <p className="text-slate-500 text-sm mt-1">Tamper-evident record of all system events and cryptographic chain verification.</p>
           </div>
           
           <button 

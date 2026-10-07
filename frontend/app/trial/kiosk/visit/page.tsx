@@ -27,7 +27,7 @@ export default function VisitKiosk() {
       router.push("/trial/kiosk");
       return;
     }
-    fetch("http://localhost:8000/api/ct/kiosk/next_visit", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/next_visit`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
@@ -71,7 +71,7 @@ export default function VisitKiosk() {
 
   const playAudio = async (textToPlay: string) => {
     try {
-      const res = await fetch("http://localhost:8000/api/conversation/tts", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/conversation/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: textToPlay, language: language }),
@@ -117,7 +117,7 @@ export default function VisitKiosk() {
       const formData = new FormData();
       formData.append("audio", blob, "recording.wav");
       formData.append("language", language);
-      const res = await fetch("http://localhost:8000/api/conversation/asr", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/conversation/asr`, {
         method: "POST",
         body: formData,
       });
@@ -143,7 +143,7 @@ export default function VisitKiosk() {
     // If it's a side effect question, trigger the flag check
     if (q.kind === 'side_effects' && typeof value === 'string' && value.length > 2) {
       try {
-        fetch("http://localhost:8000/api/ct/adverse/check_flag", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/adverse/check_flag`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -170,7 +170,7 @@ export default function VisitKiosk() {
         const token = localStorage.getItem("kiosk_token");
         for (const template of templates) {
           if (Object.keys(newAnswersByTemplate[template.id]).length > 0) {
-            await fetch("http://localhost:8000/api/ct/kiosk/visit_response", {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/visit_response`, {
               method: "POST",
               headers: { 
                 "Content-Type": "application/json",

@@ -169,7 +169,7 @@ export default function RoleHome() {
         {role === 'pharmacovigilance' && (
           <>
             <Card title="AE Candidates" value={data.candidates} subtitle="Unconfirmed" icon={Users} color="amber" link="/trial/safety" />
-            <Card title="Uncoded AEs" value={data.uncoded} subtitle="Missing MedDRA/Demo" icon={Activity} color="indigo" link="/trial/safety" />
+            <Card title="Uncoded AEs" value={data.uncoded} subtitle="Needs demo coding" icon={Activity} color="indigo" link="/trial/safety" />
             <Card title="Clocks Due" value={data.clocksDue} subtitle="Regulatory reports" icon={Clock} color="red" link="/trial/safety" />
           </>
         )}

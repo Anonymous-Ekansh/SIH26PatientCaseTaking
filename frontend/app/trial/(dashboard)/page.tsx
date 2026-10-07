@@ -115,7 +115,7 @@ export default function TrialPortfolio() {
     const now = Date.now();
     if (!lastRun || now - parseInt(lastRun) > 5 * 60 * 1000) {
       try {
-        await fetch('http://localhost:8000/api/ct/alerts/run', { method: 'POST' });
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/ct/alerts/run`, { method: 'POST' });
         localStorage.setItem('last_alert_run', now.toString());
       } catch (e) {
         console.error("Alert run failed", e);

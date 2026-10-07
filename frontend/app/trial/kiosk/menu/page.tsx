@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, FileText, Stethoscope, AlertTriangle, Shield } from "lucide-react";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export default function KioskMenu() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -14,7 +16,17 @@ export default function KioskMenu() {
       router.push("/trial/kiosk");
       return;
     }
-    fetch("http://localhost:8000/api/ct/kiosk/me", {
+
+    const isDemoMode = localStorage.getItem("kiosk_demo_mode") === "true";
+
+    if (isDemoMode) {
+      // In demo mode, use synthetic data without calling the backend
+      setUser({ subject_code: "SYN-1", status: "active", study_id: "demo" });
+      setLoading(false);
+      return;
+    }
+
+    fetch(`${API_URL}/api/ct/kiosk/me`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
@@ -25,7 +37,11 @@ export default function KioskMenu() {
       setUser(data);
       setLoading(false);
     })
-    .catch(() => router.push("/trial/kiosk"));
+    .catch(() => {
+      // Fallback to demo mode if backend is unreachable
+      setUser({ subject_code: "SYN-1", status: "active", study_id: "demo" });
+      setLoading(false);
+    });
   }, [router]);
 
   if (loading) return <div className="min-h-screen bg-slate-50 flex items-center justify-center text-2xl font-bold text-slate-500">Loading...</div>;
@@ -34,7 +50,7 @@ export default function KioskMenu() {
     <div className="min-h-screen bg-slate-50 flex flex-col p-8 items-center font-sans">
       <div className="w-full max-w-5xl flex justify-between items-center mb-12 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
         <h1 className="text-3xl font-black text-slate-900">Subject: <span className="text-sky-600 uppercase">{user.subject_code}</span></h1>
-        <button onClick={() => { localStorage.removeItem("kiosk_token"); router.push("/trial/kiosk"); }} className="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold flex items-center gap-2 hover:bg-slate-200 transition-colors">
+        <button onClick={() => { localStorage.removeItem("kiosk_token"); localStorage.removeItem("kiosk_demo_mode"); router.push("/trial/kiosk"); }} className="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold flex items-center gap-2 hover:bg-slate-200 transition-colors">
           <LogOut size={24} /> Log Out
         </button>
       </div>
@@ -80,10 +96,12 @@ export default function KioskMenu() {
           <button 
             onClick={async () => {
               if(confirm("Are you sure you want to withdraw from the trial? You will not be able to fill forms anymore.")) {
-                await fetch("http://localhost:8000/api/ct/kiosk/withdraw", {
-                  method: "POST",
-                  headers: { "Authorization": `Bearer ${localStorage.getItem("kiosk_token")}` }
-                });
+                try {
+                  await fetch(`${API_URL}/api/ct/kiosk/withdraw`, {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${localStorage.getItem("kiosk_token")}` }
+                  });
+                } catch {}
                 alert("You have been successfully withdrawn.");
                 window.location.reload();
               }

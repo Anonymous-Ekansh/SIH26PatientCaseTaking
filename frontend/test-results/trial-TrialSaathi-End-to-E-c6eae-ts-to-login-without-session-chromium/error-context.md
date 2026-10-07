@@ -20,7 +20,7 @@ Timeout: 5000ms
 
 Call log:
   - Expect "toHaveURL" with timeout 5000ms
-    14 × locator resolved to <html lang="en" class="noto_sans_5304fbac-module__GYynFG__variable h-full antialiased">…</html>
+    13 × locator resolved to <html lang="en" class="noto_sans_5304fbac-module__GYynFG__variable h-full antialiased">…</html>
        - unexpected value "http://127.0.0.1:3000/trial/home"
 
 ```

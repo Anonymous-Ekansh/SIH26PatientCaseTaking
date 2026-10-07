@@ -15,4 +15,4 @@
 ## Notes
 - Users must have a row in `ct_profiles` to access any `ct_` table.
 - Legacy users (patients) do not get a `ct_profiles` row, so they cannot read/write CTMS data.
-- Audit Log is readable by any `ct_profiles` user but strictly immutable (no updates or deletes allowed).
+- Audit Log is readable by any `ct_profiles` user but strictly tamper-evident (no updates or deletes allowed).

@@ -39,7 +39,7 @@ export default function AlertsCentre() {
   const runChecks = async () => {
     setRunningChecks(true);
     try {
-      await fetch('http://localhost:8000/api/ct/alerts/run', { method: 'POST' });
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/ct/alerts/run`, { method: 'POST' });
       await fetchAlerts();
     } catch (e) {
       console.error(e);
