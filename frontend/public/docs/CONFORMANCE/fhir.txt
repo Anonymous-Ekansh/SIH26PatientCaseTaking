@@ -1,0 +1,367 @@
+FHIR Validation tool Version 7.0.0 (Git# 37795f3f571f). Built 2026-10-06T19:02:34.858Z (23 hours old)
+  Java:   26.0.2.1 from /Library/Java/JavaVirtualMachines/jdk-26.jdk/Contents/Home on aarch64 (64bit). 2048MB available
+  Paths:  Current = /Users/anant/PatientCaseTaking, Package Cache = /Users/anant/.fhir/packages
+  Params: sample_fhir.json
+Scanning for versions (no -version parameter):
+  No Version Info found: Using Default version R5
+  Locale: United States/US
+  Jurisdiction: United States of America
+Loading
+  Loading FHIR v5.0.0 from hl7.fhir.r5.core#5.0.0
+Installing hl7.fhir.r5.core#5.0.0 to the package cache
+  Fetching:
+
+Installing hl7.fhir.r5.core#5.0.0
+ done.
+ loaded @ /Users/anant/.fhir/packages/hl7.fhir.r5.core#5.0.0
+Installing hl7.fhir.xver-extensions#0.1.0 to the package cache
+  Fetching:
+
+Installing hl7.fhir.xver-extensions#0.1.0
+ done.
+ loaded @ /Users/anant/.fhir/packages/hl7.fhir.xver-extensions#0.1.0
+Installing hl7.terminology.r5#6.2.0 to the package cache
+  Fetching:
+
+Installing hl7.terminology.r5#6.2.0
+ done.
+ loaded @ /Users/anant/.fhir/packages/hl7.terminology.r5#6.2.0
+  Load hl7.terminology.r5#6.2.0 - 4288 resources (00:33.554)
+Installing hl7.fhir.uv.extensions.r5#5.2.0 to the package cache
+  Fetching:
+
+Installing hl7.fhir.uv.extensions.r5#5.2.0
+ done.
+ loaded @ /Users/anant/.fhir/packages/hl7.fhir.uv.extensions.r5#5.2.0
+  Load hl7.fhir.uv.extensions.r5#5.2.0 - 759 resources (00:15.999)
+  Loaded FHIR - 8001 resources (00:00.003)
+  Terminology Cache at /var/folders/tq/4cf055qs45147gjmqq2s4mxr0000gn/T/default-tx-cache/r5
+  Terminology server https://tx.fhir.org - Version Connected to Terminology Server at https://tx.fhir.org (00:03.380)
+Installing hl7.terminology#7.4.0 to the package cache
+  Fetching:
+
+Installing hl7.terminology#7.4.0
+ done.
+ loaded @ /Users/anant/.fhir/packages/hl7.terminology#7.4.0
+  Load hl7.terminology#7.4.0 - 4181 resources (00:24.150)
+  Package Summary: [hl7.fhir.r5.core#5.0.0, hl7.fhir.xver-extensions#0.1.0, hl7.terminology.r5#6.2.0, hl7.fhir.uv.extensions.r5#5.2.0, hl7.terminology#7.4.0]
+  Get set... 
+  ...go! (00:01.920)
+Cached new session. Cache size = 1
+Sources to validate: sample_fhir.json
+Validating
+  Validate sample_fhir.json
+ 00:03.556
+Done. Times: Loading: 01:21.280, validation: 00:03.559. Memory = 839Mb
+
+*FAILURE*: 266 errors, 43 warnings, 0 notes
+  Error @ Bundle.entry[23].resource (line 1, col6188): Unrecognized property 'event'
+  Error @ Bundle.entry[23].resource (line 1, col6249): Unrecognized property 'severity'
+  Error @ Bundle.entry[23].resource (line 1, col6292): Unrecognized property 'date'
+  Error @ Bundle.entry[24].resource (line 1, col6505): Unrecognized property 'event'
+  Error @ Bundle.entry[24].resource (line 1, col6566): Unrecognized property 'severity'
+  Error @ Bundle.entry[24].resource (line 1, col6609): Unrecognized property 'date'
+  Error @ Bundle.entry[25].resource.seriousness (line 1, col6843): The property seriousness must be an Object, not a Null (at Bundle.entry[25].resource.seriousness)
+  Error @ Bundle.entry[25].resource (line 1, col6822): Unrecognized property 'event'
+  Error @ Bundle.entry[25].resource (line 1, col6873): Unrecognized property 'severity'
+  Error @ Bundle.entry[25].resource (line 1, col6916): Unrecognized property 'date'
+  Error @ Bundle.entry[26].resource.seriousness (line 1, col7150): The property seriousness must be an Object, not a Null (at Bundle.entry[26].resource.seriousness)
+  Error @ Bundle.entry[26].resource (line 1, col7129): Unrecognized property 'event'
+  Error @ Bundle.entry[26].resource (line 1, col7180): Unrecognized property 'severity'
+  Error @ Bundle.entry[26].resource (line 1, col7223): Unrecognized property 'date'
+  Error @ Bundle.entry[27].resource.seriousness (line 1, col7457): The property seriousness must be an Object, not a Null (at Bundle.entry[27].resource.seriousness)
+  Error @ Bundle.entry[27].resource (line 1, col7436): Unrecognized property 'event'
+  Error @ Bundle.entry[27].resource (line 1, col7487): Unrecognized property 'severity'
+  Error @ Bundle.entry[27].resource (line 1, col7530): Unrecognized property 'date'
+  Error @ Bundle.entry[28].resource.seriousness (line 1, col7764): The property seriousness must be an Object, not a Null (at Bundle.entry[28].resource.seriousness)
+  Error @ Bundle.entry[28].resource (line 1, col7743): Unrecognized property 'event'
+  Error @ Bundle.entry[28].resource (line 1, col7794): Unrecognized property 'severity'
+  Error @ Bundle.entry[28].resource (line 1, col7837): Unrecognized property 'date'
+  Error @ Bundle.entry[29].resource.seriousness (line 1, col8071): The property seriousness must be an Object, not a Null (at Bundle.entry[29].resource.seriousness)
+  Error @ Bundle.entry[29].resource (line 1, col8050): Unrecognized property 'event'
+  Error @ Bundle.entry[29].resource (line 1, col8101): Unrecognized property 'severity'
+  Error @ Bundle.entry[29].resource (line 1, col8144): Unrecognized property 'date'
+  Error @ Bundle.entry[30].resource.seriousness (line 1, col8378): The property seriousness must be an Object, not a Null (at Bundle.entry[30].resource.seriousness)
+  Error @ Bundle.entry[30].resource (line 1, col8357): Unrecognized property 'event'
+  Error @ Bundle.entry[30].resource (line 1, col8408): Unrecognized property 'severity'
+  Error @ Bundle.entry[30].resource (line 1, col8451): Unrecognized property 'date'
+  Error @ Bundle.entry[31].resource.seriousness (line 1, col8685): The property seriousness must be an Object, not a Null (at Bundle.entry[31].resource.seriousness)
+  Error @ Bundle.entry[31].resource (line 1, col8664): Unrecognized property 'event'
+  Error @ Bundle.entry[31].resource (line 1, col8715): Unrecognized property 'severity'
+  Error @ Bundle.entry[31].resource (line 1, col8758): Unrecognized property 'date'
+  Error @ Bundle.entry[32].resource.seriousness (line 1, col8993): The property seriousness must be an Object, not a Null (at Bundle.entry[32].resource.seriousness)
+  Error @ Bundle.entry[32].resource (line 1, col8972): Unrecognized property 'event'
+  Error @ Bundle.entry[32].resource (line 1, col9023): Unrecognized property 'severity'
+  Error @ Bundle.entry[32].resource (line 1, col9066): Unrecognized property 'date'
+  Error @ Bundle.entry[33].resource.seriousness (line 1, col9301): The property seriousness must be an Object, not a Null (at Bundle.entry[33].resource.seriousness)
+  Error @ Bundle.entry[33].resource (line 1, col9280): Unrecognized property 'event'
+  Error @ Bundle.entry[33].resource (line 1, col9331): Unrecognized property 'severity'
+  Error @ Bundle.entry[33].resource (line 1, col9374): Unrecognized property 'date'
+  Error @ Bundle.entry[34].resource.seriousness (line 1, col9609): The property seriousness must be an Object, not a Null (at Bundle.entry[34].resource.seriousness)
+  Error @ Bundle.entry[34].resource (line 1, col9588): Unrecognized property 'event'
+  Error @ Bundle.entry[34].resource (line 1, col9639): Unrecognized property 'severity'
+  Error @ Bundle.entry[34].resource (line 1, col9682): Unrecognized property 'date'
+  Error @ Bundle.entry[35].resource.seriousness (line 1, col9917): The property seriousness must be an Object, not a Null (at Bundle.entry[35].resource.seriousness)
+  Error @ Bundle.entry[35].resource (line 1, col9896): Unrecognized property 'event'
+  Error @ Bundle.entry[35].resource (line 1, col9947): Unrecognized property 'severity'
+  Error @ Bundle.entry[35].resource (line 1, col9990): Unrecognized property 'date'
+  Error @ Bundle.entry[36].resource.seriousness (line 1, col10225): The property seriousness must be an Object, not a Null (at Bundle.entry[36].resource.seriousness)
+  Error @ Bundle.entry[36].resource (line 1, col10204): Unrecognized property 'event'
+  Error @ Bundle.entry[36].resource (line 1, col10255): Unrecognized property 'severity'
+  Error @ Bundle.entry[36].resource (line 1, col10298): Unrecognized property 'date'
+  Error @ Bundle.entry[37].resource.seriousness (line 1, col10533): The property seriousness must be an Object, not a Null (at Bundle.entry[37].resource.seriousness)
+  Error @ Bundle.entry[37].resource (line 1, col10512): Unrecognized property 'event'
+  Error @ Bundle.entry[37].resource (line 1, col10563): Unrecognized property 'severity'
+  Error @ Bundle.entry[37].resource (line 1, col10606): Unrecognized property 'date'
+  Error @ Bundle.entry[38].resource.seriousness (line 1, col10841): The property seriousness must be an Object, not a Null (at Bundle.entry[38].resource.seriousness)
+  Error @ Bundle.entry[38].resource (line 1, col10820): Unrecognized property 'event'
+  Error @ Bundle.entry[38].resource (line 1, col10871): Unrecognized property 'severity'
+  Error @ Bundle.entry[38].resource (line 1, col10914): Unrecognized property 'date'
+  Error @ Bundle.entry[39].resource.seriousness (line 1, col11149): The property seriousness must be an Object, not a Null (at Bundle.entry[39].resource.seriousness)
+  Error @ Bundle.entry[39].resource (line 1, col11128): Unrecognized property 'event'
+  Error @ Bundle.entry[39].resource (line 1, col11179): Unrecognized property 'severity'
+  Error @ Bundle.entry[39].resource (line 1, col11222): Unrecognized property 'date'
+  Error @ Bundle.entry[40].resource.seriousness (line 1, col11457): The property seriousness must be an Object, not a Null (at Bundle.entry[40].resource.seriousness)
+  Error @ Bundle.entry[40].resource (line 1, col11436): Unrecognized property 'event'
+  Error @ Bundle.entry[40].resource (line 1, col11487): Unrecognized property 'severity'
+  Error @ Bundle.entry[40].resource (line 1, col11530): Unrecognized property 'date'
+  Error @ Bundle.entry[41].resource.seriousness (line 1, col11765): The property seriousness must be an Object, not a Null (at Bundle.entry[41].resource.seriousness)
+  Error @ Bundle.entry[41].resource (line 1, col11744): Unrecognized property 'event'
+  Error @ Bundle.entry[41].resource (line 1, col11795): Unrecognized property 'severity'
+  Error @ Bundle.entry[41].resource (line 1, col11838): Unrecognized property 'date'
+  Error @ Bundle.entry[42].resource.seriousness (line 1, col12073): The property seriousness must be an Object, not a Null (at Bundle.entry[42].resource.seriousness)
+  Error @ Bundle.entry[42].resource (line 1, col12052): Unrecognized property 'event'
+  Error @ Bundle.entry[42].resource (line 1, col12103): Unrecognized property 'severity'
+  Error @ Bundle.entry[42].resource (line 1, col12146): Unrecognized property 'date'
+  Warning @ Bundle.entry[0].resource/*ResearchStudy/19195c48-b988-4d14-9c91-82ec3818e3f2*/ (line 1, col305): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Warning @ Bundle.entry[1].resource/*Organization/4a46e701-2126-4d36-a185-08c060a5a5e1*/ (line 1, col431): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Warning @ Bundle.entry[2].resource/*Organization/8d0dfb2c-d3ec-4993-abe5-1c1c40da943b*/ (line 1, col556): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[3].resource/*ResearchSubject/e5e5f360-fdf8-4b7c-9df9-4db06914187a*/ (line 1, col827): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[3] (line 1, col828): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[3].resource/*ResearchSubject/e5e5f360-fdf8-4b7c-9df9-4db06914187a*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[3].resource/*ResearchSubject/e5e5f360-fdf8-4b7c-9df9-4db06914187a*/ (line 1, col827): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[4].resource/*ResearchSubject/f41085be-e74c-47b1-a512-2d09860c3c34*/ (line 1, col1098): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[4] (line 1, col1099): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[4].resource/*ResearchSubject/f41085be-e74c-47b1-a512-2d09860c3c34*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[4].resource/*ResearchSubject/f41085be-e74c-47b1-a512-2d09860c3c34*/ (line 1, col1098): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[5].resource/*ResearchSubject/95686615-a9ec-41ef-9c9f-481c22d9ee9f*/ (line 1, col1369): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[5] (line 1, col1370): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[5].resource/*ResearchSubject/95686615-a9ec-41ef-9c9f-481c22d9ee9f*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[5].resource/*ResearchSubject/95686615-a9ec-41ef-9c9f-481c22d9ee9f*/ (line 1, col1369): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[6].resource/*ResearchSubject/932b946e-0210-4c09-9abc-e96d4dce468f*/ (line 1, col1640): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[6] (line 1, col1641): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[6].resource/*ResearchSubject/932b946e-0210-4c09-9abc-e96d4dce468f*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[6].resource/*ResearchSubject/932b946e-0210-4c09-9abc-e96d4dce468f*/ (line 1, col1640): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[7].resource/*ResearchSubject/6b9e745f-d847-46c3-b3df-c2d33acf55d7*/ (line 1, col1911): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[7] (line 1, col1912): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[7].resource/*ResearchSubject/6b9e745f-d847-46c3-b3df-c2d33acf55d7*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[7].resource/*ResearchSubject/6b9e745f-d847-46c3-b3df-c2d33acf55d7*/ (line 1, col1911): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[8].resource/*ResearchSubject/1d3c7eec-7c5d-4c0a-820d-0933cbfd28fe*/ (line 1, col2182): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[8] (line 1, col2183): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[8].resource/*ResearchSubject/1d3c7eec-7c5d-4c0a-820d-0933cbfd28fe*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[8].resource/*ResearchSubject/1d3c7eec-7c5d-4c0a-820d-0933cbfd28fe*/ (line 1, col2182): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[9].resource/*ResearchSubject/262a9110-67a0-42cc-902c-40bc1eaff2c8*/ (line 1, col2453): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[9] (line 1, col2454): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[9].resource/*ResearchSubject/262a9110-67a0-42cc-902c-40bc1eaff2c8*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[9].resource/*ResearchSubject/262a9110-67a0-42cc-902c-40bc1eaff2c8*/ (line 1, col2453): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[10].resource/*ResearchSubject/6929c407-79bf-419d-a625-b91be6a0a91b*/ (line 1, col2724): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[10] (line 1, col2725): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[10].resource/*ResearchSubject/6929c407-79bf-419d-a625-b91be6a0a91b*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[10].resource/*ResearchSubject/6929c407-79bf-419d-a625-b91be6a0a91b*/ (line 1, col2724): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[11].resource/*ResearchSubject/52a4fd43-7bf0-40e5-af04-1bc6fc4505a3*/ (line 1, col2995): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[11] (line 1, col2996): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[11].resource/*ResearchSubject/52a4fd43-7bf0-40e5-af04-1bc6fc4505a3*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[11].resource/*ResearchSubject/52a4fd43-7bf0-40e5-af04-1bc6fc4505a3*/ (line 1, col2995): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[12].resource/*ResearchSubject/950953a1-1440-43e5-b7ad-f5c833e2de1e*/ (line 1, col3266): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[12] (line 1, col3267): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[12].resource/*ResearchSubject/950953a1-1440-43e5-b7ad-f5c833e2de1e*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[12].resource/*ResearchSubject/950953a1-1440-43e5-b7ad-f5c833e2de1e*/ (line 1, col3266): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[13].resource/*ResearchSubject/c69ad0fa-4417-463f-8f15-002be189f70c*/ (line 1, col3537): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[13] (line 1, col3538): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[13].resource/*ResearchSubject/c69ad0fa-4417-463f-8f15-002be189f70c*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[13].resource/*ResearchSubject/c69ad0fa-4417-463f-8f15-002be189f70c*/ (line 1, col3537): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[14].resource/*ResearchSubject/9147d1ae-c839-4a13-b9ec-a39585a83a1d*/ (line 1, col3808): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[14] (line 1, col3809): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[14].resource/*ResearchSubject/9147d1ae-c839-4a13-b9ec-a39585a83a1d*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[14].resource/*ResearchSubject/9147d1ae-c839-4a13-b9ec-a39585a83a1d*/ (line 1, col3808): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[15].resource/*ResearchSubject/10054a42-edba-467d-8162-087d6382fe65*/ (line 1, col4079): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[15] (line 1, col4080): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[15].resource/*ResearchSubject/10054a42-edba-467d-8162-087d6382fe65*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[15].resource/*ResearchSubject/10054a42-edba-467d-8162-087d6382fe65*/ (line 1, col4079): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[16].resource/*ResearchSubject/dbe16f05-92b9-489a-bb3f-b45b11b986a8*/ (line 1, col4350): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[16] (line 1, col4351): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[16].resource/*ResearchSubject/dbe16f05-92b9-489a-bb3f-b45b11b986a8*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[16].resource/*ResearchSubject/dbe16f05-92b9-489a-bb3f-b45b11b986a8*/ (line 1, col4350): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[17].resource/*ResearchSubject/e5d062f4-5d7e-46e8-a60b-ee26fab0c125*/ (line 1, col4621): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[17] (line 1, col4622): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[17].resource/*ResearchSubject/e5d062f4-5d7e-46e8-a60b-ee26fab0c125*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[17].resource/*ResearchSubject/e5d062f4-5d7e-46e8-a60b-ee26fab0c125*/ (line 1, col4621): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[18].resource/*ResearchSubject/3d8d80bf-64f4-49c3-bf96-1e0bdc3ce381*/ (line 1, col4892): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[18] (line 1, col4893): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[18].resource/*ResearchSubject/3d8d80bf-64f4-49c3-bf96-1e0bdc3ce381*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[18].resource/*ResearchSubject/3d8d80bf-64f4-49c3-bf96-1e0bdc3ce381*/ (line 1, col4892): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[19].resource/*ResearchSubject/e5e72c56-dbec-418b-a6f6-a0dc840f3f25*/ (line 1, col5163): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[19] (line 1, col5164): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[19].resource/*ResearchSubject/e5e72c56-dbec-418b-a6f6-a0dc840f3f25*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[19].resource/*ResearchSubject/e5e72c56-dbec-418b-a6f6-a0dc840f3f25*/ (line 1, col5163): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[20].resource/*ResearchSubject/dce83ced-fad4-4cfe-a792-3174acc8eeac*/ (line 1, col5434): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[20] (line 1, col5435): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[20].resource/*ResearchSubject/dce83ced-fad4-4cfe-a792-3174acc8eeac*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[20].resource/*ResearchSubject/dce83ced-fad4-4cfe-a792-3174acc8eeac*/ (line 1, col5434): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[21].resource/*ResearchSubject/fc74e57a-2c65-48a9-9872-17563883fe19*/ (line 1, col5705): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[21] (line 1, col5706): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[21].resource/*ResearchSubject/fc74e57a-2c65-48a9-9872-17563883fe19*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[21].resource/*ResearchSubject/fc74e57a-2c65-48a9-9872-17563883fe19*/ (line 1, col5705): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[22].resource/*ResearchSubject/b0e22d18-d72e-4306-bf5a-71c0bdd0f230*/ (line 1, col5976): ResearchSubject.subject: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/ResearchSubject|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[22] (line 1, col5977): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[22].resource/*ResearchSubject/b0e22d18-d72e-4306-bf5a-71c0bdd0f230*/.study: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[22].resource/*ResearchSubject/b0e22d18-d72e-4306-bf5a-71c0bdd0f230*/ (line 1, col5976): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/ (line 1, col6293): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/ (line 1, col6293): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[23] (line 1, col6294): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/.seriousness.text (line 1, col6216): Constraint failed: ele-1: 'All FHIR elements must have a @value or children' (defined in http://hl7.org/fhir/StructureDefinition/Element), validating against Base FHIR Standard
+  Error @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/.seriousness.text (line 1, col6216): value cannot be empty, validating against Base FHIR Standard
+  Warning @ Bundle.entry[23].resource/*AdverseEvent/3318de30-2bc3-4f28-9be4-10a25b6aa68e*/ (line 1, col6293): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/ (line 1, col6610): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/ (line 1, col6610): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[24] (line 1, col6611): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/.seriousness.text (line 1, col6533): Constraint failed: ele-1: 'All FHIR elements must have a @value or children' (defined in http://hl7.org/fhir/StructureDefinition/Element), validating against Base FHIR Standard
+  Error @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/.seriousness.text (line 1, col6533): value cannot be empty, validating against Base FHIR Standard
+  Warning @ Bundle.entry[24].resource/*AdverseEvent/f329e7ef-7390-43e3-be73-bca73b2f9dff*/ (line 1, col6610): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[25].resource/*AdverseEvent/a943d44a-7e75-4a69-9833-c72c3f878442*/ (line 1, col6917): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[25].resource/*AdverseEvent/a943d44a-7e75-4a69-9833-c72c3f878442*/ (line 1, col6917): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[25] (line 1, col6918): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[25].resource/*AdverseEvent/a943d44a-7e75-4a69-9833-c72c3f878442*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[25].resource/*AdverseEvent/a943d44a-7e75-4a69-9833-c72c3f878442*/ (line 1, col6917): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[26].resource/*AdverseEvent/5b774a56-0cf8-4ab5-b63d-853731c45d10*/ (line 1, col7224): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[26].resource/*AdverseEvent/5b774a56-0cf8-4ab5-b63d-853731c45d10*/ (line 1, col7224): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[26] (line 1, col7225): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[26].resource/*AdverseEvent/5b774a56-0cf8-4ab5-b63d-853731c45d10*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[26].resource/*AdverseEvent/5b774a56-0cf8-4ab5-b63d-853731c45d10*/ (line 1, col7224): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[27].resource/*AdverseEvent/e387cb11-c303-4559-83b5-38b6b572a402*/ (line 1, col7531): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[27].resource/*AdverseEvent/e387cb11-c303-4559-83b5-38b6b572a402*/ (line 1, col7531): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[27] (line 1, col7532): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[27].resource/*AdverseEvent/e387cb11-c303-4559-83b5-38b6b572a402*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[27].resource/*AdverseEvent/e387cb11-c303-4559-83b5-38b6b572a402*/ (line 1, col7531): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[28].resource/*AdverseEvent/d804caae-6cd3-4a0f-855d-980e50417674*/ (line 1, col7838): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[28].resource/*AdverseEvent/d804caae-6cd3-4a0f-855d-980e50417674*/ (line 1, col7838): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[28] (line 1, col7839): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[28].resource/*AdverseEvent/d804caae-6cd3-4a0f-855d-980e50417674*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[28].resource/*AdverseEvent/d804caae-6cd3-4a0f-855d-980e50417674*/ (line 1, col7838): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[29].resource/*AdverseEvent/122deef4-9e27-4849-9284-ea4c2133cecf*/ (line 1, col8145): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[29].resource/*AdverseEvent/122deef4-9e27-4849-9284-ea4c2133cecf*/ (line 1, col8145): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[29] (line 1, col8146): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[29].resource/*AdverseEvent/122deef4-9e27-4849-9284-ea4c2133cecf*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[29].resource/*AdverseEvent/122deef4-9e27-4849-9284-ea4c2133cecf*/ (line 1, col8145): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[30].resource/*AdverseEvent/70de8381-4bc1-42da-8295-19c34075999e*/ (line 1, col8452): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[30].resource/*AdverseEvent/70de8381-4bc1-42da-8295-19c34075999e*/ (line 1, col8452): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[30] (line 1, col8453): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[30].resource/*AdverseEvent/70de8381-4bc1-42da-8295-19c34075999e*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[30].resource/*AdverseEvent/70de8381-4bc1-42da-8295-19c34075999e*/ (line 1, col8452): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[31].resource/*AdverseEvent/3f63fcc5-3e87-4eb8-80b2-a34c4bd37592*/ (line 1, col8759): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[31].resource/*AdverseEvent/3f63fcc5-3e87-4eb8-80b2-a34c4bd37592*/ (line 1, col8759): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[31] (line 1, col8760): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[31].resource/*AdverseEvent/3f63fcc5-3e87-4eb8-80b2-a34c4bd37592*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[31].resource/*AdverseEvent/3f63fcc5-3e87-4eb8-80b2-a34c4bd37592*/ (line 1, col8759): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[32].resource/*AdverseEvent/b085a542-b910-4710-93eb-fb08b660265c*/ (line 1, col9067): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[32].resource/*AdverseEvent/b085a542-b910-4710-93eb-fb08b660265c*/ (line 1, col9067): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[32] (line 1, col9068): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[32].resource/*AdverseEvent/b085a542-b910-4710-93eb-fb08b660265c*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[32].resource/*AdverseEvent/b085a542-b910-4710-93eb-fb08b660265c*/ (line 1, col9067): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[33].resource/*AdverseEvent/70189f09-4a0f-463e-ae1b-c9f6d20bcf9b*/ (line 1, col9375): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[33].resource/*AdverseEvent/70189f09-4a0f-463e-ae1b-c9f6d20bcf9b*/ (line 1, col9375): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[33] (line 1, col9376): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[33].resource/*AdverseEvent/70189f09-4a0f-463e-ae1b-c9f6d20bcf9b*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[33].resource/*AdverseEvent/70189f09-4a0f-463e-ae1b-c9f6d20bcf9b*/ (line 1, col9375): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[34].resource/*AdverseEvent/0ccc8135-84fb-4bb8-aea9-f4892325afd8*/ (line 1, col9683): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[34].resource/*AdverseEvent/0ccc8135-84fb-4bb8-aea9-f4892325afd8*/ (line 1, col9683): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[34] (line 1, col9684): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[34].resource/*AdverseEvent/0ccc8135-84fb-4bb8-aea9-f4892325afd8*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[34].resource/*AdverseEvent/0ccc8135-84fb-4bb8-aea9-f4892325afd8*/ (line 1, col9683): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[35].resource/*AdverseEvent/dad76b9f-5467-4023-be1c-1b987a4c621d*/ (line 1, col9991): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[35].resource/*AdverseEvent/dad76b9f-5467-4023-be1c-1b987a4c621d*/ (line 1, col9991): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[35] (line 1, col9992): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[35].resource/*AdverseEvent/dad76b9f-5467-4023-be1c-1b987a4c621d*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[35].resource/*AdverseEvent/dad76b9f-5467-4023-be1c-1b987a4c621d*/ (line 1, col9991): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[36].resource/*AdverseEvent/69b0b2d3-3285-4061-a4c7-8dc89e6bdc06*/ (line 1, col10299): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[36].resource/*AdverseEvent/69b0b2d3-3285-4061-a4c7-8dc89e6bdc06*/ (line 1, col10299): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[36] (line 1, col10300): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[36].resource/*AdverseEvent/69b0b2d3-3285-4061-a4c7-8dc89e6bdc06*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[36].resource/*AdverseEvent/69b0b2d3-3285-4061-a4c7-8dc89e6bdc06*/ (line 1, col10299): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[37].resource/*AdverseEvent/2e3dce10-b428-414f-82ee-d7a08e8c78fc*/ (line 1, col10607): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[37].resource/*AdverseEvent/2e3dce10-b428-414f-82ee-d7a08e8c78fc*/ (line 1, col10607): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[37] (line 1, col10608): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[37].resource/*AdverseEvent/2e3dce10-b428-414f-82ee-d7a08e8c78fc*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[37].resource/*AdverseEvent/2e3dce10-b428-414f-82ee-d7a08e8c78fc*/ (line 1, col10607): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[38].resource/*AdverseEvent/d9c0e0a2-a967-4076-97a0-956cd39587f1*/ (line 1, col10915): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[38].resource/*AdverseEvent/d9c0e0a2-a967-4076-97a0-956cd39587f1*/ (line 1, col10915): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[38] (line 1, col10916): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[38].resource/*AdverseEvent/d9c0e0a2-a967-4076-97a0-956cd39587f1*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[38].resource/*AdverseEvent/d9c0e0a2-a967-4076-97a0-956cd39587f1*/ (line 1, col10915): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[39].resource/*AdverseEvent/f7a71b05-7f15-4be9-bad6-663ba075630c*/ (line 1, col11223): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[39].resource/*AdverseEvent/f7a71b05-7f15-4be9-bad6-663ba075630c*/ (line 1, col11223): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[39] (line 1, col11224): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[39].resource/*AdverseEvent/f7a71b05-7f15-4be9-bad6-663ba075630c*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[39].resource/*AdverseEvent/f7a71b05-7f15-4be9-bad6-663ba075630c*/ (line 1, col11223): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[40].resource/*AdverseEvent/92d303af-8c29-4c0a-bedf-4949cdc0ea15*/ (line 1, col11531): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[40].resource/*AdverseEvent/92d303af-8c29-4c0a-bedf-4949cdc0ea15*/ (line 1, col11531): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[40] (line 1, col11532): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[40].resource/*AdverseEvent/92d303af-8c29-4c0a-bedf-4949cdc0ea15*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[40].resource/*AdverseEvent/92d303af-8c29-4c0a-bedf-4949cdc0ea15*/ (line 1, col11531): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[41].resource/*AdverseEvent/f8374924-eb1e-4f20-97f4-175612bcf03f*/ (line 1, col11839): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[41].resource/*AdverseEvent/f8374924-eb1e-4f20-97f4-175612bcf03f*/ (line 1, col11839): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[41] (line 1, col11840): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[41].resource/*AdverseEvent/f8374924-eb1e-4f20-97f4-175612bcf03f*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[41].resource/*AdverseEvent/f8374924-eb1e-4f20-97f4-175612bcf03f*/ (line 1, col11839): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle.entry[42].resource/*AdverseEvent/d337eac7-10fc-4dce-b4c1-5c30fa26b360*/ (line 1, col12147): AdverseEvent.status: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[42].resource/*AdverseEvent/d337eac7-10fc-4dce-b4c1-5c30fa26b360*/ (line 1, col12147): AdverseEvent.actuality: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/AdverseEvent|5.0.0), validating against Base FHIR Standard
+  Error @ Bundle.entry[42] (line 1, col12148): Bundle entry missing fullUrl, validating against Base FHIR Standard
+  Error @ Bundle.entry[42].resource/*AdverseEvent/d337eac7-10fc-4dce-b4c1-5c30fa26b360*/.subject: Relative Reference appears inside Bundle whose entry is missing a fullUrl, validating against Base FHIR Standard
+  Warning @ Bundle.entry[42].resource/*AdverseEvent/d337eac7-10fc-4dce-b4c1-5c30fa26b360*/ (line 1, col12147): Constraint failed: dom-6: 'A resource should have narrative for robust management' (defined in http://hl7.org/fhir/StructureDefinition/DomainResource) (Best Practice Recommendation), validating against Base FHIR Standard
+  Error @ Bundle (line 1, col12150): Constraint failed: bdl-15: 'Bundle resources where type is not transaction, transaction-response, batch, or batch-response or when the request is a POST SHALL have Bundle.entry.fullUrl populated' (defined in http://hl7.org/fhir/StructureDefinition/Bundle), validating against Base FHIR Standard
+  Error @ Bundle.entry[0] (line 1, col306): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[1] (line 1, col432): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[2] (line 1, col557): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[3] (line 1, col828): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[4] (line 1, col1099): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[5] (line 1, col1370): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[6] (line 1, col1641): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[7] (line 1, col1912): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[8] (line 1, col2183): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[9] (line 1, col2454): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[10] (line 1, col2725): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[11] (line 1, col2996): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[12] (line 1, col3267): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[13] (line 1, col3538): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[14] (line 1, col3809): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[15] (line 1, col4080): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[16] (line 1, col4351): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[17] (line 1, col4622): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[18] (line 1, col4893): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[19] (line 1, col5164): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[20] (line 1, col5435): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[21] (line 1, col5706): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[22] (line 1, col5977): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[23] (line 1, col6294): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[24] (line 1, col6611): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[25] (line 1, col6918): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[26] (line 1, col7225): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[27] (line 1, col7532): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[28] (line 1, col7839): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[29] (line 1, col8146): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[30] (line 1, col8453): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[31] (line 1, col8760): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[32] (line 1, col9068): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[33] (line 1, col9376): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[34] (line 1, col9684): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[35] (line 1, col9992): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[36] (line 1, col10300): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[37] (line 1, col10608): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[38] (line 1, col10916): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[39] (line 1, col11224): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[40] (line 1, col11532): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[41] (line 1, col11840): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+  Error @ Bundle.entry[42] (line 1, col12148): Except for transactions and batches, each entry in a Bundle must have a fullUrl which is the identity of the resource in the entry
+Done. Times: Loading: 01:21.280, validation: 00:03.559. Max Memory = 2Gb
