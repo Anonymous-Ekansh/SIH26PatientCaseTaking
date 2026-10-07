@@ -113,7 +113,12 @@ export default function VerifyQueue() {
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
             <ShieldCheck size={28} className="text-sky-500" /> Verify Queue
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Review and verify data entered by participants via Voice Kiosk.</p>
+          <p className="text-slate-500 text-sm mt-1 mb-4">Review and verify data entered by participants via Voice Kiosk.</p>
+          <div className="bg-sky-100 p-4 rounded-xl border border-sky-200">
+            <p className="text-sky-800 text-sm font-medium">
+              <strong>What is this?</strong> This is the Source Data Verification (SDV) queue. When a patient submits health data via the Participant Kiosk, the Principal Investigator (PI) or Coordinator must clinically review and verify the data here before it becomes a permanent part of the trial record.
+            </p>
+          </div>
         </div>
 
         {loading ? (

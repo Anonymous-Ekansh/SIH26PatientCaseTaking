@@ -34,11 +34,10 @@ export default function TrialLogin() {
           </div>
         )}
 
-        <div className="bg-slate-50 border border-slate-200 text-slate-700 text-sm p-4 rounded-lg mb-4 text-center">
-          <p className="font-semibold mb-1">Authentication Module Placeholder</p>
-          <p className="text-xs text-slate-500">
-            Real OAuth/SSO authentication would be implemented here in production. 
-            For this prototype, please select a Demo Role below to instantly access the functional dashboards.
+        <div className="bg-sky-100 border border-sky-200 text-sky-800 p-4 rounded-lg mb-4 text-center">
+          <p className="font-semibold mb-1 text-sm">What is this?</p>
+          <p className="text-xs">
+            In production, trial staff authenticate via Enterprise SSO. For this hackathon demo, you can completely bypass login by selecting a role below. <strong>Try switching roles to see how the platform implements Role-Based Access Control (RBAC).</strong>
           </p>
         </div>
         <div className="mt-4 text-center">

@@ -142,7 +142,12 @@ export default function QualityDesk() {
           <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
             <CheckCircle size={32} className="text-emerald-500" /> Quality & Compliance
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Manage Queries, Deviations, and Monitoring Visits.</p>
+          <p className="text-slate-500 text-sm mt-1 mb-4">Manage Queries, Deviations, and Monitoring Visits.</p>
+          <div className="bg-sky-100 p-4 rounded-xl border border-sky-200">
+            <p className="text-sky-800 text-sm font-medium">
+              <strong>What is this?</strong> This is the Data Monitor's workspace. It allows sponsors/monitors to resolve discrepancies (Queries) found in participant forms, record Protocol Deviations, and schedule on-site Monitoring Visits to ensure GCP compliance.
+            </p>
+          </div>
         </div>
 
         <div className="flex gap-2 border-b border-slate-200">

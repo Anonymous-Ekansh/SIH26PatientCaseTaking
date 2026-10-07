@@ -136,7 +136,12 @@ export default function RoleHome() {
         <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2 capitalize">
           Welcome, {role?.replace('_', ' ')}
         </h1>
-        <p className="text-slate-500 text-sm mt-1">Your personalised clinical trial command center.</p>
+        <p className="text-slate-500 text-sm mt-1 mb-4">Your personalised clinical trial command center.</p>
+        <div className="bg-sky-100 p-4 rounded-xl border border-sky-200">
+          <p className="text-sky-800 text-sm font-medium">
+            <strong>What is this?</strong> TrialSaathi provides Role-Based Access Control (RBAC). The widgets and metrics you see below are uniquely generated for your selected demo role, ensuring data compartmentalization required by GCP standards.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

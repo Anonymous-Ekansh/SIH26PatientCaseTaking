@@ -309,11 +309,16 @@ export default function SafetyDesk() {
     <RoleGate allow={['pi', 'coordinator', 'pharmacovigilance', 'ethics_committee', 'regulator_ro', 'admin']}>
       <div className="space-y-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-end">
-          <div>
+          <div className="w-full">
             <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
               <ShieldAlert size={32} className="text-red-500" /> Safety & PV Desk
             </h1>
-            <p className="text-slate-500 text-sm mt-2">Manage Adverse Events, SAE Clocks, and Regulatory Reporting.</p>
+            <p className="text-slate-500 text-sm mt-2 mb-4">Manage Adverse Events, SAE Clocks, and Regulatory Reporting.</p>
+            <div className="bg-sky-100 p-4 rounded-xl border border-sky-200">
+              <p className="text-sky-800 text-sm font-medium">
+                <strong>What is this?</strong> This is the Pharmacovigilance (Safety) Desk. It automatically flags severe side-effects reported by patients. The PV team can medically assess Adverse Events (AEs) using CDISC terminology and generate automatic compliance clocks for CDSCO and Ethics Committee reporting.
+              </p>
+            </div>
           </div>
         </div>
 

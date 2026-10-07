@@ -110,11 +110,16 @@ export default function ConformanceDesk() {
     <RoleGate allow={['admin', 'monitor', 'regulator_ro']}>
       <div className="space-y-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-end">
-          <div>
+          <div className="w-full">
             <h1 className="text-3xl font-black text-slate-900 flex items-center gap-2">
               <Stamp size={32} className="text-fuchsia-600" /> Compliance & Conformance
             </h1>
-            <p className="text-slate-500 text-sm mt-1">Real-time metrics on GCP adherence, data integrity, and system compliance.</p>
+            <p className="text-slate-500 text-sm mt-1 mb-4">Real-time metrics on GCP adherence, data integrity, and system compliance.</p>
+            <div className="bg-sky-100 p-4 rounded-xl border border-sky-200">
+              <p className="text-sky-800 text-sm font-medium">
+                <strong>What is this?</strong> This dashboard aggregates real-time regulatory compliance metrics across the trial. It mathematically evaluates ALCOA-CCEA adherence, consent validity, and protocol conformance, giving sponsors a unified view of audit readiness.
+              </p>
+            </div>
           </div>
           <div className="flex gap-2 items-center bg-white border border-slate-200 p-2 rounded-lg shadow-sm">
             <span className="text-sm font-bold text-slate-500 uppercase px-2">Study</span>
