@@ -17,8 +17,17 @@ export default function TrialLogin() {
     setLoading(true);
     setError("");
     
-    // Completely bypass Supabase auth for demo mode
-    localStorage.setItem('demo_role', loginRole);
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: `demo_${loginRole}@synthetic.local`,
+      password: demoPassword,
+    });
+
+    if (authError || !authData.user) {
+      setError(authError?.message || "Login failed");
+      setLoading(false);
+      return;
+    }
+
     router.push("/trial/home");
   };
 

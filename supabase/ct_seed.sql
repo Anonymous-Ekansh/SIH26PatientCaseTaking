@@ -2,6 +2,9 @@
 -- NOT A MIGRATION
 -- Synthetic data only
 
+DELETE FROM ct_studies WHERE short_code LIKE 'SYN-%';
+DELETE FROM ct_sites WHERE name LIKE 'Synthetic %';
+
 DO $$
 DECLARE
     v_study1 UUID;

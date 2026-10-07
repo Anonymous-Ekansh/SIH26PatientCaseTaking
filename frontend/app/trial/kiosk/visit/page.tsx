@@ -27,6 +27,20 @@ export default function VisitKiosk() {
       router.push("/trial/kiosk");
       return;
     }
+    const isDemoMode = localStorage.getItem("kiosk_demo_mode") === "true";
+    if (isDemoMode) {
+      const syntheticVisit = { id: "visit-123", name: "V1 - Baseline", scheduled_on: new Date().toISOString() };
+      const syntheticTemplates = [
+        { id: "t1", kind: "visit", name: "Visit Questionnaire", questions: [ { id: "q1", type: "scale", text_en: "Knee pain level (1-10)?", text_hi: "घुटने के दर्द का स्तर (1-10)?" } ] }
+      ];
+      setVisit(syntheticVisit);
+      setTemplates(syntheticTemplates);
+      setQuestions(syntheticTemplates[0].questions.map(q => ({...q, template_id: "t1", kind: "visit"})));
+      setAnswersByTemplate({ t1: {} });
+      setLoading(false);
+      return;
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/next_visit`, {
       headers: { "Authorization": `Bearer ${token}` }
     })

@@ -22,6 +22,13 @@ export default function ConsentKiosk() {
       router.push("/trial/kiosk");
       return;
     }
+    const isDemoMode = localStorage.getItem("kiosk_demo_mode") === "true";
+    if (isDemoMode) {
+      setVersion({ version: "1.0", content_en: "Synthetic Consent Form Body English...", content_hi: "Synthetic Consent Form Body Hindi..." });
+      setLoading(false);
+      return;
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/consent`, {
       headers: { "Authorization": `Bearer ${token}` }
     })

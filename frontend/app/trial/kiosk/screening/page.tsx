@@ -25,6 +25,18 @@ export default function ScreeningKiosk() {
       router.push("/trial/kiosk");
       return;
     }
+    const isDemoMode = localStorage.getItem("kiosk_demo_mode") === "true";
+    if (isDemoMode) {
+      const syntheticTemplate = {
+        questions: [
+          { id: "q1", type: "boolean", text_en: "Are you above 18?", text_hi: "क्या आप 18 वर्ष से अधिक आयु के हैं?" }
+        ]
+      };
+      setTemplate(syntheticTemplate);
+      setLoading(false);
+      return;
+    }
+
     fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/screening`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
