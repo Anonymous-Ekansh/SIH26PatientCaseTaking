@@ -44,36 +44,25 @@ export default function KioskLogin() {
         
         {error && <div className="p-4 mb-6 bg-red-100 text-red-700 text-lg font-bold rounded-xl text-center">{error}</div>}
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label className="block text-xl font-bold text-slate-800 mb-2">Subject Code</label>
-            <input 
-              type="text" 
-              value={subjectCode}
-              onChange={(e) => setSubjectCode(e.target.value)}
-              className="w-full text-2xl px-6 py-4 rounded-2xl border-2 border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-200 outline-none uppercase"
-              required 
-            />
-          </div>
-          <div>
-            <label className="block text-xl font-bold text-slate-800 mb-2">4-Digit PIN</label>
-            <input 
-              type="password" 
-              maxLength={4}
-              pattern="\d{4}"
-              value={pin}
-              onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))}
-              className="w-full text-4xl tracking-[1em] text-center px-6 py-4 rounded-2xl border-2 border-slate-300 focus:border-sky-500 focus:ring-4 focus:ring-sky-200 outline-none"
-              required 
-            />
-          </div>
+        <div className="bg-slate-50 border border-slate-200 text-slate-700 text-sm p-4 rounded-xl mb-6 text-center">
+          <p className="font-bold text-lg mb-1">Subject Authentication Placeholder</p>
+          <p className="text-slate-600 mb-4">
+            In production, staff will enter the Subject Code and a secure PIN to unlock the kiosk.
+            For this prototype demo, click the button below to instantly load a sample participant session.
+          </p>
           <button 
-            type="submit"
-            className="w-full mt-4 bg-sky-600 text-white text-2xl font-black py-5 rounded-2xl hover:bg-sky-700 active:scale-95 transition-transform shadow-md"
+            onClick={(e) => {
+              setSubjectCode("SYN-1");
+              setPin("1234");
+              // use timeout to ensure state update before submit
+              setTimeout(() => handleLogin(e), 50);
+            }}
+            className="w-full bg-amber-500 text-white text-xl font-black py-4 rounded-xl hover:bg-amber-600 active:scale-95 transition-transform shadow-md flex items-center justify-center gap-2"
           >
-            Start
+            Start Demo Session (SYN-1)
           </button>
-        </form>
+        </div>
+
       </div>
     </div>
   );

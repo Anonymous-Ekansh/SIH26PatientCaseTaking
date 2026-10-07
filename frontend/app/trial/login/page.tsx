@@ -63,36 +63,13 @@ export default function TrialLogin() {
           </div>
         )}
 
-        <form onSubmit={(e) => { e.preventDefault(); handleLogin(email, password); }} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
-              required 
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-sky-500 focus:border-sky-500 outline-none"
-              required 
-            />
-          </div>
-          <button 
-            type="submit"
-            disabled={loading}
-            className="w-full bg-sky-500 text-white font-bold py-2.5 rounded-lg hover:bg-sky-600 transition-colors disabled:opacity-50"
-          >
-            {loading ? "Signing in..." : "Sign in"}
-          </button>
-        </form>
-
+        <div className="bg-slate-50 border border-slate-200 text-slate-700 text-sm p-4 rounded-lg mb-4 text-center">
+          <p className="font-semibold mb-1">Authentication Module Placeholder</p>
+          <p className="text-xs text-slate-500">
+            Real OAuth/SSO authentication would be implemented here in production. 
+            For this prototype, please select a Demo Role below to instantly access the functional dashboards.
+          </p>
+        </div>
         <div className="mt-6 text-center">
           <Link href="/" className="text-sm text-sky-600 font-medium hover:underline">
             ← Back to Home

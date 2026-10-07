@@ -164,3 +164,4 @@ BEGIN
     END LOOP;
 
 END $$;
+UPDATE ct_participants SET pin_hash = crypt('1234', gen_salt('bf'));

@@ -301,7 +301,76 @@ export default function Home() {
               </div>
             </div>
 
-          </div>
+            {/* Feature 6: TrialSaathi Workspaces */}
+            <div className="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-slate-800 p-6 md:p-8 rounded-3xl border border-slate-700 shadow-sm relative overflow-hidden">
+                <div className="bg-slate-900 rounded-2xl shadow-sm border border-slate-700 p-5 flex flex-col gap-3 max-w-sm mx-auto transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                  <div className="flex justify-between items-center border-b border-slate-700 pb-2">
+                    <span className="font-bold text-slate-200">Role Workspaces</span>
+                    <span className="text-xs bg-sky-900 text-sky-300 px-2 py-0.5 rounded font-bold">CTMS</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">PI / Coordinator</div>
+                      <div className="text-xs font-semibold text-slate-200">Portfolio & Verify</div>
+                    </div>
+                    <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Pharmacovigilance</div>
+                      <div className="text-xs font-semibold text-slate-200">Safety Desk</div>
+                    </div>
+                    <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Ethics Comm.</div>
+                      <div className="text-xs font-semibold text-slate-200">Regulatory</div>
+                    </div>
+                    <div className="bg-slate-800 p-3 rounded-lg border border-slate-700 text-center">
+                      <div className="text-[10px] text-slate-400 font-bold uppercase mb-1">Data Monitor</div>
+                      <div className="text-xs font-semibold text-slate-200">Query Aging</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center mb-6">
+                  <UserCheck size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Role-Based CTMS Workspaces</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  TrialSaathi provides highly isolated, role-specific dashboards. Principal Investigators, Data Monitors, and Pharmacovigilance teams only see the data, queries, and action items explicitly assigned to their roles.
+                </p>
+              </div>
+            </div>
+
+            {/* Feature 7: Cryptographic Audit & Compliance */}
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
+              <div className="flex-1 w-full bg-rose-50 p-6 md:p-8 rounded-3xl border border-rose-200 shadow-sm relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-sm border border-rose-100 p-5 flex flex-col gap-4 max-w-sm mx-auto transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                  <div className="border-b border-rose-50 pb-2 flex justify-between items-center">
+                    <span className="font-bold text-gray-800 text-sm">Audit Ledger</span>
+                    <span className="text-[10px] text-emerald-600 bg-emerald-100 px-2 py-1 rounded font-bold uppercase flex items-center gap-1"><CheckCircle2 size={10}/> Intact</span>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="bg-slate-50 p-2 rounded border border-slate-100 text-xs text-slate-600 font-mono break-all">
+                      ...f3a9e01b -&gt; row_hash(old, new)
+                    </div>
+                    <div className="bg-slate-50 p-2 rounded border border-slate-100 text-xs text-slate-600 font-mono break-all">
+                      ...a7b2c93f -&gt; row_hash(old, new)
+                    </div>
+                    <div className="bg-rose-100 text-rose-700 p-2 rounded border border-rose-200 text-xs font-bold text-center mt-2 flex items-center justify-center gap-2">
+                      <FileText size={14}/> GCP-Aligned E-Signature
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center mb-6">
+                  <CheckCircle2 size={24} />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Cryptographic Audit & E-Signatures</h3>
+                <p className="text-lg text-gray-600 leading-relaxed">
+                  Every data mutation is cryptographically hashed to the preceding row (blockchain-style). Tampering is mathematically impossible without breaking the chain. Combined with GCP-aligned E-Signatures via secure re-authentication.
+                </p>
+              </div>
+            </div>
         </section>
       </main>
 
