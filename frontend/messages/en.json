@@ -47,7 +47,9 @@
     "showcase_ayush_desc": "For Ayurvedic OPDs, capture in-depth Dashavidha Pariksha parameters and automatically calculate Dosha imbalances.",
     "showcase_book_title": "Seamless Patient Booking",
     "showcase_book_desc": "Patients easily book time slots with their preferred doctors. Their entire medical summary is linked instantly to the appointment.",
-    "footer": "Built for Smart India Hackathon, Problem Statement SIH26047, Ministry of Ayush"
+    "footer": "Built for Smart India Hackathon, Problem Statement SIH26047, Ministry of Ayush",
+    "trialsaathi_what_is_title": "What is TrialSaathi?",
+    "trialsaathi_what_is_desc": "It is a comprehensive Clinical Trial Management System (CTMS) that digitizes the entire trial lifecycle. From patient intake and electronic consent to pharmacovigilance and real-time regulatory compliance, it provides role-based workspaces for all trial staff."
   },
   "Dashboard": {
     "welcome": "Welcome",
