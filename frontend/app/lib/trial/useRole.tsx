@@ -16,8 +16,17 @@ export function TrialRoleProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    const supabase = createClient();
     async function fetchRole() {
+      // Demo mode bypass: check if demo role is stored in localStorage
+      const demoRole = typeof window !== 'undefined' ? localStorage.getItem('demo_role') : null;
+      if (demoRole) {
+        setRole(demoRole);
+        setUserId('demo-user-123');
+        setLoading(false);
+        return;
+      }
+
+      const supabase = createClient();
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {

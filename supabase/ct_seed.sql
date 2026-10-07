@@ -5,6 +5,19 @@
 DELETE FROM ct_studies WHERE short_code LIKE 'SYN-%';
 DELETE FROM ct_sites WHERE name LIKE 'Synthetic %';
 
+-- We are removing the auth.users generation because the user wants to bypass login completely.
+-- Instead, we will configure ALL ct_ tables to allow SELECT from the 'anon' role so the dashboard loads correctly.
+
+DO $$
+DECLARE
+    tbl text;
+BEGIN
+    FOR tbl IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename LIKE 'ct_%' LOOP
+        EXECUTE format('DROP POLICY IF EXISTS "Demo Anon Read" ON %I', tbl);
+        EXECUTE format('CREATE POLICY "Demo Anon Read" ON %I FOR SELECT TO anon USING (true)', tbl);
+    END LOOP;
+END $$;
+
 DO $$
 DECLARE
     v_study1 UUID;
