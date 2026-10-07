@@ -59,7 +59,7 @@ export default function LabsDesk() {
       formData.append("visit_id", visit.id);
       formData.append("file", file);
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
       const res = await fetch(`${apiUrl}/api/ct/labs/upload`, {
         method: "POST",
         body: formData

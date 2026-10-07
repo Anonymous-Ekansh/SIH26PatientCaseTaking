@@ -10,7 +10,7 @@ export default function DoctorSummaryRedirect({ params }: { params: Promise<{ en
   const [error, setError] = useState<string | null>(null);
   const [patientId, setPatientId] = useState<string | null>(null);
 
-  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     async function resolve() {

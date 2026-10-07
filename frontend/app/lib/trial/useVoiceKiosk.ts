@@ -2,7 +2,7 @@
 // Thin adapter to drive the existing voice engine backend without changing MediKiosk behaviour
 
 export const playTTS = async (text: string, language: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
   const res = await fetch(`${apiUrl}/api/conversation/tts`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -17,7 +17,7 @@ export const playTTS = async (text: string, language: string) => {
 };
 
 export const transcribeASR = async (blob: Blob, language: string) => {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
   const formData = new FormData();
   formData.append("audio", blob, "recording.wav");
   formData.append("language", language);

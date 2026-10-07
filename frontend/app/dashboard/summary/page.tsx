@@ -24,7 +24,7 @@ export default function SummaryPage() {
 
   const supabase = createClient();
   const t = useTranslations("Summary");
-  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     async function fetchSummaryData() {

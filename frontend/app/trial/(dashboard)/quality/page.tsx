@@ -112,7 +112,7 @@ export default function QualityDesk() {
     if (!actualOn) return alert("Select an actual date");
     
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/quality/visit_save`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/ct/quality/visit_save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

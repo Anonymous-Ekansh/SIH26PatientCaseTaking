@@ -16,7 +16,7 @@ export default function ExportsDesk() {
   const [threshold, setThreshold] = useState(5);
   
   const supabase = createClient();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     const fetchStudies = async () => {

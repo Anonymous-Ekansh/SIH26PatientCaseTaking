@@ -29,7 +29,7 @@ export default function ConformanceDesk() {
   const [verifyResult, setVerifyResult] = useState<any>(null);
 
   const supabase = createClient();
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     const fetchStudies = async () => {

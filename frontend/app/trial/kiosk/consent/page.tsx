@@ -29,7 +29,7 @@ export default function ConsentKiosk() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/consent`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/consent`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
@@ -60,7 +60,7 @@ export default function ConsentKiosk() {
     setReadAloudUsed(true);
     setIsPlaying(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/conversation/tts`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/conversation/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: getText(), language: language }),
@@ -81,7 +81,7 @@ export default function ConsentKiosk() {
   const submitConsent = async (method: 'touch' | 'voice') => {
     try {
       const token = localStorage.getItem("kiosk_token");
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/ct/kiosk/consent`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/consent`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",

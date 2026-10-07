@@ -30,7 +30,7 @@ export default function DocumentsPage() {
   const t = useTranslations("Documents");
   
   // Use the env var, fallback to localhost for development
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
 
   const fetchDocuments = useCallback(async () => {
     try {

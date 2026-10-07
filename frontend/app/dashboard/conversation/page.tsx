@@ -45,7 +45,7 @@ export default function ConversationPage() {
   const languageName = language === "hi" ? "Hindi (India)" : "English (English (IN))";
 
   const getApiUrl = () => {
-    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    return process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
   };
 
   useEffect(() => {
