@@ -29,7 +29,7 @@ export default function ScreeningKiosk() {
     if (isDemoMode) {
       const syntheticTemplate = {
         questions: [
-          { id: "q1", type: "boolean", text_en: "Are you above 18?", text_hi: "क्या आप 18 वर्ष से अधिक आयु के हैं?" }
+          { id: "q1", type: "boolean", text_en: "Are you above 18?", text_hi: "क्या आप 18 वर्ष से अधिक आयु के हैं?", options: ["Yes", "No"] }
         ]
       };
       setTemplate(syntheticTemplate);
@@ -182,7 +182,7 @@ export default function ScreeningKiosk() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col p-6 items-center">
-      <div className="w-full max-w-4xl flex items-center mb-12">
+      <div className="w-full max-w-4xl flex items-center mb-6">
         <button onClick={() => router.push("/trial/kiosk/menu")} className="text-slate-500 p-4 border border-slate-300 rounded-full hover:bg-slate-200">
           <ArrowLeft size={32} />
         </button>
@@ -191,6 +191,13 @@ export default function ScreeningKiosk() {
         </div>
         <div className="w-16"></div>
       </div>
+
+      <div className="w-full max-w-4xl bg-sky-100 p-4 rounded-xl border border-sky-200 mb-8">
+        <p className="text-sky-800 text-base font-medium">
+          <strong>What is this?</strong> This is an example of an ePRO (Electronic Patient-Reported Outcomes) form. Subjects answer predefined clinical questions using large touch buttons or voice, ensuring precise data collection for the trial.
+        </p>
+      </div>
+
 
       <div className="w-full max-w-4xl bg-white rounded-3xl p-12 shadow-sm border border-slate-200 text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 h-2 bg-sky-500 transition-all" style={{ width: `${((currentIdx) / template.questions.length) * 100}%` }}></div>

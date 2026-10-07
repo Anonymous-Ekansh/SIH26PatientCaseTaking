@@ -66,7 +66,7 @@ export default function PrivacyKiosk() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col p-6 items-center">
-      <div className="w-full max-w-4xl flex items-center justify-between mb-8">
+      <div className="w-full max-w-4xl flex items-center justify-between mb-6">
         <button onClick={() => router.push("/trial/kiosk/menu")} className="text-slate-500 p-4 border border-slate-300 rounded-full hover:bg-slate-200">
           <ArrowLeft size={32} />
         </button>
@@ -76,6 +76,12 @@ export default function PrivacyKiosk() {
             {content.subtitle}
           </span>
         </div>
+      </div>
+
+      <div className="w-full max-w-4xl bg-sky-100 p-4 rounded-xl border border-sky-200 mb-8">
+        <p className="text-sky-800 text-base font-medium">
+          <strong>What is this?</strong> This page clearly explains to participants how their sensitive data is handled in compliance with privacy laws (DPDP Act). It guarantees their rights, including the immediate right to withdraw consent digitally.
+        </p>
       </div>
 
       <div className="w-full max-w-4xl grid gap-6 md:grid-cols-2 flex-1">

@@ -126,7 +126,7 @@ export default function ConsentKiosk() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col p-6 items-center">
-      <div className="w-full max-w-5xl flex items-center justify-between mb-8">
+      <div className="w-full max-w-5xl flex items-center justify-between mb-6">
         <button onClick={() => router.push("/trial/kiosk/menu")} className="text-slate-500 p-4 border border-slate-300 rounded-full hover:bg-slate-200">
           <ArrowLeft size={32} />
         </button>
@@ -134,6 +134,12 @@ export default function ConsentKiosk() {
           <FileText size={28} /> {language === 'hi' ? 'ई-सहमति' : 'E-Consent'}
         </h1>
         <div className="w-16"></div>
+      </div>
+
+      <div className="w-full max-w-5xl bg-sky-100 p-4 rounded-xl border border-sky-200 mb-8">
+        <p className="text-sky-800 text-base font-medium">
+          <strong>What is this?</strong> This is the eConsent (Electronic Informed Consent) module. It digitizes the lengthy paper consent process, adding accessibility features (like read-aloud) and comprehension quizzes to ensure the subject truly understands the trial before digitally signing.
+        </p>
       </div>
 
       <div className="w-full max-w-5xl bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-slate-200 text-center relative overflow-hidden flex-1">

@@ -48,11 +48,17 @@ export default function KioskMenu() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col p-8 items-center font-sans">
-      <div className="w-full max-w-5xl flex justify-between items-center mb-12 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
+      <div className="w-full max-w-5xl flex justify-between items-center mb-6 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
         <h1 className="text-3xl font-black text-slate-900">Subject: <span className="text-sky-600 uppercase">{user.subject_code}</span></h1>
         <button onClick={() => { localStorage.removeItem("kiosk_token"); localStorage.removeItem("kiosk_demo_mode"); router.push("/trial/kiosk"); }} className="p-4 bg-slate-100 border border-slate-200 rounded-xl text-slate-700 font-bold flex items-center gap-2 hover:bg-slate-200 transition-colors">
           <LogOut size={24} /> Log Out
         </button>
+      </div>
+
+      <div className="w-full max-w-5xl bg-sky-100 p-4 rounded-xl border border-sky-200 mb-12">
+        <p className="text-sky-800 text-base font-medium">
+          <strong>What is this page?</strong> This is the participant's home menu. From here, the subject can access their assigned forms—such as initial screening questionnaires, daily visit tasks, or consent forms—without ever seeing confidential staff data.
+        </p>
       </div>
 
       <div className="w-full max-w-5xl grid gap-6 md:grid-cols-2 lg:grid-cols-3">

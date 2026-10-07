@@ -44,16 +44,14 @@ export default function KioskLogin() {
         <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-6 text-center">TrialSaathi Kiosk</h1>
         
         <div className="bg-slate-50 border border-slate-200 text-slate-700 text-sm p-6 rounded-xl mb-6 text-center">
-          <p className="font-bold text-lg mb-2">Subject Authentication Placeholder</p>
-          <p className="text-slate-600 mb-6">
-            In production, staff will enter the Subject Code and a secure PIN to unlock the kiosk.
-            For this prototype demo, click the button below to instantly load a sample participant session.
+          <p className="text-slate-700 mb-6 font-medium text-lg">
+            <strong>What is this?</strong> This is a dedicated portal for enrolled trial subjects (ePRO/eConsent). It allows patients to securely sign consent forms and answer clinical questionnaires directly, without seeing staff data. (Demo mode requires no PIN).
           </p>
           <button 
             onClick={handleDemoStart}
-            className="w-full bg-amber-500 text-white text-xl font-black py-4 rounded-xl hover:bg-amber-600 active:scale-95 transition-transform shadow-md flex items-center justify-center gap-2"
+            className="w-full bg-emerald-600 text-white text-xl font-black py-4 rounded-xl hover:bg-emerald-700 active:scale-95 transition-transform shadow-md flex items-center justify-center gap-2"
           >
-            Start Demo Session (SYN-1)
+            Login as Demo Subject (SYN-1)
           </button>
         </div>
 

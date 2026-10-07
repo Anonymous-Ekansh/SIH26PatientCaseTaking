@@ -56,7 +56,17 @@ export default function Home() {
               >
                 {t('btn_intake')}
               </Link>
+              
+              <Link
+                href="/trial/kiosk"
+                className="inline-flex items-center justify-center px-7 py-3.5 bg-emerald-600 text-white font-semibold rounded-full hover:bg-emerald-700 transition-colors active:scale-[0.97] w-full sm:w-auto"
+              >
+                Participant Kiosk
+              </Link>
             </div>
+            <p className="mt-6 text-sm text-sky-800 max-w-2xl bg-sky-100 p-3 rounded-lg border border-sky-200">
+              <strong>What is the Participant Kiosk?</strong> It is a secure, dedicated portal for enrolled clinical trial subjects to submit Electronic Informed Consent (eConsent) and protocol-specific daily health diaries (ePRO) directly to the trial dashboard.
+            </p>
           </div>
         </section>
 
