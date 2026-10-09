@@ -40,7 +40,7 @@ export default function AyushPage() {
   const supabase = createClient();
   const languageName = language === "hi" ? "Hindi (India)" : "English (English (IN))";
 
-  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+  const getApiUrl = () => "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     async function initAyush() {

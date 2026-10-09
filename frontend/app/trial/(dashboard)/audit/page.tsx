@@ -48,7 +48,7 @@ export default function AuditDesk() {
     setVerifying(true);
     setVerifyResult(null);
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+      const apiUrl = "https://medikiosk-backend-ufnv.onrender.com";
       const res = await fetch(`${apiUrl}/api/ct/audit/verify`, { method: "POST" });
       const data = await res.json();
       if (data.status === 'success') {

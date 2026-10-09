@@ -55,7 +55,7 @@ export default function DoctorDashboard() {
         if (slotsData) setSlots(slotsData);
 
         // 3. Fetch Bookings via backend API (bypasses RLS)
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+        const apiUrl = "https://medikiosk-backend-ufnv.onrender.com";
         const bookingsRes = await fetch(`${apiUrl}/api/documents/doctor-bookings/${user.id}`);
         if (bookingsRes.ok) {
           const bookingsData = await bookingsRes.json();

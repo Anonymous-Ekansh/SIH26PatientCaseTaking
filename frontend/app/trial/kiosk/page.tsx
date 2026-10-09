@@ -5,7 +5,7 @@ import LanguageToggle from "@/app/components/trial/LanguageToggle";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+const API_URL = "https://medikiosk-backend-ufnv.onrender.com";
 
 export default function KioskLogin() {
   const [error, setError] = useState("");

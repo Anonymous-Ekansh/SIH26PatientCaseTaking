@@ -43,7 +43,7 @@ export default function DoctorPatientSummary() {
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+  const getApiUrl = () => "https://medikiosk-backend-ufnv.onrender.com";
 
   useEffect(() => {
     if (!patientId) return;

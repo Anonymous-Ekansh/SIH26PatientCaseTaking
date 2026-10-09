@@ -37,7 +37,7 @@ export default function ScreeningKiosk() {
       return;
     }
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/screening`, {
+    fetch(`${"https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/screening`, {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {
@@ -67,7 +67,7 @@ export default function ScreeningKiosk() {
 
   const playAudio = async (textToPlay: string) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/conversation/tts`, {
+      const res = await fetch(`${"https://medikiosk-backend-ufnv.onrender.com"}/api/conversation/tts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: textToPlay, language: language }),
@@ -113,7 +113,7 @@ export default function ScreeningKiosk() {
       const formData = new FormData();
       formData.append("audio", blob, "recording.wav");
       formData.append("language", language);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/conversation/asr`, {
+      const res = await fetch(`${"https://medikiosk-backend-ufnv.onrender.com"}/api/conversation/asr`, {
         method: "POST",
         body: formData,
       });
@@ -141,7 +141,7 @@ export default function ScreeningKiosk() {
       // Submit
       try {
         const token = localStorage.getItem("kiosk_token");
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/screening`, {
+        await fetch(`${"https://medikiosk-backend-ufnv.onrender.com"}/api/ct/kiosk/screening`, {
           method: "POST",
           headers: { 
             "Content-Type": "application/json",

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, FileText, Stethoscope, AlertTriangle, Shield } from "lucide-react";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://medikiosk-backend-ufnv.onrender.com";
+const API_URL = "https://medikiosk-backend-ufnv.onrender.com";
 
 export default function KioskMenu() {
   const router = useRouter();
